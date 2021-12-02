@@ -31,7 +31,7 @@ export function getJBrowseLink(source,chr,start,end){
   else if(source === 'ZFIN'){link = "https://alliancegenome.org/jbrowse/?data=data%2FDanio%20rerio&tracks=Variants%2CAll%20Genes&highlight=&loc="+chr+"%3A"+start+".."+end;}
   else if(source === 'SGD'){link = "https://alliancegenome.org/jbrowse/?data=data%2FSaccharomyces%20cerevisiae&tracks=Variants%2CAll%20Genes&highlight=&loc="+chr+"%3A"+start+".."+end;}
   else if(source === 'RGD'){link = "https://alliancegenome.org/jbrowse/?data=data%2FRattus%20norvegicus&tracks=Variants%2CAll%20Genes&highlight=&loc="+chr+"%3A"+start+".."+end;}
-  //else if(source === 'human'){link = "https://stage.alliancegenome.org/jbrowse/?data=data%2FCHomo%20sapiens&tracks=Variants%2CAll%20Genes&highlight=&loc="+chr+"%3A"+start+".."+end;}
+  else if(source === 'human'){link = "https://alliancegenome.org/jbrowse/?data=data%2FHomo%20sapiens&tracks=All%20Genes&highlight=&loc="+chr+"%3A"+start+".."+end;}
   else{
     console.warn("no source found",source);
     return 'Maximum features displayed.  See full view for more.'

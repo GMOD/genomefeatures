@@ -15,6 +15,7 @@ export default class IsoformTrack {
         this.htpVariant = htpVariant;
         this.start = track["start"];
         this.end = track["end"];
+        this.genome=track.genome;
     }
 
   renderTooltipDescription(tooltipDiv, descriptionHtml,closeFunction){
@@ -48,7 +49,7 @@ export default class IsoformTrack {
         let data = this.trackData;
         let viewer = this.viewer;
         let width = this.width;
-        let source = this.trackData[0].source;
+        let source = this.genome;
         let chr = this.trackData[0].seqId;
 
         // TODO: make configurable and a const / default
