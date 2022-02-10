@@ -9,7 +9,11 @@ export class ApolloService
     fetchDataFromUrl(url){
         return new Promise((resolve, reject) =>{
             fetch(url).then((response) => {
-                resolve(response.json())
+                if(response.status === 200){
+                  resolve(response.json())
+                }else{
+                  resolve([]);
+                }
             }).catch(error => {
                 reject(error);
             })
@@ -84,4 +88,3 @@ export class ApolloService
     return fakeVariants;
   }
 }
-
