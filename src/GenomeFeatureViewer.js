@@ -46,7 +46,6 @@ export default class GenomeFeatureViewer {
   setSelectedAlleles(selectedAlleles, target) {
     //remove highlights first
     let svgTarget = d3.select(target)
-    let viewer_height = svgTarget.attr('height') - 22.5
     svgTarget.selectAll('.highlight').remove()
     svgTarget
       .selectAll(
@@ -151,8 +150,3 @@ export default class GenomeFeatureViewer {
     this.config['end'] = end
   }
 }
-
-// The use of 'output.library' in webpack config provides
-// the variable 'GenomeFeatureViewer' to 'window', so we don't need
-// the following anymore:
-// window.GenomeFeatureViewer = GenomeFeatureViewer;
