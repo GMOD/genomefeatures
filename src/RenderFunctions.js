@@ -16,8 +16,8 @@ function checkSpace(used_space, start, end) {
     // for each row
     for (var i = 1; i < used_space.length; i++) {
       // for each entry in that row
-      for (var z = 0; z < used_space[i].length; z++) {
-        var [used_start, used_end] = used_space[i][z].split(':')
+      for (const elt of used_space[i]) {
+        var [used_start, used_end] = elt.split(':')
 
         // check for overlap
         if (end < used_start || start > used_end) {
@@ -42,7 +42,7 @@ function checkSpace(used_space, start, end) {
   return row
 }
 
-function doResize(fmin_display, fmax_display, viewer, width, newx) {
+function doResize(_fmin_display, _fmax_display, viewer, _width, newx) {
   viewer
     .selectAll('rect.transcriptBackbone')
     .attr('x', function (d) {
@@ -54,32 +54,20 @@ function doResize(fmin_display, fmax_display, viewer, width, newx) {
 
   viewer
     .selectAll('rect.exon')
-    .attr('x', function (d) {
-      return newx(d.fmin)
-    })
-    .attr('width', function (d) {
-      return newx(d.fmax) - newx(d.fmin)
-    })
+    .attr('x', d => newx(d.fmin))
+    .attr('width', d => newx(d.fmax) - newx(d.fmin))
 
   viewer
     .selectAll('rect.CDS')
-    .attr('x', function (d) {
-      return newx(d.fmin)
-    })
-    .attr('width', function (d) {
-      return newx(d.fmax) - newx(d.fmin)
-    })
+    .attr('x', d => newx(d.fmin))
+    .attr('width', d => newx(d.fmax) - newx(d.fmin))
 
   viewer
     .selectAll('rect.UTR')
-    .attr('x', function (d) {
-      return newx(d.fmin)
-    })
-    .attr('width', function (d) {
-      return newx(d.fmax) - newx(d.fmin)
-    })
+    .attr('x', d => newx(d.fmin))
+    .attr('width', d => newx(d.fmax) - newx(d.fmin))
 
-  viewer.selectAll('polygon.transArrow').attr('transform', function (d) {
+  viewer.selectAll('polygon.transArrow').attr('transform', d => {
     if (d.strand > 0) {
       return `translate(${Number(newx(d.fmax))},${d.y_val})`
     } else {
@@ -104,7 +92,7 @@ function findRange(data, display_feats) {
     let feature = data[d]
     let featureChildren = feature.children
     if (featureChildren) {
-      featureChildren.forEach(function (featureChild) {
+      featureChildren.forEach(featureChild => {
         if (display_feats.indexOf(featureChild.type) >= 0) {
           if (fmin < 0 || featureChild.fmin < fmin) {
             fmin = featureChild.fmin
@@ -129,7 +117,7 @@ function countIsoforms(data) {
   for (let i in data) {
     let feature = data[i]
     if (feature.children) {
-      feature.children.forEach(function (geneChild) {
+      feature.children.forEach(geneChild => {
         // isoform level
         if (geneChild.type == 'mRNA') {
           isoform_count += 1
@@ -146,10 +134,8 @@ function calculateNewTrackPosition(viewer) {
   let viewTrackSelector = `.${classNames[0]}.${classNames[1]} .track`
   let nodes = d3.selectAll(viewTrackSelector).nodes()
   let usedHeight = 0
-  let numTracks = 0 // Number of tracks including axis
   nodes.forEach(node => {
     usedHeight += node.getBoundingClientRect().height + 1
-    numTracks++
   })
   return usedHeight
 }
@@ -177,7 +163,7 @@ function setHighlights(selectedAlleles, svgTarget) {
     .selectAll(
       '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
     )
-    .filter(function (d) {
+    .filter(d => {
       let returnVal = false
       // TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
       // and sometimes in an array.
@@ -196,7 +182,7 @@ function setHighlights(selectedAlleles, svgTarget) {
       }
       return returnVal
     })
-    .datum(function (d) {
+    .datum(d => {
       d.selected = 'true'
       return d
     })

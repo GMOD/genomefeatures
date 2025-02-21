@@ -31,8 +31,8 @@ export default class VariantTrack {
           `<table>` +
           `<th colspan="2">${title.toUpperCase()}</th>` +
           `<tr><td>Position</td> <td>${d.position}</td></tr>` +
-          `<tr><td>Mutation</td> <td>${d.ref} > ${d.mutant}</td></tr>`
-        ;('</table>')
+          `<tr><td>Mutation</td> <td>${d.ref} > ${d.mutant}</td></tr>` +
+          '</table>'
         return tipHtml
       })
       .offset([10, 0])

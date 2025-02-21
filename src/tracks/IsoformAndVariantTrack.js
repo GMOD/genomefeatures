@@ -204,7 +204,11 @@ export default class IsoformAndVariantTrack {
         .attr('height', VARIANT_HEIGHT)
         .attr('width', width)
         .on('click', () => {
-          renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+          this.renderTooltipDescription(
+            tooltipDiv,
+            descriptionHtml,
+            closeToolTip,
+          )
         })
         .on('mouseover', function (d) {
           let theVariant = d.variant
@@ -239,8 +243,10 @@ export default class IsoformAndVariantTrack {
         })
       // TESTY
       // drawnVariant = false;//disable lables for now;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (drawnVariant) {
         let label_offset = 0
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (isPoints) {
           label_offset = x(fmin) - SNV_WIDTH / 2
         } else {
@@ -258,7 +264,11 @@ export default class IsoformAndVariantTrack {
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
@@ -312,7 +322,11 @@ export default class IsoformAndVariantTrack {
           )
           .attr('z-index', 30)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .on('mouseover', function (d) {
             let theVariant = d.variant
@@ -358,7 +372,11 @@ export default class IsoformAndVariantTrack {
           )
           .attr('z-index', 30)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .on('mouseover', d => {
             let theVariant = d.variant
@@ -413,7 +431,11 @@ export default class IsoformAndVariantTrack {
           .attr('fill', consequenceColor)
           .attr('z-index', 30)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .on('mouseover', function (d) {
             let theVariant = d.variant
@@ -466,7 +488,11 @@ export default class IsoformAndVariantTrack {
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
@@ -497,7 +523,6 @@ export default class IsoformAndVariantTrack {
     let used_space = []
     let fmin_display = -1
     let fmax_display = -1
-    let renderTooltipDescription = this.renderTooltipDescription
     let alreadyRendered = [] // hack fix for multiple transcript returns.
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
@@ -581,7 +606,7 @@ export default class IsoformAndVariantTrack {
                   )
                   .text(text_string)
                   .on('click', () => {
-                    renderTooltipDescription(
+                    this.renderTooltipDescription(
                       tooltipDiv,
                       renderTrackDescription(feature),
                       closeToolTip,
@@ -609,7 +634,7 @@ export default class IsoformAndVariantTrack {
                   }
                 })
                 .on('click', () => {
-                  renderTooltipDescription(
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -624,7 +649,7 @@ export default class IsoformAndVariantTrack {
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
                 .on('click', () => {
-                  renderTooltipDescription(
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -642,7 +667,7 @@ export default class IsoformAndVariantTrack {
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .text(text_string)
                 .on('click', () => {
-                  renderTooltipDescription(
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -743,7 +768,7 @@ export default class IsoformAndVariantTrack {
                       .attr('z-index', 10)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
                       .on('click', () => {
-                        renderTooltipDescription(
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
@@ -763,7 +788,7 @@ export default class IsoformAndVariantTrack {
                       .attr('height', CDS_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
                       .on('click', () => {
-                        renderTooltipDescription(
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
@@ -783,7 +808,7 @@ export default class IsoformAndVariantTrack {
                       .attr('height', UTR_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
                       .on('click', () => {
-                        renderTooltipDescription(
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
