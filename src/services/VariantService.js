@@ -1,6 +1,5 @@
 import { getColorForConsequence } from './ConsequenceService'
 
-const BIN_BUFFER_PCT = 0.01
 const SNV_HEIGHT = 10
 const SNV_WIDTH = 10
 
@@ -35,6 +34,7 @@ export function getDeletionHeight(x, fmin, fmax) {
       }
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (can_place) {
       return current_row
     } else {
@@ -390,7 +390,7 @@ export function getVariantAlleles(variant) {
   return returnObj
 }
 
-export function mergeConsequenceColors(colors) {
+export function mergeConsequenceColors() {
   return 'hotpink'
   // return colors.map( d => {
   //   return getColorForConsequence(d.consequence);
@@ -412,7 +412,7 @@ export function getConsequence(variant) {
   ) {
     consequence = variant.geneLevelConsequence.values[0]
       .replace(/\|/g, ' ')
-      .replace(/\"/g, '')
+      .replace(/"/g, '')
   }
   return consequence
 }

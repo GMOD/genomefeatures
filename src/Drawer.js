@@ -49,10 +49,10 @@ export default class Drawer {
     if (locale === 'local') {
       width = document.body.clientWidth
       // Other setup
-      draggingViewer = evt => {
+      draggingViewer = () => {
         this.dragged(this)
       }
-      draggingStart = evt => {
+      draggingStart = () => {
         this.drag_start(this)
       }
       // Setting our clip path view to enable the scrolling effect
@@ -102,7 +102,7 @@ export default class Drawer {
     )
     if (locale === 'local') {
       // Scrollable View
-      await referenceTrack.getTrackData()
+      // await referenceTrack.getTrackData()
       referenceTrack.DrawScrollableTrack()
       viewer.call(
         d3.drag().on('start', draggingStart).on('drag', draggingViewer),
@@ -238,16 +238,15 @@ export default class Drawer {
                             Typically you get the tick size then multiply.
     */
   scrollView(direction, scrollValue) {
-    let ref = this
     // We want to move the track in a direction when dragging
     // thresholds for end of the sequence
     let dragThresh = {
-      maxNegative: this.gfc.width - ref.range[1] + -(scrollValue / 2),
+      maxNegative: this.gfc.width - this.range[1] + -(scrollValue / 2),
     }
     // We are moving get our elements and translate them
     // the distance of a tick.
-    let viewerTracks = `${ref.gfc.svg_target} .main-view .track`
-    d3.selectAll(viewerTracks).attr('transform', function () {
+    let viewerTracks = `${this.gfc.svg_target} .main-view .track`
+    d3.selectAll(viewerTracks).attr('transform', () => {
       let trs = getTranslate(d3.select(this).attr('transform'))
       let newX = 0
       if (direction == 1) {
@@ -258,12 +257,12 @@ export default class Drawer {
       // Want to make sure we don't go beyond our sequence length. Which is defined by our range.
       if (
         newX <= dragThresh.maxNegative ||
-        newX > -ref.range[0] + 100 + scrollValue / 2
+        newX > -this.range[0] + 100 + scrollValue / 2
       ) {
         return `translate(${trs[0]},${trs[1]})`
+      } else {
+        return `translate(${newX},${trs[1]})`
       }
-
-      return `translate(${newX},${trs[1]})`
     })
   }
 

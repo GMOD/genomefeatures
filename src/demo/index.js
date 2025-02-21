@@ -13,6 +13,7 @@ mouseExamples()
 flyExamples()
 covidExamples()
 currentExamples()
+createHTPExample()
 
 function getTranscriptTypes() {
   return [
@@ -430,11 +431,6 @@ function createExample(
   const legendTarget = document.getElementById(`${divId}LegendTarget`)
   if (legendTarget) {
     legendTarget.innerHTML = gfc.generateLegend()
-    // legendButton.addEventListener( 'click', () => {
-    //   console.log('1');
-    //   legendTarget.innerHTML = gfc.generateLegend() ;
-    //   console.log('2')
-    // })
   }
 
   if (divId === 'networkExampleWorm1And') {
@@ -490,7 +486,6 @@ function createIsoformExample(
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
-  const ratio = 0.01
   let configGlobal1 = {
     locale: 'global',
     chromosome: chromosome,
@@ -522,9 +517,7 @@ function createHTPExample(
   htpVariant,
 ) {
   const chromosome = range.split(':')[0]
-  console.log(htpVariant)
   const [start, end] = range.split(':')[1].split('..')
-  const ratio = 0.01
   let configGlobal1 = {
     locale: 'global',
     chromosome: chromosome,

@@ -11,6 +11,7 @@ export default tseslint.config(
       '**/esm/**/*',
       '**/public/**/*',
       'webpack.config.js',
+      'eslint.config.mjs',
     ],
   },
   {

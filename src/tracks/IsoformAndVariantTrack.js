@@ -241,7 +241,6 @@ export default class IsoformAndVariantTrack {
           variant: symbol_string + fmin,
           alleles: variant_alleles,
         })
-      // TESTY
       // drawnVariant = false;//disable lables for now;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (drawnVariant) {

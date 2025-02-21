@@ -30,6 +30,8 @@ export default class GenomeFeatureViewer {
 
     this.viewer = this._initViewer(svg_target)
     this.drawer = new Drawer(this)
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.drawer.draw()
   }
 
