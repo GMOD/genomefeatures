@@ -11,10 +11,8 @@
 ```bash
 // clone repo, then
 yarn
-yarn start
+yarn dev // http://localhost:5173
 ```
-
-View at [http://localhost:3000](http://localhost:3000).
 
 Works by accessing data from an [Apollo server](https://github.com/gmod/apollo).
 
