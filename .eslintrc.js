@@ -1,15 +1,14 @@
-const errorInProduction = process.env.NODE_ENV === 'production' ? 'error' : 'off';
-const path = require('path');
+const errorInProduction =
+  process.env.NODE_ENV === 'production' ? 'error' : 'off'
+const path = require('path')
 
 module.exports = {
   root: true,
   env: {
     node: true,
-    browser: true
+    browser: true,
   },
-  plugins: [
-    'import',
-  ],
+  plugins: ['import'],
   extends: [
     // 'plugin:import/errors',
     // 'plugin:import/warnings',
@@ -17,12 +16,12 @@ module.exports = {
   ],
   rules: {
     'comma-dangle': 0,
-    'quotes': 0,
-    'semi': 0,
+    quotes: 0,
+    semi: 0,
     'no-trailing-spaces': 0,
     'object-curly-spacing': 0,
     'padded-blocks': 0,
-    'indent': 0,
+    indent: 0,
     'space-before-function-paren': 0,
     'space-before-blocks': 0,
     'brace-style': 0,
@@ -33,7 +32,7 @@ module.exports = {
     'space-infix-ops': 0,
     'no-multiple-empty-lines': 0,
     'space-in-parens': 0,
-    'camelcase': 0,
+    camelcase: 0,
     'spaced-comment': 0,
     'keyword-spacing': 0,
     'eol-last': 0,
@@ -46,11 +45,10 @@ module.exports = {
     'no-new': 0,
     'block-spacing': 0,
     'semi-spacing': 0,
-    'eqeqeq': 0,
+    eqeqeq: 0,
   },
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'babel-eslint',
   },
-  settings: {
-  },
-};
+  settings: {},
+}

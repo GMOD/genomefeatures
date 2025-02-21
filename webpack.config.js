@@ -5,13 +5,13 @@
 // might find guidance above.
 //
 
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const src = path.resolve(__dirname, 'src/');
-const dist = path.resolve(__dirname, 'dist/');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const src = path.resolve(__dirname, 'src/')
+const dist = path.resolve(__dirname, 'dist/')
 
 var libraryConfig = {
   name: 'library',
@@ -21,11 +21,11 @@ var libraryConfig = {
     filename: 'index.js',
     globalObject: 'this',
     library: 'GenomeFeatureViewer',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
   plugins: [
     new CopyWebpackPlugin([
-        { from: path.resolve(src, 'GenomeFeatureViewer.css') },
+      { from: path.resolve(src, 'GenomeFeatureViewer.css') },
     ]),
   ],
   module: {
@@ -35,23 +35,22 @@ var libraryConfig = {
         loader: 'babel-loader',
         query: {
           presets: ['@babel/preset-env'],
-        }
+        },
       },
       {
         test: /\.css/,
         loader: 'css-loader',
-        include: src
-      }
-    ]
+        include: src,
+      },
+    ],
   },
   devServer: {
     open: true,
-    port: 9000
+    port: 9000,
   },
-};
+}
 
-
-const demosrc = path.resolve(src, 'demo/');
+const demosrc = path.resolve(src, 'demo/')
 
 var demoConfig = {
   name: 'demo',
@@ -59,16 +58,15 @@ var demoConfig = {
   entry: path.resolve(demosrc, 'index.js'),
   output: {
     path: dist,
-    filename: 'demo.js'
+    filename: 'demo.js',
   },
   externals: {
     GenomeFeatureViewer: 'GenomeFeatureViewer',
   },
   plugins: [
-    new HtmlWebpackPlugin(
-    {
+    new HtmlWebpackPlugin({
       template: 'src/demo/index.ejs',
-      inject: false
+      inject: false,
     }),
   ],
   module: {
@@ -79,25 +77,22 @@ var demoConfig = {
         loader: 'babel-loader',
         query: {
           presets: ['@babel/preset-env'],
-        }
+        },
       },
       {
         test: /\.css/,
         loader: 'css-loader',
-        include: path.resolve(__dirname, '/src')
-      }
-    ]
+        include: path.resolve(__dirname, '/src'),
+      },
+    ],
   },
   devServer: {
     contentBase: dist,
     open: true,
-    port: 9000
+    port: 9000,
   },
-};
+}
 
-const configs = [
-  libraryConfig,
-  demoConfig
-];
+const configs = [libraryConfig, demoConfig]
 
-module.exports = configs;
+module.exports = configs
