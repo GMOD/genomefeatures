@@ -61,6 +61,7 @@ export default tseslint.config(
           caughtErrors: 'none',
         },
       ],
+      'import/namespace': 'off',
       'import/no-unresolved': 'off',
       'import/order': [
         'error',

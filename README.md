@@ -2,6 +2,8 @@
 
 [![npm package][npm-badge]][npm]
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/GMOD/GenomeFeatureComponent/push.yml?branch=development)](https://github.com/GMOD/GenomeFeatureComponent/actions?query=branch%3Adevelopment+workflow%3APush+)
+
 [npm-badge]:
   https://img.shields.io/npm/v/genomefeaturecomponent.png?style=flat-square
 [npm]: https://www.npmjs.com/package/genomefeaturecomponent
