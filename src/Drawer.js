@@ -25,7 +25,7 @@ export default class Drawer {
     this.range = []
   }
 
-  async draw() {
+  draw() {
     // Viewer Information
     let locale = this.gfc.locale
     let height = this.gfc.height
@@ -116,7 +116,7 @@ export default class Drawer {
     // TODO: Lock view to always have some number of sequence (50, 100)?
     let track_height = LABEL_OFFSET
     // TODO: refactor so that both come in and are re-ordered
-    tracks.forEach(async function (track) {
+    tracks.forEach(async track => {
       track.start = start
       track.end = end
       track.chromosome = chromosome
@@ -199,14 +199,11 @@ export default class Drawer {
     ref.drag_cx = d3.event.x
   }
 
-  /*
-        Trigger while we are dragging. Figure out the direction
-        and get the amount to scroll by.
-
-        @Param ref, a reference to the drawer class since event methods
-        scope of this becomes the element it triggers on.
-
-    */
+  // Trigger while we are dragging. Figure out the direction
+  // and get the amount to scroll by.
+  //
+  // @Param ref, a reference to the drawer class since event methods
+  // scope of this becomes the element it triggers on.
   dragged(ref) {
     // Get tick size for our scroll value
     let viewerTicks = `${ref.gfc.svg_target} .x-local-axis .tick`
@@ -229,14 +226,12 @@ export default class Drawer {
     }
   }
 
-  /*
-        Function to scroll our local view
-        @Param direction: The direction of the scroll
-                1 -> going up
-                -1 -> going down
-        @Param scrollValue: The amount you want to move the view.
-                            Typically you get the tick size then multiply.
-    */
+  // Function to scroll our local view
+  // @Param direction: The direction of the scroll
+  //        1 -> going up
+  //        -1 -> going down
+  // @Param scrollValue: The amount you want to move the view.
+  //                    Typically you get the tick size then multiply.
   scrollView(direction, scrollValue) {
     // We want to move the track in a direction when dragging
     // thresholds for end of the sequence

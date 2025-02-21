@@ -36,7 +36,7 @@ var libraryConfig = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [['@babel/preset-env']],
+            presets: ['@babel/preset-env'],
           },
         },
       },
@@ -60,7 +60,7 @@ var libraryConfig = {
 
 const demosrc = path.resolve(src, 'demo/')
 
-var demoConfig = {
+module.exports = {
   name: 'demo',
   mode: 'development',
   entry: path.resolve(demosrc, 'index.js'),
@@ -86,11 +86,10 @@ var demoConfig = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [['@babel/preset-env']],
+            presets: ['@babel/preset-env'],
           },
         },
       },
-      ,
       {
         test: /\.css/,
         loader: 'css-loader',
@@ -108,5 +107,3 @@ var demoConfig = {
     hot: true,
   },
 }
-
-module.exports = demoConfig

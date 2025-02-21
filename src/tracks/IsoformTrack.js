@@ -92,7 +92,7 @@ export default class IsoformTrack {
       sortWeight[exon_feats[i]] = 100
     }
 
-    data = data.sort(function (a, b) {
+    data = data.sort((a, b) => {
       if (a.selected && !b.selected) {
         return -1
       }
@@ -155,7 +155,7 @@ export default class IsoformTrack {
 
         // May want to remove this and add an external sort function
         // outside of the render method to put certain features on top.
-        featureChildren = featureChildren.sort(function (a, b) {
+        featureChildren = featureChildren.sort((a, b) => {
           if (a.name < b.name) {
             return -1
           }
