@@ -6,18 +6,13 @@ import {
   findRange,
 } from '../RenderFunctions'
 import { ApolloService } from '../services/ApolloService'
-import { getColorForConsequence } from '../services/ConsequenceService'
 import { renderTrackDescription } from '../services/TrackService'
 import {
   generateVariantBins,
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,
-  getConsequence,
-  getVariantDescription,
   getVariantDescriptions,
   getVariantSymbol,
-  mergeConsequenceColors,
-  renderVariantDescription,
   renderVariantDescriptions,
 } from '../services/VariantService'
 let apolloService = new ApolloService()
@@ -25,7 +20,6 @@ let apolloService = new ApolloService()
 export default class IsoformEmbeddedVariantTrack {
   constructor(
     viewer,
-    track,
     height,
     width,
     transcriptTypes,
