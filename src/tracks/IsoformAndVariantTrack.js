@@ -218,7 +218,7 @@ export default class IsoformAndVariantTrack {
         .attr('fill', consequenceColor)
         .attr('height', VARIANT_HEIGHT)
         .attr('width', width)
-        .on('click', d => {
+        .on('click', () => {
           renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           let viewer_height = viewer.node().getBBox().height - 22.5
         })
@@ -276,7 +276,7 @@ export default class IsoformAndVariantTrack {
           .attr('transform', `translate(${label_offset},${label_height})`)
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
-          .on('click', d => {
+          .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
@@ -333,7 +333,7 @@ export default class IsoformAndVariantTrack {
             `translate(0,${VARIANT_HEIGHT * distinctVariants.indexOf('snv')})`,
           )
           .attr('z-index', 30)
-          .on('click', d => {
+          .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
             let viewer_height = viewer.node().getBBox().height - 22.5
           })
@@ -384,7 +384,7 @@ export default class IsoformAndVariantTrack {
             })`,
           )
           .attr('z-index', 30)
-          .on('click', d => {
+          .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
             let viewer_height = viewer.node().getBBox().height - 22.5
           })
@@ -440,7 +440,7 @@ export default class IsoformAndVariantTrack {
           )
           .attr('fill', consequenceColor)
           .attr('z-index', 30)
-          .on('click', d => {
+          .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
             let viewer_height = viewer.node().getBBox().height - 22.5
           })
@@ -501,7 +501,7 @@ export default class IsoformAndVariantTrack {
           .attr('transform', `translate(${label_offset},${label_height})`)
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
-          .on('click', d => {
+          .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
@@ -619,7 +619,7 @@ export default class IsoformAndVariantTrack {
                     `translate(${x(featureChild.fmin)},-${GENE_LABEL_HEIGHT})`,
                   )
                   .text(text_string)
-                  .on('click', d => {
+                  .on('click', () => {
                     renderTooltipDescription(
                       tooltipDiv,
                       renderTrackDescription(feature),
@@ -649,7 +649,7 @@ export default class IsoformAndVariantTrack {
                     }) rotate(180)`
                   }
                 })
-                .on('click', d => {
+                .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -664,7 +664,7 @@ export default class IsoformAndVariantTrack {
                 .attr('height', TRANSCRIPT_BACKBONE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
-                .on('click', d => {
+                .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -682,7 +682,7 @@ export default class IsoformAndVariantTrack {
                 .attr('height', ISOFORM_TITLE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .text(text_string)
-                .on('click', d => {
+                .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -787,7 +787,7 @@ export default class IsoformAndVariantTrack {
                       .attr('height', EXON_HEIGHT)
                       .attr('z-index', 10)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', d => {
+                      .on('click', () => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
@@ -810,7 +810,7 @@ export default class IsoformAndVariantTrack {
                       .attr('z-index', 20)
                       .attr('height', CDS_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', d => {
+                      .on('click', () => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
@@ -833,7 +833,7 @@ export default class IsoformAndVariantTrack {
                       .attr('z-index', 20)
                       .attr('height', UTR_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', d => {
+                      .on('click', () => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
