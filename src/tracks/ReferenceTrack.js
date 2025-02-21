@@ -1,5 +1,10 @@
 import * as d3 from 'd3'
 
+import { ApolloService } from '../services/ApolloService'
+
+/*
+    The reference sequence label track.
+*/
 export default class ReferenceTrack {
   constructor(viewer, track, height, width) {
     this.refSeq = ''
@@ -12,6 +17,7 @@ export default class ReferenceTrack {
   DrawScrollableTrack() {
     let viewer = this.viewer
     let data = this.refSeq
+    let tickSize = 8
 
     let x = d3
       .scaleLinear()
@@ -22,7 +28,7 @@ export default class ReferenceTrack {
     let xAxis = d3
       .axisBottom(x)
       .tickValues(this._getRefTick(this.track.start + 1, this.track.end))
-      .tickFormat(function (_d, i) {
+      .tickFormat(function (d, i) {
         return data[i]
       })
       .tickSize(8)
@@ -34,7 +40,9 @@ export default class ReferenceTrack {
     let xAxisNumerical = d3
       .axisTop(x)
       .ticks(numTicks)
-      .tickValues(this._getRefTick(this.track.start + 1, this.track.end, 10))
+      .tickValues(
+        this._getRefTick(this.track.start + 1, this.track.end, 10),
+      )
 
     viewer
       .append('g')
@@ -55,7 +63,7 @@ export default class ReferenceTrack {
     numericTickLabel.last().attr('text-anchor', 'end')
 
     // For each tick
-    d3.selectAll('.x-local-axis .tick text').each(function () {
+    d3.selectAll('.x-local-axis .tick text').each(function (d, i) {
       // Get the current tick
       var tick = d3.select(this)
       var text = tick.text() // Figure out what nucleotide we have
@@ -87,6 +95,7 @@ export default class ReferenceTrack {
       .domain([view_start, view_end])
       .range(this.track.range)
 
+    let viewLength = view_end - view_start
     // let resolution = Math.round(30 / Math.log(viewLength)) ;
     // let resolutionString = '.'+resolution + 's';
     // let tickFormat = x.tickFormat(5, resolutionString);
@@ -123,9 +132,9 @@ export default class ReferenceTrack {
   }
 
   /* Method to get reference label */
-  getTrackData() {
-    // let track = this.track
-    // let apolloService = new ApolloService()
+  async getTrackData() {
+    let track = this.track
+    let apolloService = new ApolloService()
     try {
       // this.refSeq = await apolloService.GetLocalSequence(
       //  '',

@@ -5,14 +5,7 @@ import globals from 'globals'
 
 export default tseslint.config(
   {
-    ignores: [
-      '**/build/**/*',
-      '**/dist/**/*',
-      '**/esm/**/*',
-      '**/public/**/*',
-      'webpack.config.js',
-      'eslint.config.mjs',
-    ],
+    ignores: ['**/dist/**/*', 'webpack.config.js', 'eslint.config.mjs'],
   },
   {
     languageOptions: {

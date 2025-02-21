@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 
 import { calculateNewTrackPosition } from '../RenderFunctions'
+import { ApolloService } from '../services/ApolloService'
 
 export default class VariantTrack {
   constructor(viewer, track, height, width) {
@@ -26,7 +27,7 @@ export default class VariantTrack {
     // Create our track container with a simple background
     let track = viewer
       .append('g')
-      .attr('transform', `translate(0,${newTrackPosition})`)
+      .attr('transform', `translate(0,${  newTrackPosition  })`)
       .attr('class', 'track')
 
     track
@@ -50,7 +51,7 @@ export default class VariantTrack {
       .attr('stroke', 'red')
       .attr('fill', 'red')
       .attr('transform', function (d) {
-        return `translate(${x(d.position)},10)`
+        return `translate(${  x(d.position)  },10)`
       })
   }
 
