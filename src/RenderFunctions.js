@@ -3,23 +3,23 @@
   track util.
 */
 import * as d3 from 'd3-selection'
-//Takes in the current entry start/end and the array of used space and assigns a row
+// Takes in the current entry start/end and the array of used space and assigns a row
 function checkSpace(used_space, start, end) {
   var row
   var assigned
   var fits
-  //if empty... this is the first entry... on the first row.
+  // if empty... this is the first entry... on the first row.
 
   if (used_space.length == 0) {
     row = 1
   } else {
-    //for each row
+    // for each row
     for (var i = 1; i < used_space.length; i++) {
-      //for each entry in that row
+      // for each entry in that row
       for (var z = 0; z < used_space[i].length; z++) {
         var [used_start, used_end] = used_space[i][z].split(':')
 
-        //check for overlap
+        // check for overlap
         if (end < used_start || start > used_end) {
           fits = 1
         } else {
@@ -33,8 +33,8 @@ function checkSpace(used_space, start, end) {
         break
       }
     }
-    //if this is true for 0 rows... use the next row.
-    //zero indexed so length is the next one.
+    // if this is true for 0 rows... use the next row.
+    // zero indexed so length is the next one.
     if (!assigned) {
       row = used_space.length
     }
@@ -81,10 +81,10 @@ function doResize(fmin_display, fmax_display, viewer, width, newx) {
 
   viewer.selectAll('polygon.transArrow').attr('transform', function (d) {
     if (d.strand > 0) {
-      return 'translate(' + Number(newx(d.fmax)) + ',' + d.y_val + ')'
+      return `translate(${  Number(newx(d.fmax))  },${  d.y_val  })`
     } else {
       return (
-        'translate(' + Number(newx(d.fmin)) + ',' + d.y_val + ') rotate(180)'
+        `translate(${  Number(newx(d.fmin))  },${  d.y_val  }) rotate(180)`
       )
     }
   })
@@ -92,12 +92,12 @@ function doResize(fmin_display, fmax_display, viewer, width, newx) {
   viewer.selectAll('text.REMOVE').remove()
 }
 
-//Function to find range
-//Now with checkSpace function embedded.
-//Will only check rows that make it into the final viz.
-//Needs to assign the row as well
-//Added check for type.... all types were getting included even if
-//we had no intention to display them
+// Function to find range
+// Now with checkSpace function embedded.
+// Will only check rows that make it into the final viz.
+// Needs to assign the row as well
+// Added check for type.... all types were getting included even if
+// we had no intention to display them
 function findRange(data, display_feats) {
   let fmin = -1
   let fmax = -1
@@ -115,8 +115,8 @@ function findRange(data, display_feats) {
             fmax = featureChild.fmax
           }
         }
-      }) //transcript level
-    } //gene level
+      }) // transcript level
+    } // gene level
   }
 
   return {
@@ -145,10 +145,10 @@ function countIsoforms(data) {
 function calculateNewTrackPosition(viewer) {
   let viewerClass = viewer.attr('class')
   let classNames = viewerClass.split(' ')
-  let viewTrackSelector = '.' + classNames[0] + '.' + classNames[1] + ' .track'
+  let viewTrackSelector = `.${  classNames[0]  }.${  classNames[1]  } .track`
   let nodes = d3.selectAll(viewTrackSelector).nodes()
   let usedHeight = 0
-  let numTracks = 0 //Number of tracks including axis
+  let numTracks = 0 // Number of tracks including axis
   nodes.forEach(node => {
     usedHeight += node.getBoundingClientRect().height + 1
     numTracks++
@@ -181,8 +181,8 @@ function setHighlights(selectedAlleles, svgTarget) {
     )
     .filter(function (d) {
       let returnVal = false
-      //TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
-      //and sometimes in an array.
+      // TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
+      // and sometimes in an array.
       if (d.alleles) {
         let ids = d.alleles[0].replace(/"|\[|\]| /g, '').split(',')
         ids.forEach(val => {
@@ -225,11 +225,11 @@ function setHighlights(selectedAlleles, svgTarget) {
 }
 
 export {
-  countIsoforms,
-  findRange,
-  checkSpace,
-  doResize,
   calculateNewTrackPosition,
+  checkSpace,
+  countIsoforms,
+  doResize,
+  findRange,
   getTranslate,
   setHighlights,
 }

@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import d3Tip from 'd3-tip'
+
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
 export default class VariantTrack {
@@ -16,8 +17,8 @@ export default class VariantTrack {
     let variants = this.variants
     let x = d3
       .scaleLinear()
-      .domain([this.track['start'], this.track['end'] + 1])
-      .range(this.track['range'])
+      .domain([this.track.start, this.track.end + 1])
+      .range(this.track.range)
     let triangle = d3.symbol().type(d3.symbolTriangle).size(20)
 
     // Tooltip configuration
@@ -27,18 +28,18 @@ export default class VariantTrack {
       .html(function (d) {
         let title = 'Case Variant'
         let tipHtml =
-          '<table>' +
-          '<th colspan="2">' +
-          title.toUpperCase() +
-          '</th>' +
-          '<tr><td>Position</td> <td>' +
-          d['position'] +
-          '</td></tr>' +
-          '<tr><td>Mutation</td> <td>' +
-          d['ref'] +
-          ' > ' +
-          d['mutant'] +
-          '</td></tr>'
+          `<table>` +
+          `<th colspan="2">${ 
+          title.toUpperCase() 
+          }</th>` +
+          `<tr><td>Position</td> <td>${ 
+          d.position 
+          }</td></tr>` +
+          `<tr><td>Mutation</td> <td>${ 
+          d.ref 
+          } > ${ 
+          d.mutant 
+          }</td></tr>`
         ;('</table>')
         return tipHtml
       })
@@ -57,17 +58,17 @@ export default class VariantTrack {
     // Create our track container with a simple background
     let track = viewer
       .append('g')
-      .attr('transform', 'translate(0,' + newTrackPosition + ')')
+      .attr('transform', `translate(0,${  newTrackPosition  })`)
       .attr('class', 'track')
     track
       .append('rect')
       .attr('height', trackHeight)
-      .attr('width', -this.track['range'][0] + this.track['range'][1])
+      .attr('width', -this.track.range[0] + this.track.range[1])
       .attr('fill-opacity', 0.1)
       .attr('fill', 'rgb(148, 140, 140)')
       .attr('stroke-width', 0)
       .attr('stroke-opacity', 0)
-      .attr('transform', 'translate(' + this.track['range'][0] + ',0)')
+      .attr('transform', `translate(${  this.track.range[0]  },0)`)
 
     // Draw our variants
     // TODO: Variant color based on type or user defined in config?
@@ -81,7 +82,7 @@ export default class VariantTrack {
       .attr('stroke', 'red')
       .attr('fill', 'red')
       .attr('transform', function (d) {
-        return 'translate(' + x(d.position) + ',' + 10 + ')'
+        return `translate(${  x(d.position)  },10)`
       })
       .on('mouseenter', tooltip.show)
       .on('mouseout', tooltip.hide)
@@ -93,7 +94,7 @@ export default class VariantTrack {
       .append('g')
       .attr(
         'transform',
-        'translate(' + labelOffset + ',' + newTrackPosition + ')',
+        `translate(${  labelOffset  },${  newTrackPosition  })`,
       )
       .attr('class', 'track-label')
     trackLabel
@@ -106,12 +107,12 @@ export default class VariantTrack {
       .attr('stroke', '#609C9C')
     trackLabel
       .append('text')
-      .text(this.track['label'].toUpperCase())
+      .text(this.track.label.toUpperCase())
       .attr('y', 12)
   }
 
   /* Method to get reference label */
   async getTrackData() {
-    //this.variants = await new ApolloService().GetFakeVariants()
+    // this.variants = await new ApolloService().GetFakeVariants()
   }
 }

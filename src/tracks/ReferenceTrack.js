@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+
 import { ApolloService } from '../services/ApolloService'
 
 /*
@@ -20,13 +21,13 @@ export default class ReferenceTrack {
 
     let x = d3
       .scaleLinear()
-      .domain([this.track['start'], this.track['end'] + 1])
-      .range(this.track['range'])
+      .domain([this.track.start, this.track.end + 1])
+      .range(this.track.range)
 
     // Represent our sequence in integers on an x-axis
     let xAxis = d3
       .axisBottom(x)
-      .tickValues(this._getRefTick(this.track['start'] + 1, this.track['end']))
+      .tickValues(this._getRefTick(this.track.start + 1, this.track.end))
       .tickFormat(function (d, i) {
         return data[i]
       })
@@ -40,20 +41,20 @@ export default class ReferenceTrack {
       .axisTop(x)
       .ticks(numTicks)
       .tickValues(
-        this._getRefTick(this.track['start'] + 1, this.track['end'], 10),
+        this._getRefTick(this.track.start + 1, this.track.end, 10),
       )
 
     viewer
       .append('g')
       .attr('class', 'axis x-local-axis track')
-      .attr('width', this.track['range'][1])
+      .attr('width', this.track.range[1])
       .attr('transform', 'translate(0, 20)')
       .call(xAxis)
 
     viewer
       .append('g')
       .attr('class', 'axis x-local-numerical track')
-      .attr('width', this.track['range'][1])
+      .attr('width', this.track.range[1])
       .attr('transform', 'translate(0, 20)')
       .call(xAxisNumerical)
 
@@ -85,22 +86,22 @@ export default class ReferenceTrack {
 
   DrawOverviewTrack() {
     let viewer = this.viewer
-    let view_start = this.track['start']
-    let view_end = this.track['end']
+    let view_start = this.track.start
+    let view_end = this.track.end
     let width = this.width
 
     let x = d3
       .scaleLinear()
       .domain([view_start, view_end])
-      .range(this.track['range'])
+      .range(this.track.range)
 
     let viewLength = view_end - view_start
     // let resolution = Math.round(30 / Math.log(viewLength)) ;
-    //let resolutionString = '.'+resolution + 's';
-    //let tickFormat = x.tickFormat(5, resolutionString);
+    // let resolutionString = '.'+resolution + 's';
+    // let tickFormat = x.tickFormat(5, resolutionString);
 
     let xAxis = d3.axisTop(x).ticks(8, 's').tickSize(8)
-    //.tickFormat(5, resolutionString);
+    // .tickFormat(5, resolutionString);
 
     viewer
       .append('g')
@@ -135,12 +136,12 @@ export default class ReferenceTrack {
     let track = this.track
     let apolloService = new ApolloService()
     try {
-      //this.refSeq = await apolloService.GetLocalSequence(
+      // this.refSeq = await apolloService.GetLocalSequence(
       //  '',
       //  track['chromosome'],
       //  track['start'],
       //  track['end'],
-      //)
+      // )
     } catch (err) {
       console.error(err)
     }

@@ -1,4 +1,5 @@
 import GenomeFeatureViewer from 'GenomeFeatureViewer'
+
 import { TRACK_TYPE } from '../tracks/TrackTypeEnum'
 
 const BASE_URL = 'https://www.alliancegenome.org/apollo'
@@ -79,8 +80,8 @@ function currentExamples() {
     TRACK_TYPE.ISOFORM_AND_VARIANT,
     false,
   )
-  //createCoVExample("NC_045512.2:17894..28259", "SARS-CoV-2", "covidExample1", TRACK_TYPE.ISOFORM, false);
-  //createHTPExample("X:2023822..2042311", "fly", "viewerActnHTPFly", TRACK_TYPE.ISOFORM, false,[],'Actn','X:2037135');
+  // createCoVExample("NC_045512.2:17894..28259", "SARS-CoV-2", "covidExample1", TRACK_TYPE.ISOFORM, false);
+  // createHTPExample("X:2023822..2042311", "fly", "viewerActnHTPFly", TRACK_TYPE.ISOFORM, false,[],'Actn','X:2037135');
 }
 
 function flyExamples() {
@@ -418,7 +419,7 @@ function createExample(
   }
   const gfc = new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
 
-  const closeButton = document.getElementById(divId + 'CloseButton')
+  const closeButton = document.getElementById(`${divId  }CloseButton`)
   if (closeButton) {
     closeButton.addEventListener('click', () => {
       gfc.closeModal()
@@ -426,7 +427,7 @@ function createExample(
   }
 
   // const legendButton = document.getElementById(divId+'LegendButton');
-  const legendTarget = document.getElementById(divId + 'LegendTarget')
+  const legendTarget = document.getElementById(`${divId  }LegendTarget`)
   if (legendTarget) {
     legendTarget.innerHTML = gfc.generateLegend()
     // legendButton.addEventListener( 'click', () => {

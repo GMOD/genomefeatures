@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
-import { ApolloService } from '../services/ApolloService'
+
 import { calculateNewTrackPosition } from '../RenderFunctions'
+import { ApolloService } from '../services/ApolloService'
 
 export default class VariantTrack {
   constructor(viewer, track, height, width) {
@@ -16,8 +17,8 @@ export default class VariantTrack {
     let variants = this.variants
     let x = d3
       .scaleLinear()
-      .domain([this.track['start'], this.track['end']])
-      .range(this.track['range'])
+      .domain([this.track.start, this.track.end])
+      .range(this.track.range)
     let triangle = d3.symbol().type(d3.symbolTriangle).size(20)
 
     let trackHeight = 20
@@ -26,13 +27,13 @@ export default class VariantTrack {
     // Create our track container with a simple background
     let track = viewer
       .append('g')
-      .attr('transform', 'translate(0,' + newTrackPosition + ')')
+      .attr('transform', `translate(0,${  newTrackPosition  })`)
       .attr('class', 'track')
 
     track
       .append('rect')
       .attr('height', trackHeight)
-      .attr('width', -this.track['range'][0] + this.track['range'][1])
+      .attr('width', -this.track.range[0] + this.track.range[1])
       .attr('fill-opacity', 0.1)
       .attr('fill', 'rgb(148, 140, 140)')
       .attr('stroke-width', 0)
@@ -50,12 +51,12 @@ export default class VariantTrack {
       .attr('stroke', 'red')
       .attr('fill', 'red')
       .attr('transform', function (d) {
-        return 'translate(' + x(d.position) + ',' + 10 + ')'
+        return `translate(${  x(d.position)  },10)`
       })
   }
 
   /* Method to get reference label */
   async getTrackData() {
-    //this.variants = await new ApolloService().GetFakeGlobalVariants()
+    // this.variants = await new ApolloService().GetFakeGlobalVariants()
   }
 }

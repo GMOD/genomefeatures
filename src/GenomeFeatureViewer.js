@@ -1,10 +1,11 @@
 'use strict'
 
 import 'babel-polyfill'
-import Drawer from './Drawer'
 import * as d3 from 'd3'
-import { createLegendBox } from './services/LegenedService'
+
+import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
+import { createLegendBox } from './services/LegenedService'
 
 /*
  * Main viewer.
@@ -44,7 +45,7 @@ export default class GenomeFeatureViewer {
   }
 
   setSelectedAlleles(selectedAlleles, target) {
-    //remove highlights first
+    // remove highlights first
     let svgTarget = d3.select(target)
     svgTarget.selectAll('.highlight').remove()
     svgTarget
@@ -67,12 +68,12 @@ export default class GenomeFeatureViewer {
   _checkConfig(config) {
     // Ensure we have config type
     // TODO: Make sure we have top label information
-    let locale = config['locale']
+    let locale = config.locale
     if (locale !== 'global' && locale !== 'local') {
       throw new Error("No locale found in config. Must be 'global' or 'local'")
     }
     // Ensure we have tracks
-    let tracks = config['tracks']
+    let tracks = config.tracks
     if (!tracks || tracks.length === 0) {
       throw new Error('No tracks found. Must be an array of tracks.')
     }
@@ -94,8 +95,8 @@ export default class GenomeFeatureViewer {
   _setProperties(config) {
     this.config = config
     // console.log('setting config',this.config)
-    this.tracks = config['tracks']
-    this.locale = config['locale']
+    this.tracks = config.tracks
+    this.locale = config.locale
   }
 
   // Creating our drawing space.
@@ -104,7 +105,7 @@ export default class GenomeFeatureViewer {
     d3.select(svg_target).selectAll('*').remove()
     let viewer = d3.select(svg_target)
     let svgClass = svg_target.replace('#', '')
-    let mainViewClass = svgClass + ' main-view'
+    let mainViewClass = `${svgClass  } main-view`
 
     if (this.locale === 'global') {
       let margin = { top: 8, right: 30, bottom: 30, left: 40 }
@@ -112,7 +113,7 @@ export default class GenomeFeatureViewer {
         .attr('width', this.width)
         .attr('height', this.height)
         .append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+        .attr('transform', `translate(${  margin.left  },${  margin.top  })`)
         .attr('class', mainViewClass)
       this.width = this.width - margin.left - margin.right
       this.height = this.height - margin.top - margin.bottom
@@ -126,7 +127,7 @@ export default class GenomeFeatureViewer {
         .attr('class', mainViewClass)
       this.height = this.height - margin.top - margin.bottom
     }
-    let mainViewTarget = svg_target + ' .main-view'
+    let mainViewTarget = `${svg_target  } .main-view`
     return d3.select(mainViewTarget)
   }
 
@@ -146,7 +147,7 @@ export default class GenomeFeatureViewer {
 
   // Set our sequence start and sequence end
   setSequence(start, end) {
-    this.config['start'] = start
-    this.config['end'] = end
+    this.config.start = start
+    this.config.end = end
   }
 }

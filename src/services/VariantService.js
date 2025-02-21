@@ -5,7 +5,7 @@ const SNV_HEIGHT = 10
 const SNV_WIDTH = 10
 
 export function generateSnvPoints(x) {
-  return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0} ${x},${0} ${x - SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0}`
+  return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0} ${x},0 ${x - SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0}`
 }
 export function generateInsertionPoint(x) {
   return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT}`
@@ -47,7 +47,7 @@ export function getDeletionHeight(x, fmin, fmax) {
 // };
 
 export function generateDelinsPoint(x) {
-  return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x - SNV_WIDTH / 2.0},${0} ${x + SNV_WIDTH / 2.0},${0}`
+  return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x - SNV_WIDTH / 2.0},0 ${x + SNV_WIDTH / 2.0},0`
 }
 
 export function getDescriptionDimensions(description) {
@@ -68,7 +68,7 @@ function findVariantBinIndexForPosition(variantBins, variant, buffer) {
     const relativeMax = fb.fmax - buffer
 
     // They cannot share a bin if they are different types.
-    if (type !== fb.type) return false
+    if (type !== fb.type) {return false}
 
     // if we overlap thAe min edge then take the minimum and whatever the maximum and add
     if (relativeMin <= fmin && relativeMax >= fmin) {
@@ -100,8 +100,8 @@ export function generateVariantBins(variantData) {
       const relativeMin = fb.fmin
       const relativeMax = fb.fmax
 
-      if (fb.type !== type) return false
-      if (fb.consequence !== consequence) return false
+      if (fb.type !== type) {return false}
+      if (fb.consequence !== consequence) {return false}
 
       // if we overlap thAe min edge then take the minimum and whatever the maximum and add
       if (relativeMin <= fmin && relativeMax >= fmin) {
@@ -250,7 +250,7 @@ export function generateVariantDataBinsAndDataSets(variantData, ratio) {
 export function renderVariantDescriptions(descriptions) {
   if (descriptions.length === 1) {
     let stringBuffer = `<div style="margin-top: 30px;">`
-    stringBuffer += `${renderVariantDescription(descriptions[0])}`
+    stringBuffer += renderVariantDescription(descriptions[0])
     stringBuffer += '</div>'
     return stringBuffer
   } else if (descriptions.length > 1) {
@@ -276,35 +276,35 @@ export function renderVariantDescription(description) {
   if (description.type === 'SNV') {
     length = '1bp'
   } else if (description.type === 'deletion') {
-    length = ref_allele.length - 1 + 'bp deleted'
+    length = `${ref_allele.length - 1  }bp deleted`
   } else if (description.type === 'insertion') {
     if (alt_allele === 'ALT_MISSING') {
       length = 'unknown length inserted'
       alt_allele = 'n+'
     } else {
-      length = alt_allele.length - 1 + 'bp inserted'
+      length = `${alt_allele.length - 1  }bp inserted`
     }
   } else if (description.type === 'MNV') {
-    length = ref_allele.length + 'bp'
+    length = `${ref_allele.length  }bp`
   } else if (description.type === 'delins') {
-    let del = ref_allele.length - 1 + 'bp deleted'
+    let del = `${ref_allele.length - 1  }bp deleted`
     let ins
     if (alt_allele === 'ALT_MISSING') {
       ins = 'unknown length inserted'
       alt_allele = 'n+'
     } else {
-      ins = alt_allele.length - 1 + 'bp inserted'
+      ins = `${alt_allele.length - 1  }bp inserted`
     }
-    length = del + '; ' + ins
+    length = `${del  }; ${  ins}`
   } else {
-    length = stop - start + 'bp'
+    length = `${stop - start  }bp`
   }
   if (ref_allele.length > 20) {
     ref_allele =
-      ref_allele.substring(0, 1).toLowerCase() +
-      ref_allele.substring(1, 8).toUpperCase() +
-      '...' +
-      ref_allele.substring(ref_allele.length - 8).toUpperCase()
+      `${ref_allele.substring(0, 1).toLowerCase() +
+      ref_allele.substring(1, 8).toUpperCase() 
+      }...${ 
+      ref_allele.substring(ref_allele.length - 8).toUpperCase()}`
   } else {
     ref_allele =
       ref_allele.substring(0, 1).toLowerCase() +
@@ -312,10 +312,10 @@ export function renderVariantDescription(description) {
   }
   if (alt_allele.length > 20) {
     alt_allele =
-      alt_allele.substring(0, 1).toLowerCase() +
-      alt_allele.substring(1, 8).toUpperCase() +
-      '...' +
-      alt_allele.substring(alt_allele.length - 8).toUpperCase()
+      `${alt_allele.substring(0, 1).toLowerCase() +
+      alt_allele.substring(1, 8).toUpperCase() 
+      }...${ 
+      alt_allele.substring(alt_allele.length - 8).toUpperCase()}`
   } else {
     alt_allele =
       alt_allele.substring(0, 1).toLowerCase() +
@@ -327,11 +327,11 @@ export function renderVariantDescription(description) {
   }
   let change = ''
   if (description.type === 'insertion') {
-    change = 'ins: ' + alt_allele
+    change = `ins: ${  alt_allele}`
   } else if (description.type === 'deletion') {
-    change = 'del: ' + ref_allele
+    change = `del: ${  ref_allele}`
   } else {
-    change = ref_allele + '->' + alt_allele
+    change = `${ref_allele  }->${  alt_allele}`
   }
   returnString += `<table class="tooltip-table"><tbody>`
   returnString += `<tr><th>Symbol</th><td>${description.symbolDetail}</td></tr>`
@@ -403,8 +403,7 @@ export function getConsequence(variant) {
   let consequence = 'UNKNOWN'
 
   if (
-    variant.geneLevelConsequence &&
-    variant.geneLevelConsequence.values &&
+    variant.geneLevelConsequence?.values &&
     variant.geneLevelConsequence.values.length > 0
   ) {
     consequence = variant.geneLevelConsequence.values[0]
@@ -500,7 +499,7 @@ export function getVariantSymbolDetail(variant) {
     }
   }
   // note that using the html version of this gets swallowed in the text svg
-  if (variant.allele_symbols && variant.allele_symbols.values) {
+  if (variant.allele_symbols?.values) {
     if (variant.allele_symbols.values[0].split(',').length > 1) {
       try {
         let text_array = []
@@ -523,10 +522,10 @@ export function getVariantSymbolDetail(variant) {
     } else {
       const clean_text = variant.allele_symbols.values[0].replace(/"/g, '')
       return (
-        clean_text +
-        '(' +
-        variant.allele_ids.values[0].replace(/"|\[|\]/g, '') +
-        ')'
+        `${clean_text 
+        }(${ 
+        variant.allele_ids.values[0].replace(/"|\[|\]/g, '') 
+        })`
       )
     }
   }
@@ -542,7 +541,7 @@ export function getVariantSymbol(variant) {
     }
   }
   // note that using the html version of this gets swallowed in the text svg
-  if (variant.allele_symbols_text && variant.allele_symbols_text.values) {
+  if (variant.allele_symbols_text?.values) {
     if (variant.allele_symbols_text.values[0].split(',').length > 1) {
       return variant.allele_symbols_text.values[0].split(',').length
     } else {
@@ -556,8 +555,8 @@ export function getVariantTrackPositions(variantData) {
   let presentVariants = []
   for (var variant of variantData) {
     if (variant.type.toLowerCase() === 'deletion') {
-      //Ignore deletions for now
-      //presentVariants.push('deletion');
+      // Ignore deletions for now
+      // presentVariants.push('deletion');
     } else if (
       variant.type.toLowerCase() === 'snv' ||
       variant.type.toLowerCase() === 'point_mutation'

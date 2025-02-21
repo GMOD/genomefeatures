@@ -43,18 +43,18 @@ export const CONSEQUENCES_ENUM = Object.freeze({
 })
 
 export function getColorForConsequence(consequence) {
-  if (!consequence) return 'black'
+  if (!consequence) {return 'black'}
 
-  if (consequence.split(' ').length > 1) return 'hotpink'
-  if (consequence === 'UNKNOWN') return 'gray'
+  if (consequence.split(' ').length > 1) {return 'hotpink'}
+  if (consequence === 'UNKNOWN') {return 'gray'}
 
   const consequenceLookup = CONSEQUENCES_ENUM[consequence]
   if (consequenceLookup) {
     return consequenceLookup.color
   } else if (consequence === '5_prime_UTR_variant') {
-    return CONSEQUENCES_ENUM['five_prime_UTR_variant'].color
+    return CONSEQUENCES_ENUM.five_prime_UTR_variant.color
   } else if (consequence === '3_prime_UTR_variant') {
-    return CONSEQUENCES_ENUM['three_prime_UTR_variant'].color
+    return CONSEQUENCES_ENUM.three_prime_UTR_variant.color
   } else {
     console.warn('Consequence ', consequence, 'not found')
   }
