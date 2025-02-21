@@ -1,7 +1,7 @@
 import GenomeFeatureViewer from 'GenomeFeatureViewer'
 import { TRACK_TYPE } from '../tracks/TrackTypeEnum'
 
-const BASE_URL = 'https://build.alliancegenome.org/apollo'
+const BASE_URL = 'https://www.alliancegenome.org/apollo'
 
 oldExamples()
 isoformExamples()

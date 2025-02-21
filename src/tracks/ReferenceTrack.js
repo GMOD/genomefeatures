@@ -135,12 +135,12 @@ export default class ReferenceTrack {
     let track = this.track
     let apolloService = new ApolloService()
     try {
-      this.refSeq = await apolloService.GetLocalSequence(
-        '',
-        track['chromosome'],
-        track['start'],
-        track['end'],
-      )
+      //this.refSeq = await apolloService.GetLocalSequence(
+      //  '',
+      //  track['chromosome'],
+      //  track['start'],
+      //  track['end'],
+      //)
     } catch (err) {
       console.error(err)
     }

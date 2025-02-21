@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import { ApolloService } from '../services/ApolloService'
 import d3Tip from 'd3-tip'
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
@@ -13,12 +12,8 @@ export default class VariantTrack {
   }
 
   DrawTrack() {
-    /*
-            Between tracks should be 10px of padding no matter what the size of the track is.
-        */
     let viewer = this.viewer
     let variants = this.variants
-    let width = this.width
     let x = d3
       .scaleLinear()
       .domain([this.track['start'], this.track['end'] + 1])
@@ -117,6 +112,6 @@ export default class VariantTrack {
 
   /* Method to get reference label */
   async getTrackData() {
-    this.variants = await new ApolloService().GetFakeVariants()
+    //this.variants = await new ApolloService().GetFakeVariants()
   }
 }
