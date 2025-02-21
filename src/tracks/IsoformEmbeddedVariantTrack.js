@@ -20,7 +20,6 @@ import {
   renderVariantDescription,
   renderVariantDescriptions,
 } from '../services/VariantService'
-// import {description} from "d3/dist/package";
 let apolloService = new ApolloService()
 
 export default class IsoformEmbeddedVariantTrack {
@@ -155,7 +154,6 @@ export default class IsoformEmbeddedVariantTrack {
     let used_space = []
     let fmin_display = -1
     let fmax_display = -1
-    let renderTooltipDescription = this.renderTooltipDescription
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
     // **************************************
@@ -226,7 +224,7 @@ export default class IsoformEmbeddedVariantTrack {
                   )
                   .text(text_string)
                   .on('click', d => {
-                    renderTooltipDescription(
+                    this.renderTooltipDescription(
                       tooltipDiv,
                       renderTrackDescription(feature),
                       closeToolTip,
@@ -256,7 +254,7 @@ export default class IsoformEmbeddedVariantTrack {
                   }
                 })
                 .on('click', d => {
-                  renderTooltipDescription(
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -271,7 +269,7 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
                 .on('click', d => {
-                  renderTooltipDescription(
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -289,7 +287,7 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .text(text_string)
                 .on('click', d => {
-                  renderTooltipDescription(
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -394,7 +392,7 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('z-index', 10)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
                       .on('click', d => {
-                        renderTooltipDescription(
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
@@ -417,7 +415,7 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('height', CDS_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
                       .on('click', d => {
-                        renderTooltipDescription(
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
@@ -440,7 +438,7 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('height', UTR_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
                       .on('click', d => {
-                        renderTooltipDescription(
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
@@ -492,7 +490,7 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('height', VARIANT_HEIGHT)
                             .attr('width', width)
                             .on('click', d => {
-                              renderTooltipDescription(
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -517,7 +515,7 @@ export default class IsoformEmbeddedVariantTrack {
                             )
                             .attr('z-index', 30)
                             .on('click', d => {
-                              renderTooltipDescription(
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -539,7 +537,7 @@ export default class IsoformEmbeddedVariantTrack {
                             )
                             .attr('z-index', 30)
                             .on('click', d => {
-                              renderTooltipDescription(
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -565,7 +563,7 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('fill', consequenceColor)
                             .attr('z-index', 30)
                             .on('click', d => {
-                              renderTooltipDescription(
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -596,7 +594,7 @@ export default class IsoformEmbeddedVariantTrack {
                             )
                             .html(symbol_string)
                             .on('click', d => {
-                              renderTooltipDescription(
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
