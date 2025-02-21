@@ -783,8 +783,6 @@ export default class IsoformAndVariantTrack {
               let link = getJBrowseLink(source, chr, viewStart, viewEnd)
               ++current_row
               warningRendered = true
-              // let isoform = track.append("g").attr("class", "isoform")
-              //     .attr("transform", "translate(0," + ((row_count * isoform_height) + 10) + ")")
               track
                 .append('a')
                 .attr('class', 'transcriptLabel')
