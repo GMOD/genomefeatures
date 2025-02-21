@@ -1,4 +1,4 @@
-import { CONSEQUENCES_ENUM, getColorForConsequence } from './ConsequenceService'
+import { CONSEQUENCES_ENUM } from './ConsequenceService'
 import {
   generateDelinsPoint,
   generateInsertionPoint,
@@ -10,8 +10,6 @@ function drawDeletion(color, label) {
 }
 
 function drawDeletionForConsequence(consequencesName) {
-  // let consequence = CONSEQUENCES_ENUM[consequencesName];
-  // console.log(consequnece,Object.getOwnPropertyNames(consequnece),Object.getOwnPropertyNames(CONSEQUENCES_ENUM))
   if (consequencesName == 'unknown') {
     return drawDeletion('grey', consequencesName.replace(/_/g, ' '))
   } else {

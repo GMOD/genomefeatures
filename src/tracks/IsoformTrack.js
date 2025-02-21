@@ -1,15 +1,12 @@
 import * as d3 from 'd3'
-import {
-  findRange,
-  checkSpace,
-  calculateNewTrackPosition,
-} from '../RenderFunctions'
-import { generateSnvPoints } from '../services/VariantService'
+
+import { calculateNewTrackPosition, checkSpace } from '../RenderFunctions'
 import { ApolloService } from '../services/ApolloService'
 import {
-  renderTrackDescription,
   getJBrowseLink,
+  renderTrackDescription,
 } from '../services/TrackService'
+import { generateSnvPoints } from '../services/VariantService'
 
 export default class IsoformTrack {
   constructor(viewer, track, height, width, transcriptTypes, htpVariant) {
@@ -19,8 +16,8 @@ export default class IsoformTrack {
     this.height = height
     this.transcriptTypes = transcriptTypes
     this.htpVariant = htpVariant
-    this.start = track['start']
-    this.end = track['end']
+    this.start = track.start
+    this.end = track.end
     this.genome = track.genome
   }
 
@@ -35,8 +32,8 @@ export default class IsoformTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      .style('left', d3.event.pageX + 10 + 'px')
-      .style('top', d3.event.pageY + 10 + 'px')
+      .style('left', `${d3.event.pageX + 10}px`)
+      .style('top', `${d3.event.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')
@@ -67,7 +64,6 @@ export default class IsoformTrack {
     let CDS_feats = ['CDS']
     let exon_feats = ['exon']
     let display_feats = this.transcriptTypes
-    let dataRange = findRange(data, display_feats)
 
     let view_start = this.start
     let view_end = this.end
@@ -80,13 +76,11 @@ export default class IsoformTrack {
     let transcript_backbone_height = 4 // this is the height of the isoform running all of the way through
     let arrow_height = 20
     let arrow_width = 10
-    let arrow_points =
-      '0,0 0,' + arrow_height + ' ' + arrow_width + ',' + arrow_width
-    let renderTooltipDescription = this.renderTooltipDescription
+    let arrow_points = `0,0 0,${arrow_height} ${arrow_width},${arrow_width}`
 
     let x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
 
-    //need to build a new sortWeight since these can be dynamic
+    // need to build a new sortWeight since these can be dynamic
     let sortWeight = {}
     for (let i = 0, len = UTR_feats.length; i < len; i++) {
       sortWeight[UTR_feats[i]] = 200
@@ -98,9 +92,13 @@ export default class IsoformTrack {
       sortWeight[exon_feats[i]] = 100
     }
 
-    data = data.sort(function (a, b) {
-      if (a.selected && !b.selected) return -1
-      if (!a.selected && b.selected) return 1
+    data = data.sort((a, b) => {
+      if (a.selected && !b.selected) {
+        return -1
+      }
+      if (!a.selected && b.selected) {
+        return 1
+      }
       return a.name - b.name
     })
 
@@ -124,8 +122,7 @@ export default class IsoformTrack {
         .append('g')
         .attr('class', 'variants track')
         .attr('transform', 'translate(0,22.5)')
-      let [chr, fmin] = htpVariant.split(':')
-      console.log('things', x(fmin))
+      let [, fmin] = htpVariant.split(':')
       variantContainer
         .append('polygon')
         .attr('class', 'variant-SNV')
@@ -139,29 +136,32 @@ export default class IsoformTrack {
     let newTrackPosition = calculateNewTrackPosition(this.viewer)
     let track = viewer
       .append('g')
-      .attr('transform', 'translate(0,' + newTrackPosition + ')')
+      .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
 
     let row_count = 0
     let used_space = []
     let fmin_display = -1
     let fmax_display = -1
-    let alreadyRendered = [] //hack fix for multiple transcript returns.
+    let alreadyRendered = [] // hack fix for multiple transcript returns.
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
     // **************************************
-    // let feature = data[0];
     for (let i = 0; i < data.length && row_count < MAX_ROWS; i++) {
       let feature = data[i]
       let featureChildren = feature.children
       if (featureChildren) {
         let selected = feature.selected
 
-        //May want to remove this and add an external sort function
-        //outside of the render method to put certain features on top.
-        featureChildren = featureChildren.sort(function (a, b) {
-          if (a.name < b.name) return -1
-          if (a.name > b.name) return 1
+        // May want to remove this and add an external sort function
+        // outside of the render method to put certain features on top.
+        featureChildren = featureChildren.sort((a, b) => {
+          if (a.name < b.name) {
+            return -1
+          }
+          if (a.name > b.name) {
+            return 1
+          }
           return a - b
         })
 
@@ -169,14 +169,14 @@ export default class IsoformTrack {
         featureChildren.forEach(function (featureChild) {
           let featureType = featureChild.type
 
-          if (alreadyRendered.indexOf(featureChild.id) >= 0) {
+          if (alreadyRendered.includes(featureChild.id)) {
             return
           } else {
             alreadyRendered.push(featureChild.id)
           }
 
           if (display_feats.indexOf(featureType) >= 0) {
-            //function to assign row based on available space.
+            // function to assign row based on available space.
             // *** DANGER EDGE CASE ***/
             let current_row = checkSpace(
               used_space,
@@ -190,7 +190,7 @@ export default class IsoformTrack {
                 .attr('class', 'isoform')
                 .attr(
                   'transform',
-                  'translate(0,' + (row_count * isoform_height + 10) + ')',
+                  `translate(0,${row_count * isoform_height + 10})`,
                 )
 
               let transcript_start =
@@ -206,21 +206,17 @@ export default class IsoformTrack {
                 })
                 .attr('class', 'transArrow')
                 .attr('points', arrow_points)
-                .attr('transform', function (d) {
+                .attr('transform', function () {
                   if (feature.strand > 0) {
-                    return 'translate(' + transcript_end + ',0)'
+                    return `translate(${transcript_end},0)`
                   } else {
-                    return (
-                      'translate(' +
-                      transcript_start +
-                      ',' +
-                      arrow_height +
-                      ') rotate(180)'
-                    )
+                    return `translate(${transcript_start},${
+                      arrow_height
+                    }) rotate(180)`
                   }
                 })
-                .on('click', d => {
-                  renderTooltipDescription(
+                .on('click', () => {
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -232,11 +228,11 @@ export default class IsoformTrack {
                 .attr('class', 'transcriptBackbone')
                 .attr('y', 10 + isoform_title_height)
                 .attr('height', transcript_backbone_height)
-                .attr('transform', 'translate(' + transcript_start + ',0)')
+                .attr('transform', `translate(${transcript_start},0)`)
                 .attr('width', transcript_end - transcript_start)
                 .datum({ fmin: featureChild.fmin, fmax: featureChild.fmax })
-                .on('click', d => {
-                  renderTooltipDescription(
+                .on('click', () => {
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -244,7 +240,7 @@ export default class IsoformTrack {
                 })
               let text_string = featureChild.name
               if (feature.name !== featureChild.name) {
-                text_string += ' (' + feature.name + ')'
+                text_string += ` (${feature.name})`
               }
               let label_offset =
                 x(featureChild.fmin) > 0 ? x(featureChild.fmin) : 0
@@ -254,11 +250,11 @@ export default class IsoformTrack {
                 .attr('fill', selected ? 'sandybrown' : 'gray')
                 .attr('opacity', selected ? 1 : 0.5)
                 .attr('height', isoform_title_height)
-                .attr('transform', 'translate(' + label_offset + ',0)')
+                .attr('transform', `translate(${label_offset},0)`)
                 .text(text_string)
                 .datum({ fmin: featureChild.fmin })
-                .on('click', d => {
-                  renderTooltipDescription(
+                .on('click', () => {
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -273,15 +269,12 @@ export default class IsoformTrack {
                   symbol_string_width + label_offset - viewerWidth,
                 )
                 label_offset -= diff
-                text_label.attr(
-                  'transform',
-                  'translate(' + label_offset + ',0)',
-                )
+                text_label.attr('transform', `translate(${label_offset},0)`)
               }
 
-              //Now that the label has been created we can calculate the space that
-              //this new element is taking up making sure to add in the width of
-              //the box.
+              // Now that the label has been created we can calculate the space that
+              // this new element is taking up making sure to add in the width of
+              // the box.
               // TODO: this is just an estimate of the length
               let text_width = text_string.length * 2
               let feat_end
@@ -292,7 +285,7 @@ export default class IsoformTrack {
               } catch (e) {
                 // console.error('Not yet rendered',e)
               }
-              //First check to see if label goes past the end
+              // First check to see if label goes past the end
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
@@ -302,23 +295,23 @@ export default class IsoformTrack {
                 feat_end = x(featureChild.fmax)
               }
 
-              //This is probably not the most efficent way to do this.
-              //Making an 2d array... each row is the first array (no zer0)
-              //next level is each element taking up space.
-              //Also using colons as spacers seems very perl... maybe change that?
+              // This is probably not the most efficent way to do this.
+              // Making an 2d array... each row is the first array (no zer0)
+              // next level is each element taking up space.
+              // Also using colons as spacers seems very perl... maybe change that?
               // *** DANGER EDGE CASE ***/
               if (used_space[current_row]) {
                 let temp = used_space[current_row]
-                temp.push(x(featureChild.fmin) + ':' + feat_end)
+                temp.push(`${x(featureChild.fmin)}:${feat_end}`)
                 used_space[current_row] = temp
               } else {
                 used_space[current_row] = [
-                  x(featureChild.fmin) + ':' + feat_end,
+                  `${x(featureChild.fmin)}:${feat_end}`,
                 ]
               }
 
-              //Now check on bounds since this feature is displayed
-              //The true end of display is converted to bp.
+              // Now check on bounds since this feature is displayed
+              // The true end of display is converted to bp.
               if (fmin_display < 0 || fmin_display > featureChild.fmin) {
                 fmin_display = featureChild.fmin
               }
@@ -357,12 +350,12 @@ export default class IsoformTrack {
 
                 featureChild.children.forEach(function (innerChild) {
                   let innerType = innerChild.type
-                  //Skip feats out of bounds.
+                  // Skip feats out of bounds.
                   if (
                     x(innerChild.fmin) > viewerWidth ||
                     x(innerChild.fmax) < 0
                   ) {
-                    return //skip feat
+                    return // skip feat
                   }
                   let inner_start =
                     x(innerChild.fmin) > 0 ? x(innerChild.fmin) : 0
@@ -370,67 +363,67 @@ export default class IsoformTrack {
                     x(innerChild.fmax) > viewerWidth
                       ? viewerWidth
                       : x(innerChild.fmax)
-                  if (exon_feats.indexOf(innerType) >= 0) {
+                  if (exon_feats.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'exon')
                       .attr('x', inner_start)
                       .attr(
                         'transform',
-                        'translate(0,' +
-                          (exon_height - transcript_backbone_height) +
-                          ')',
+                        `translate(0,${
+                          exon_height - transcript_backbone_height
+                        })`,
                       )
                       .attr('height', exon_height)
                       .attr('z-index', 10)
                       .attr('width', inner_end - inner_start)
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                      .on('click', d => {
-                        renderTooltipDescription(
+                      .on('click', () => {
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
                         )
                       })
-                  } else if (CDS_feats.indexOf(innerType) >= 0) {
+                  } else if (CDS_feats.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'CDS')
                       .attr('x', inner_start)
                       .attr(
                         'transform',
-                        'translate(0,' +
-                          (cds_height - transcript_backbone_height) +
-                          ')',
+                        `translate(0,${
+                          cds_height - transcript_backbone_height
+                        })`,
                       )
                       .attr('z-index', 20)
                       .attr('height', cds_height)
                       .attr('width', inner_end - inner_start)
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                      .on('click', d => {
-                        renderTooltipDescription(
+                      .on('click', () => {
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
                         )
                       })
-                  } else if (UTR_feats.indexOf(innerType) >= 0) {
+                  } else if (UTR_feats.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'UTR')
                       .attr('x', inner_start)
                       .attr(
                         'transform',
-                        'translate(0,' +
-                          (utr_height - transcript_backbone_height) +
-                          ')',
+                        `translate(0,${
+                          utr_height - transcript_backbone_height
+                        })`,
                       )
                       .attr('z-index', 20)
                       .attr('height', utr_height)
                       .attr('width', inner_end - inner_start)
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                      .on('click', d => {
-                        renderTooltipDescription(
+                      .on('click', () => {
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
@@ -445,8 +438,6 @@ export default class IsoformTrack {
               // *** DANGER EDGE CASE ***/
               let link = getJBrowseLink(source, chr, view_start, view_end)
               ++current_row
-              // let isoform = track.append("g").attr("class", "isoform")
-              //     .attr("transform", "translate(0," + ((row_count * isoform_height) + 10) + ")")
               track
                 .append('a')
                 .attr('class', 'transcriptLabel')
@@ -455,7 +446,7 @@ export default class IsoformTrack {
                 .attr('x', 10)
                 .attr(
                   'transform',
-                  'translate(0,' + (row_count * isoform_height + 10) + ')',
+                  `translate(0,${row_count * isoform_height + 10})`,
                 )
                 .attr('fill', 'red')
                 .attr('opacity', 1)
@@ -484,14 +475,13 @@ export default class IsoformTrack {
 
   /* Method for isoformTrack service call */
   async getTrackData(track) {
-    let externalLocationString =
-      track['chromosome'] + ':' + track['start'] + '..' + track['end']
+    let externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
     var dataUrl =
-      track['url'][0] +
-      encodeURI(track['genome']) +
-      track['url'][1] +
+      track.url[0] +
+      encodeURI(track.genome) +
+      track.url[1] +
       encodeURI(externalLocationString) +
-      track['url'][2]
+      track.url[2]
     let apolloService = new ApolloService()
     this.trackData = await apolloService
       .fetchDataFromUrl(dataUrl)

@@ -1,31 +1,25 @@
 import * as d3 from 'd3'
+
 import {
   calculateNewTrackPosition,
   checkSpace,
   findRange,
 } from '../RenderFunctions'
+import { ApolloService } from '../services/ApolloService'
+import { renderTrackDescription } from '../services/TrackService'
 import {
   generateVariantBins,
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,
-  getConsequence,
-  getVariantDescription,
   getVariantDescriptions,
   getVariantSymbol,
-  mergeConsequenceColors,
-  renderVariantDescription,
   renderVariantDescriptions,
 } from '../services/VariantService'
-import { getColorForConsequence } from '../services/ConsequenceService'
-import { renderTrackDescription } from '../services/TrackService'
-// import {description} from "d3/dist/package";
-import { ApolloService } from '../services/ApolloService'
 let apolloService = new ApolloService()
 
 export default class IsoformEmbeddedVariantTrack {
   constructor(
     viewer,
-    track,
     height,
     width,
     transcriptTypes,
@@ -83,8 +77,7 @@ export default class IsoformEmbeddedVariantTrack {
     const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
     const ARROW_HEIGHT = 20
     const ARROW_WIDTH = 10
-    const ARROW_POINTS =
-      '0,0 0,' + ARROW_HEIGHT + ' ' + ARROW_WIDTH + ',' + ARROW_WIDTH
+    const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
     const SNV_HEIGHT = 10
     const SNV_WIDTH = 10
 
@@ -94,11 +87,11 @@ export default class IsoformEmbeddedVariantTrack {
 
     const delins_points = x => {
       // const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
-      return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x - SNV_WIDTH / 2.0},${0} ${x + SNV_WIDTH / 2.0},${0}`
+      return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x - SNV_WIDTH / 2.0},0 ${x + SNV_WIDTH / 2.0},0`
     }
 
     const snv_points = x => {
-      return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0} ${x},${0} ${x - SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0}`
+      return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0} ${x},0 ${x - SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0}`
     }
 
     let x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
@@ -107,10 +100,10 @@ export default class IsoformEmbeddedVariantTrack {
     let newTrackPosition = calculateNewTrackPosition(this.viewer)
     let track = viewer
       .append('g')
-      .attr('transform', 'translate(0,' + newTrackPosition + ')')
+      .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
 
-    //need to build a new sortWeight since these can be dynamic
+    // need to build a new sortWeight since these can be dynamic
     let sortWeight = {}
     for (let i = 0, len = UTR_feats.length; i < len; i++) {
       sortWeight[UTR_feats[i]] = 200
@@ -125,8 +118,12 @@ export default class IsoformEmbeddedVariantTrack {
     let geneList = {}
 
     isoformData = isoformData.sort(function (a, b) {
-      if (a.selected && !b.selected) return -1
-      if (!a.selected && b.selected) return 1
+      if (a.selected && !b.selected) {
+        return -1
+      }
+      if (!a.selected && b.selected) {
+        return 1
+      }
       return a.name - b.name
     })
 
@@ -151,7 +148,6 @@ export default class IsoformEmbeddedVariantTrack {
     let used_space = []
     let fmin_display = -1
     let fmax_display = -1
-    let renderTooltipDescription = this.renderTooltipDescription
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
     // **************************************
@@ -162,11 +158,15 @@ export default class IsoformEmbeddedVariantTrack {
       if (featureChildren) {
         let selected = feature.selected
 
-        //May want to remove this and add an external sort function
-        //outside of the render method to put certain features on top.
+        // May want to remove this and add an external sort function
+        // outside of the render method to put certain features on top.
         featureChildren = featureChildren.sort(function (a, b) {
-          if (a.name < b.name) return -1
-          if (a.name > b.name) return 1
+          if (a.name < b.name) {
+            return -1
+          }
+          if (a.name > b.name) {
+            return 1
+          }
           return a - b
         })
 
@@ -177,7 +177,7 @@ export default class IsoformEmbeddedVariantTrack {
           let featureType = featureChild.type
 
           if (display_feats.indexOf(featureType) >= 0) {
-            //function to assign row based on available space.
+            // function to assign row based on available space.
             // *** DANGER EDGE CASE ***/
             let current_row = checkSpace(
               used_space,
@@ -187,9 +187,10 @@ export default class IsoformEmbeddedVariantTrack {
             if (row_count < MAX_ROWS) {
               // An isoform container
 
-              let text_string, text_label
+              let text_string
+              let text_label
               let addingGeneLabel = false
-              if (Object.keys(geneList).indexOf(feature.name) < 0) {
+              if (!Object.keys(geneList).includes(feature.name)) {
                 heightBuffer += GENE_LABEL_HEIGHT
                 addingGeneLabel = true
                 geneList[feature.name] = 'Green'
@@ -200,9 +201,9 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('class', 'isoform')
                 .attr(
                   'transform',
-                  'translate(0,' +
-                    (row_count * ISOFORM_HEIGHT + 10 + heightBuffer) +
-                    ')',
+                  `translate(0,${
+                    row_count * ISOFORM_HEIGHT + 10 + heightBuffer
+                  })`,
                 )
               if (addingGeneLabel) {
                 text_string = feature.name
@@ -213,13 +214,11 @@ export default class IsoformEmbeddedVariantTrack {
                   .attr('height', ISOFORM_TITLE_HEIGHT)
                   .attr(
                     'transform',
-                    'translate(' +
-                      x(featureChild.fmin) +
-                      `,-${GENE_LABEL_HEIGHT})`,
+                    `translate(${x(featureChild.fmin)},-${GENE_LABEL_HEIGHT})`,
                   )
                   .text(text_string)
-                  .on('click', d => {
-                    renderTooltipDescription(
+                  .on('click', () => {
+                    this.renderTooltipDescription(
                       tooltipDiv,
                       renderTrackDescription(feature),
                       closeToolTip,
@@ -241,19 +240,15 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('points', ARROW_POINTS)
                 .attr('transform', function (d) {
                   if (feature.strand > 0) {
-                    return 'translate(' + Number(x(d.fmax)) + ',0)'
+                    return `translate(${Number(x(d.fmax))},0)`
                   } else {
-                    return (
-                      'translate(' +
-                      Number(x(d.fmin)) +
-                      ',' +
-                      ARROW_HEIGHT +
-                      ') rotate(180)'
-                    )
+                    return `translate(${Number(x(d.fmin))},${
+                      ARROW_HEIGHT
+                    }) rotate(180)`
                   }
                 })
-                .on('click', d => {
-                  renderTooltipDescription(
+                .on('click', () => {
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -265,10 +260,10 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('class', 'transcriptBackbone')
                 .attr('y', 10 + ISOFORM_TITLE_HEIGHT)
                 .attr('height', TRANSCRIPT_BACKBONE_HEIGHT)
-                .attr('transform', 'translate(' + x(featureChild.fmin) + ',0)')
+                .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
-                .on('click', d => {
-                  renderTooltipDescription(
+                .on('click', () => {
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -283,10 +278,10 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('fill', selected ? 'sandybrown' : 'gray')
                 .attr('opacity', selected ? 1 : 0.5)
                 .attr('height', ISOFORM_TITLE_HEIGHT)
-                .attr('transform', 'translate(' + x(featureChild.fmin) + ',0)')
+                .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .text(text_string)
-                .on('click', d => {
-                  renderTooltipDescription(
+                .on('click', () => {
+                  this.renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
@@ -294,9 +289,9 @@ export default class IsoformEmbeddedVariantTrack {
                 })
                 .datum({ fmin: featureChild.fmin })
 
-              //Now that the label has been created we can calculate the space that
-              //this new element is taking up making sure to add in the width of
-              //the box.
+              // Now that the label has been created we can calculate the space that
+              // this new element is taking up making sure to add in the width of
+              // the box.
               // TODO: this is just an estimate of the length
               let text_width = text_string.length * 2
               let feat_end
@@ -307,7 +302,7 @@ export default class IsoformEmbeddedVariantTrack {
               } catch (e) {
                 // console.error('Not yet rendered',e)
               }
-              //First check to see if label goes past the end
+              // First check to see if label goes past the end
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
@@ -317,23 +312,23 @@ export default class IsoformEmbeddedVariantTrack {
                 feat_end = x(featureChild.fmax)
               }
 
-              //This is probably not the most efficent way to do this.
-              //Making an 2d array... each row is the first array (no zer0)
-              //next level is each element taking up space.
-              //Also using colons as spacers seems very perl... maybe change that?
+              // This is probably not the most efficent way to do this.
+              // Making an 2d array... each row is the first array (no zer0)
+              // next level is each element taking up space.
+              // Also using colons as spacers seems very perl... maybe change that?
               // *** DANGER EDGE CASE ***/
               if (used_space[current_row]) {
                 let temp = used_space[current_row]
-                temp.push(x(featureChild.fmin) + ':' + feat_end)
+                temp.push(`${x(featureChild.fmin)}:${feat_end}`)
                 used_space[current_row] = temp
               } else {
                 used_space[current_row] = [
-                  x(featureChild.fmin) + ':' + feat_end,
+                  `${x(featureChild.fmin)}:${feat_end}`,
                 ]
               }
 
-              //Now check on bounds since this feature is displayed
-              //The true end of display is converted to bp.
+              // Now check on bounds since this feature is displayed
+              // The true end of display is converted to bp.
               if (fmin_display < 0 || fmin_display > featureChild.fmin) {
                 fmin_display = featureChild.fmin
               }
@@ -375,7 +370,7 @@ export default class IsoformEmbeddedVariantTrack {
                   let innerType = innerChild.type
 
                   let validInnerType = false
-                  if (exon_feats.indexOf(innerType) >= 0) {
+                  if (exon_feats.includes(innerType)) {
                     validInnerType = true
                     isoform
                       .append('rect')
@@ -383,22 +378,22 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('x', x(innerChild.fmin))
                       .attr(
                         'transform',
-                        'translate(0,' +
-                          (EXON_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT) +
-                          ')',
+                        `translate(0,${
+                          EXON_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
+                        })`,
                       )
                       .attr('height', EXON_HEIGHT)
                       .attr('z-index', 10)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', d => {
-                        renderTooltipDescription(
+                      .on('click', () => {
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                  } else if (CDS_feats.indexOf(innerType) >= 0) {
+                  } else if (CDS_feats.includes(innerType)) {
                     validInnerType = true
                     isoform
                       .append('rect')
@@ -406,22 +401,22 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('x', x(innerChild.fmin))
                       .attr(
                         'transform',
-                        'translate(0,' +
-                          (CDS_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT) +
-                          ')',
+                        `translate(0,${
+                          CDS_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
+                        })`,
                       )
                       .attr('z-index', 20)
                       .attr('height', CDS_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', d => {
-                        renderTooltipDescription(
+                      .on('click', () => {
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                  } else if (UTR_feats.indexOf(innerType) >= 0) {
+                  } else if (UTR_feats.includes(innerType)) {
                     validInnerType = true
                     isoform
                       .append('rect')
@@ -429,15 +424,15 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('x', x(innerChild.fmin))
                       .attr(
                         'transform',
-                        'translate(0,' +
-                          (UTR_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT) +
-                          ')',
+                        `translate(0,${
+                          UTR_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
+                        })`,
                       )
                       .attr('z-index', 20)
                       .attr('height', UTR_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', d => {
-                        renderTooltipDescription(
+                      .on('click', () => {
+                        this.renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
@@ -480,16 +475,16 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('x', x(fmin))
                             .attr(
                               'transform',
-                              'translate(0,' +
-                                (VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT) +
-                                ')',
+                              `translate(0,${
+                                VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT
+                              })`,
                             )
                             .attr('z-index', 30)
                             .attr('fill', consequenceColor)
                             .attr('height', VARIANT_HEIGHT)
                             .attr('width', width)
-                            .on('click', d => {
-                              renderTooltipDescription(
+                            .on('click', () => {
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -508,13 +503,13 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('x', x(fmin))
                             .attr(
                               'transform',
-                              'translate(0,' +
-                                (VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT) +
-                                ')',
+                              `translate(0,${
+                                VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT
+                              })`,
                             )
                             .attr('z-index', 30)
-                            .on('click', d => {
-                              renderTooltipDescription(
+                            .on('click', () => {
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -530,13 +525,13 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('x', x(fmin))
                             .attr(
                               'transform',
-                              'translate(0,' +
-                                (VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT) +
-                                ')',
+                              `translate(0,${
+                                VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT
+                              })`,
                             )
                             .attr('z-index', 30)
-                            .on('click', d => {
-                              renderTooltipDescription(
+                            .on('click', () => {
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -555,14 +550,14 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('x', x(fmin))
                             .attr(
                               'transform',
-                              'translate(0,' +
-                                (VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT) +
-                                ')',
+                              `translate(0,${
+                                VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT
+                              })`,
                             )
                             .attr('fill', consequenceColor)
                             .attr('z-index', 30)
-                            .on('click', d => {
-                              renderTooltipDescription(
+                            .on('click', () => {
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -592,8 +587,8 @@ export default class IsoformEmbeddedVariantTrack {
                               `translate(${x(fmin - (symbol_string_length / 2.0) * 100)},${VARIANT_OFFSET * 2.2 - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .html(symbol_string)
-                            .on('click', d => {
-                              renderTooltipDescription(
+                            .on('click', () => {
+                              this.renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
@@ -623,9 +618,9 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('y', 10)
                 .attr(
                   'transform',
-                  'translate(0,' +
-                    (row_count * ISOFORM_HEIGHT + 20 + heightBuffer) +
-                    ')',
+                  `translate(0,${
+                    row_count * ISOFORM_HEIGHT + 20 + heightBuffer
+                  })`,
                 )
                 .attr('fill', 'red')
                 .attr('opacity', 1)
@@ -653,7 +648,9 @@ export default class IsoformEmbeddedVariantTrack {
   }
 
   filterVariantData(variantData, variantFilter) {
-    if (variantFilter.length === 0) return variantData
+    if (variantFilter.length === 0) {
+      return variantData
+    }
     return variantData.filter(v => {
       return variantFilter.indexOf(v.name) >= 0
     })
@@ -670,8 +667,8 @@ export default class IsoformEmbeddedVariantTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      .style('left', d3.event.pageX + 10 + 'px')
-      .style('top', d3.event.pageY + 10 + 'px')
+      .style('left', `${d3.event.pageX + 10}px`)
+      .style('top', `${d3.event.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')
@@ -692,12 +689,11 @@ export default class IsoformEmbeddedVariantTrack {
 
   /* Method for isoformTrack service call */
   async getTrackData(track) {
-    let externalLocationString =
-      track['chromosome'] + ':' + track['start'] + '..' + track['end']
-    const isoformUrl = track['isoform_url']
+    let externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
+    const isoformUrl = track.isoform_url
     const dataUrl =
       isoformUrl[0] +
-      encodeURI(track['genome']) +
+      encodeURI(track.genome) +
       isoformUrl[1] +
       encodeURI(externalLocationString) +
       isoformUrl[2]
@@ -706,12 +702,11 @@ export default class IsoformEmbeddedVariantTrack {
 
   /* Method for isoformTrack service call */
   async getVariantData(track) {
-    const externalLocationString =
-      track['chromosome'] + ':' + track['start'] + '..' + track['end']
-    const variantUrl = track['variant_url']
+    const externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
+    const variantUrl = track.variant_url
     const dataUrl =
       variantUrl[0] +
-      encodeURI(track['genome']) +
+      encodeURI(track.genome) +
       variantUrl[1] +
       encodeURI(externalLocationString) +
       variantUrl[2]

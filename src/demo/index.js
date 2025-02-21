@@ -1,23 +1,19 @@
 import GenomeFeatureViewer from 'GenomeFeatureViewer'
+
 import { TRACK_TYPE } from '../tracks/TrackTypeEnum'
 
-// const BASE_URL = 'http://localhost:8080/apollo';
-// const BASE_URL = 'http://54.91.83.120:8080/apollo';
-// const BASE_URL = 'https://agr-apollo.berkeleybop.io/apollo';
-//const BASE_URL = 'https://build.alliancegenome.org/apollo';
-const BASE_URL = 'https://build.alliancegenome.org/apollo'
+const BASE_URL = 'https://www.alliancegenome.org/apollo'
 
-// Global View Example
-
-//oldExamples();
-//isoformExamples();
-//wormExamples();
-//fishExamples();
-//ratExamples();
-//mouseExamples();
-//flyExamples();
-//covidExamples();
+oldExamples()
+isoformExamples()
+wormExamples()
+fishExamples()
+ratExamples()
+mouseExamples()
+flyExamples()
+covidExamples()
 currentExamples()
+createHTPExample()
 
 function getTranscriptTypes() {
   return [
@@ -85,8 +81,8 @@ function currentExamples() {
     TRACK_TYPE.ISOFORM_AND_VARIANT,
     false,
   )
-  //createCoVExample("NC_045512.2:17894..28259", "SARS-CoV-2", "covidExample1", TRACK_TYPE.ISOFORM, false);
-  //createHTPExample("X:2023822..2042311", "fly", "viewerActnHTPFly", TRACK_TYPE.ISOFORM, false,[],'Actn','X:2037135');
+  // createCoVExample("NC_045512.2:17894..28259", "SARS-CoV-2", "covidExample1", TRACK_TYPE.ISOFORM, false);
+  // createHTPExample("X:2023822..2042311", "fly", "viewerActnHTPFly", TRACK_TYPE.ISOFORM, false,[],'Actn','X:2037135');
 }
 
 function flyExamples() {
@@ -422,10 +418,9 @@ function createExample(
       },
     ],
   }
-  console.log(configGlobal1)
   const gfc = new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
 
-  const closeButton = document.getElementById(divId + 'CloseButton')
+  const closeButton = document.getElementById(`${divId}CloseButton`)
   if (closeButton) {
     closeButton.addEventListener('click', () => {
       gfc.closeModal()
@@ -433,14 +428,9 @@ function createExample(
   }
 
   // const legendButton = document.getElementById(divId+'LegendButton');
-  const legendTarget = document.getElementById(divId + 'LegendTarget')
+  const legendTarget = document.getElementById(`${divId}LegendTarget`)
   if (legendTarget) {
     legendTarget.innerHTML = gfc.generateLegend()
-    // legendButton.addEventListener( 'click', () => {
-    //   console.log('1');
-    //   legendTarget.innerHTML = gfc.generateLegend() ;
-    //   console.log('2')
-    // })
   }
 
   if (divId === 'networkExampleWorm1And') {
@@ -496,7 +486,6 @@ function createIsoformExample(
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
-  const ratio = 0.01
   let configGlobal1 = {
     locale: 'global',
     chromosome: chromosome,
@@ -528,9 +517,7 @@ function createHTPExample(
   htpVariant,
 ) {
   const chromosome = range.split(':')[0]
-  console.log(htpVariant)
   const [start, end] = range.split(':')[1].split('..')
-  const ratio = 0.01
   let configGlobal1 = {
     locale: 'global',
     chromosome: chromosome,

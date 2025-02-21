@@ -3,23 +3,23 @@
   track util.
 */
 import * as d3 from 'd3-selection'
-//Takes in the current entry start/end and the array of used space and assigns a row
+// Takes in the current entry start/end and the array of used space and assigns a row
 function checkSpace(used_space, start, end) {
   var row
   var assigned
   var fits
-  //if empty... this is the first entry... on the first row.
+  // if empty... this is the first entry... on the first row.
 
   if (used_space.length == 0) {
     row = 1
   } else {
-    //for each row
+    // for each row
     for (var i = 1; i < used_space.length; i++) {
-      //for each entry in that row
-      for (var z = 0; z < used_space[i].length; z++) {
-        var [used_start, used_end] = used_space[i][z].split(':')
+      // for each entry in that row
+      for (const elt of used_space[i]) {
+        var [used_start, used_end] = elt.split(':')
 
-        //check for overlap
+        // check for overlap
         if (end < used_start || start > used_end) {
           fits = 1
         } else {
@@ -33,8 +33,8 @@ function checkSpace(used_space, start, end) {
         break
       }
     }
-    //if this is true for 0 rows... use the next row.
-    //zero indexed so length is the next one.
+    // if this is true for 0 rows... use the next row.
+    // zero indexed so length is the next one.
     if (!assigned) {
       row = used_space.length
     }
@@ -42,7 +42,7 @@ function checkSpace(used_space, start, end) {
   return row
 }
 
-function doResize(fmin_display, fmax_display, viewer, width, newx) {
+function doResize(_fmin_display, _fmax_display, viewer, _width, newx) {
   viewer
     .selectAll('rect.transcriptBackbone')
     .attr('x', function (d) {
@@ -54,50 +54,36 @@ function doResize(fmin_display, fmax_display, viewer, width, newx) {
 
   viewer
     .selectAll('rect.exon')
-    .attr('x', function (d) {
-      return newx(d.fmin)
-    })
-    .attr('width', function (d) {
-      return newx(d.fmax) - newx(d.fmin)
-    })
+    .attr('x', d => newx(d.fmin))
+    .attr('width', d => newx(d.fmax) - newx(d.fmin))
 
   viewer
     .selectAll('rect.CDS')
-    .attr('x', function (d) {
-      return newx(d.fmin)
-    })
-    .attr('width', function (d) {
-      return newx(d.fmax) - newx(d.fmin)
-    })
+    .attr('x', d => newx(d.fmin))
+    .attr('width', d => newx(d.fmax) - newx(d.fmin))
 
   viewer
     .selectAll('rect.UTR')
-    .attr('x', function (d) {
-      return newx(d.fmin)
-    })
-    .attr('width', function (d) {
-      return newx(d.fmax) - newx(d.fmin)
-    })
+    .attr('x', d => newx(d.fmin))
+    .attr('width', d => newx(d.fmax) - newx(d.fmin))
 
-  viewer.selectAll('polygon.transArrow').attr('transform', function (d) {
+  viewer.selectAll('polygon.transArrow').attr('transform', d => {
     if (d.strand > 0) {
-      return 'translate(' + Number(newx(d.fmax)) + ',' + d.y_val + ')'
+      return `translate(${Number(newx(d.fmax))},${d.y_val})`
     } else {
-      return (
-        'translate(' + Number(newx(d.fmin)) + ',' + d.y_val + ') rotate(180)'
-      )
+      return `translate(${Number(newx(d.fmin))},${d.y_val}) rotate(180)`
     }
   })
 
   viewer.selectAll('text.REMOVE').remove()
 }
 
-//Function to find range
-//Now with checkSpace function embedded.
-//Will only check rows that make it into the final viz.
-//Needs to assign the row as well
-//Added check for type.... all types were getting included even if
-//we had no intention to display them
+// Function to find range
+// Now with checkSpace function embedded.
+// Will only check rows that make it into the final viz.
+// Needs to assign the row as well
+// Added check for type.... all types were getting included even if
+// we had no intention to display them
 function findRange(data, display_feats) {
   let fmin = -1
   let fmax = -1
@@ -106,7 +92,7 @@ function findRange(data, display_feats) {
     let feature = data[d]
     let featureChildren = feature.children
     if (featureChildren) {
-      featureChildren.forEach(function (featureChild) {
+      featureChildren.forEach(featureChild => {
         if (display_feats.indexOf(featureChild.type) >= 0) {
           if (fmin < 0 || featureChild.fmin < fmin) {
             fmin = featureChild.fmin
@@ -115,8 +101,8 @@ function findRange(data, display_feats) {
             fmax = featureChild.fmax
           }
         }
-      }) //transcript level
-    } //gene level
+      }) // transcript level
+    } // gene level
   }
 
   return {
@@ -131,7 +117,7 @@ function countIsoforms(data) {
   for (let i in data) {
     let feature = data[i]
     if (feature.children) {
-      feature.children.forEach(function (geneChild) {
+      feature.children.forEach(geneChild => {
         // isoform level
         if (geneChild.type == 'mRNA') {
           isoform_count += 1
@@ -145,13 +131,11 @@ function countIsoforms(data) {
 function calculateNewTrackPosition(viewer) {
   let viewerClass = viewer.attr('class')
   let classNames = viewerClass.split(' ')
-  let viewTrackSelector = '.' + classNames[0] + '.' + classNames[1] + ' .track'
+  let viewTrackSelector = `.${classNames[0]}.${classNames[1]} .track`
   let nodes = d3.selectAll(viewTrackSelector).nodes()
   let usedHeight = 0
-  let numTracks = 0 //Number of tracks including axis
   nodes.forEach(node => {
     usedHeight += node.getBoundingClientRect().height + 1
-    numTracks++
   })
   return usedHeight
 }
@@ -179,10 +163,10 @@ function setHighlights(selectedAlleles, svgTarget) {
     .selectAll(
       '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
     )
-    .filter(function (d) {
+    .filter(d => {
       let returnVal = false
-      //TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
-      //and sometimes in an array.
+      // TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
+      // and sometimes in an array.
       if (d.alleles) {
         let ids = d.alleles[0].replace(/"|\[|\]| /g, '').split(',')
         ids.forEach(val => {
@@ -198,7 +182,7 @@ function setHighlights(selectedAlleles, svgTarget) {
       }
       return returnVal
     })
-    .datum(function (d) {
+    .datum(d => {
       d.selected = 'true'
       return d
     })
@@ -225,11 +209,11 @@ function setHighlights(selectedAlleles, svgTarget) {
 }
 
 export {
-  countIsoforms,
-  findRange,
-  checkSpace,
-  doResize,
   calculateNewTrackPosition,
+  checkSpace,
+  countIsoforms,
+  doResize,
+  findRange,
   getTranslate,
   setHighlights,
 }

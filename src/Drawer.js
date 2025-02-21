@@ -1,12 +1,13 @@
+import * as d3 from 'd3'
+
+import { getTranslate } from './RenderFunctions'
+import IsoformAndVariantTrack from './tracks/IsoformAndVariantTrack'
+import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack'
 import IsoformTrack from './tracks/IsoformTrack'
 import ReferenceTrack from './tracks/ReferenceTrack'
+import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 import VariantTrack from './tracks/VariantTrack'
 import VariantTrackGlobal from './tracks/VariantTrackGlobal'
-import * as d3 from 'd3'
-import { getTranslate } from './RenderFunctions'
-import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack'
-import { TRACK_TYPE } from './tracks/TrackTypeEnum'
-import IsoformAndVariantTrack from './tracks/IsoformAndVariantTrack'
 
 const LABEL_OFFSET = 100
 /*
@@ -24,21 +25,21 @@ export default class Drawer {
     this.range = []
   }
 
-  async draw() {
+  draw() {
     // Viewer Information
-    let locale = this.gfc['locale']
-    let height = this.gfc['height']
-    let width = this.gfc['width']
-    let viewer = this.gfc['viewer']
-    let tracks = this.gfc['tracks']
-    let showVariantLabel = this.gfc.config['showVariantLabel']
+    let locale = this.gfc.locale
+    let height = this.gfc.height
+    let width = this.gfc.width
+    let viewer = this.gfc.viewer
+    let tracks = this.gfc.tracks
+    let showVariantLabel = this.gfc.config.showVariantLabel
     let transcriptTypes = this.gfc.config.transcriptTypes
       ? this.gfc.config.transcriptTypes
       : ['mRNA']
     let variantTypes = this.gfc.config.variantTypes
       ? this.gfc.config.variantTypes
       : ['point_mutation', 'MNV', 'Deletion', 'Insertion', 'Delins']
-    let svg_target = this.gfc['svg_target']
+    let svg_target = this.gfc.svg_target
     let binRatio = this.gfc.config.binRatio ? this.gfc.config.binRatio : 0.01
     let draggingViewer = null
     let draggingStart = null
@@ -48,8 +49,12 @@ export default class Drawer {
     if (locale === 'local') {
       width = document.body.clientWidth
       // Other setup
-      draggingViewer = evt => this.dragged(this)
-      draggingStart = evt => this.drag_start(this)
+      draggingViewer = () => {
+        this.dragged(this)
+      }
+      draggingStart = () => {
+        this.drag_start(this)
+      }
       // Setting our clip path view to enable the scrolling effect
       d3.select(svg_target)
         .append('defs')
@@ -60,28 +65,28 @@ export default class Drawer {
         .attr('x', '0')
         .attr('y', '0')
         .attr('height', height)
-        .attr('width', this.gfc['width'] - LABEL_OFFSET)
-        .attr('transform', 'translate(' + LABEL_OFFSET + ',0)')
+        .attr('width', this.gfc.width - LABEL_OFFSET)
+        .attr('transform', `translate(${LABEL_OFFSET},0)`)
       viewer.attr('clip-path', 'url(#clip)')
     }
 
-    let options = this.gfc['config']
+    let options = this.gfc.config
     // Sequence information
     let sequenceOptions = this._configureRange(
-      options['start'],
-      options['end'],
+      options.start,
+      options.end,
       width,
     )
-    this.range = sequenceOptions['range']
-    let chromosome = options['chromosome']
-    let variantFilter = options['variantFilter'] ? options['variantFilter'] : []
-    let isoformFilter = options['isoformFilter'] ? options['isoformFilter'] : []
-    let initialHighlight = options['initialHighlight']
-      ? options['initialHighlight']
+    this.range = sequenceOptions.range
+    let chromosome = options.chromosome
+    let variantFilter = options.variantFilter ? options.variantFilter : []
+    let isoformFilter = options.isoformFilter ? options.isoformFilter : []
+    let initialHighlight = options.initialHighlight
+      ? options.initialHighlight
       : []
-    let htpVariant = options['htpVariant'] ? options['htpVariant'] : ''
-    let start = sequenceOptions['start']
-    let end = sequenceOptions['end']
+    let htpVariant = options.htpVariant ? options.htpVariant : ''
+    let start = sequenceOptions.start
+    let end = sequenceOptions.end
 
     // Draw our reference if it's local for now.
     const referenceTrack = new ReferenceTrack(
@@ -90,14 +95,14 @@ export default class Drawer {
         chromosome: chromosome,
         start: start,
         end: end,
-        range: sequenceOptions['range'],
+        range: sequenceOptions.range,
       },
       height,
       width,
     )
     if (locale === 'local') {
       // Scrollable View
-      await referenceTrack.getTrackData()
+      // await referenceTrack.getTrackData()
       referenceTrack.DrawScrollableTrack()
       viewer.call(
         d3.drag().on('start', draggingStart).on('drag', draggingViewer),
@@ -111,13 +116,13 @@ export default class Drawer {
     // TODO: Lock view to always have some number of sequence (50, 100)?
     let track_height = LABEL_OFFSET
     // TODO: refactor so that both come in and are re-ordered
-    tracks.forEach(async function (track) {
-      track['start'] = start
-      track['end'] = end
-      track['chromosome'] = chromosome
-      track['variant_filter'] = variantFilter
-      track['isoform_filter'] = isoformFilter
-      track['initialHighlight'] = initialHighlight
+    tracks.forEach(async track => {
+      track.start = start
+      track.end = end
+      track.chromosome = chromosome
+      track.variant_filter = variantFilter
+      track.isoform_filter = isoformFilter
+      track.initialHighlight = initialHighlight
       if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
         const isoformVariantTrack = new IsoformAndVariantTrack(
           viewer,
@@ -168,12 +173,12 @@ export default class Drawer {
         await isoformTrack.getTrackData(track)
         track_height += isoformTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.VARIANT) {
-        track['range'] = sequenceOptions['range']
+        track.range = sequenceOptions.range
         const variantTrack = new VariantTrack(viewer, track, height, width)
         await variantTrack.getTrackData()
         variantTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.VARIANT_GLOBAL) {
-        track['range'] = sequenceOptions['range']
+        track.range = sequenceOptions.range
         const variantTrack = new VariantTrackGlobal(
           viewer,
           track,
@@ -183,10 +188,7 @@ export default class Drawer {
         await variantTrack.getTrackData()
         variantTrack.DrawTrack()
       } else {
-        console.error(
-          'TrackType not found for ' + track['id'] + '...',
-          track.type,
-        )
+        console.error(`TrackType not found for ${track.id}...`, track.type)
       }
       d3.select(svg_target).attr('height', track_height)
     })
@@ -197,17 +199,14 @@ export default class Drawer {
     ref.drag_cx = d3.event.x
   }
 
-  /*
-        Trigger while we are dragging. Figure out the direction
-        and get the amount to scroll by.
-
-        @Param ref, a reference to the drawer class since event methods
-        scope of this becomes the element it triggers on.
-
-    */
+  // Trigger while we are dragging. Figure out the direction
+  // and get the amount to scroll by.
+  //
+  // @Param ref, a reference to the drawer class since event methods
+  // scope of this becomes the element it triggers on.
   dragged(ref) {
     // Get tick size for our scroll value
-    let viewerTicks = ref.gfc['svg_target'] + ' .x-local-axis .tick'
+    let viewerTicks = `${ref.gfc.svg_target} .x-local-axis .tick`
     let scrollValue =
       parseInt(d3.select(viewerTicks).node().getBoundingClientRect().width) * 2
     if (ref.drag_cx != d3.event.x) {
@@ -227,25 +226,22 @@ export default class Drawer {
     }
   }
 
-  /*
-        Function to scroll our local view
-        @Param direction: The direction of the scroll
-                1 -> going up
-                -1 -> going down
-        @Param scrollValue: The amount you want to move the view.
-                            Typically you get the tick size then multiply.
-    */
+  // Function to scroll our local view
+  // @Param direction: The direction of the scroll
+  //        1 -> going up
+  //        -1 -> going down
+  // @Param scrollValue: The amount you want to move the view.
+  //                    Typically you get the tick size then multiply.
   scrollView(direction, scrollValue) {
-    let ref = this
     // We want to move the track in a direction when dragging
     // thresholds for end of the sequence
     let dragThresh = {
-      maxNegative: this.gfc['width'] - ref.range[1] + -(scrollValue / 2),
+      maxNegative: this.gfc.width - this.range[1] + -(scrollValue / 2),
     }
     // We are moving get our elements and translate them
     // the distance of a tick.
-    let viewerTracks = ref.gfc['svg_target'] + ' .main-view .track'
-    d3.selectAll(viewerTracks).attr('transform', function () {
+    let viewerTracks = `${this.gfc.svg_target} .main-view .track`
+    d3.selectAll(viewerTracks).attr('transform', () => {
       let trs = getTranslate(d3.select(this).attr('transform'))
       let newX = 0
       if (direction == 1) {
@@ -255,13 +251,13 @@ export default class Drawer {
       }
       // Want to make sure we don't go beyond our sequence length. Which is defined by our range.
       if (
-        newX <= dragThresh['maxNegative'] ||
-        newX > -ref.range[0] + 100 + scrollValue / 2
+        newX <= dragThresh.maxNegative ||
+        newX > -this.range[0] + 100 + scrollValue / 2
       ) {
-        return 'translate(' + trs[0] + ',' + trs[1] + ')'
+        return `translate(${trs[0]},${trs[1]})`
+      } else {
+        return `translate(${newX},${trs[1]})`
       }
-
-      return 'translate(' + newX + ',' + trs[1] + ')'
     })
   }
 
