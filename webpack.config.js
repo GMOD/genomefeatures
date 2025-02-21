@@ -32,9 +32,12 @@ var libraryConfig = {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['@babel/preset-env'],
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env']],
+          },
         },
       },
       {
@@ -45,8 +48,13 @@ var libraryConfig = {
     ],
   },
   devServer: {
+    static: {
+      directory: dist,
+    },
     open: true,
     port: 9000,
+    compress: true,
+    hot: true,
   },
 }
 
@@ -74,11 +82,15 @@ var demoConfig = {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['@babel/preset-env'],
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env']],
+          },
         },
       },
+      ,
       {
         test: /\.css/,
         loader: 'css-loader',
@@ -87,12 +99,14 @@ var demoConfig = {
     ],
   },
   devServer: {
-    contentBase: dist,
+    static: {
+      directory: dist,
+    },
     open: true,
     port: 9000,
+    compress: true,
+    hot: true,
   },
 }
 
-const configs = [libraryConfig, demoConfig]
-
-module.exports = configs
+module.exports = demoConfig
