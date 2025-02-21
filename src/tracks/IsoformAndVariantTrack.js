@@ -24,7 +24,6 @@ import {
   getVariantTrackPositions,
   renderVariantDescriptions,
 } from '../services/VariantService'
-// import {description} from "d3/dist/package";
 let apolloService = new ApolloService()
 
 // TODO: make configurable and a const / default
@@ -33,7 +32,6 @@ let apolloService = new ApolloService()
 export default class IsoformAndVariantTrack {
   constructor(
     viewer,
-    track,
     height,
     width,
     transcriptTypes,
@@ -63,7 +61,6 @@ export default class IsoformAndVariantTrack {
   // TODO: Potentially seperate this large section of code
   // for both testing/extensibility
   DrawTrack() {
-    let setInitialHighlight = this.setInitialHighlight
     let isoformFilter = this.isoformFilter
     let isoformData = this.trackData
     let initialHighlight = this.initialHighlight
@@ -73,7 +70,6 @@ export default class IsoformAndVariantTrack {
     )
     let viewer = this.viewer
     let width = this.width
-    let showVariantLabel = this.showVariantLabel
     let binRatio = this.binRatio
     let distinctVariants = getVariantTrackPositions(variantData)
     let numVariantTracks = distinctVariants.length
@@ -99,24 +95,13 @@ export default class IsoformAndVariantTrack {
     const ISOFORM_TITLE_HEIGHT = 0 // height for each isoform
     const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
     const VARIANT_HEIGHT = 10 // this is the height of the isoform running all of the way through
-    const VARIANT_OFFSET = 20 // this is the height of the isoform running all of the way through
     const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
     const ARROW_HEIGHT = 20
     const ARROW_WIDTH = 10
     const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
-    const SNV_HEIGHT = 10
     const SNV_WIDTH = 10
     const VARIANT_TRACK_HEIGHT = 40 // Not sure if this needs to be dynamic or not
     const LABEL_PADDING = 22.5
-
-    const insertion_points = x => {
-      return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT}`
-    }
-
-    const delins_points = x => {
-      // const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
-      return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x - SNV_WIDTH / 2.0},0 ${x + SNV_WIDTH / 2.0},0`
-    }
 
     let x = d3.scaleLinear().domain([viewStart, viewEnd]).range([0, width])
 
@@ -189,7 +174,7 @@ export default class IsoformAndVariantTrack {
 
     let deletionSpace = [] // Array of array of objects for deletion layout.
     deletionBins.forEach(variant => {
-      let { type, fmax, fmin } = variant
+      let { fmax, fmin } = variant
       let drawnVariant = true
       let isPoints = false
       let viewerWidth = this.width
@@ -220,7 +205,6 @@ export default class IsoformAndVariantTrack {
         .attr('width', width)
         .on('click', () => {
           renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
-          let viewer_height = viewer.node().getBBox().height - 22.5
         })
         .on('mouseover', function (d) {
           let theVariant = d.variant
@@ -237,7 +221,7 @@ export default class IsoformAndVariantTrack {
             })
             .style('opacity', 1)
         })
-        .on('mouseout', function (d) {
+        .on('mouseout', () => {
           d3.selectAll('.variant-deletion')
             .filter(function (d) {
               return d.selected != 'true'
@@ -263,9 +247,6 @@ export default class IsoformAndVariantTrack {
           label_offset = x(fmin)
         }
 
-        const symbol_string_length = symbol_string.length
-          ? symbol_string.length
-          : 1
         let label_height = VARIANT_HEIGHT * numVariantTracks + LABEL_PADDING
         let variant_label = labelTrack
           .append('text')
@@ -312,10 +293,7 @@ export default class IsoformAndVariantTrack {
       let variant_alleles = getVariantAlleles(variant)
       let descriptionHtml = renderVariantDescriptions(descriptions)
       const consequenceColor = getColorsForConsequences(descriptions)[0]
-      const width =
-        Math.ceil(x(fmax) - x(fmin)) < MIN_WIDTH
-          ? MIN_WIDTH
-          : Math.ceil(x(fmax) - x(fmin))
+
       if (
         type.toLowerCase() === 'snv' ||
         type.toLowerCase() === 'point_mutation'
@@ -335,14 +313,11 @@ export default class IsoformAndVariantTrack {
           .attr('z-index', 30)
           .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
-            let viewer_height = viewer.node().getBBox().height - 22.5
           })
           .on('mouseover', function (d) {
             let theVariant = d.variant
             d3.selectAll('.variant-SNV')
-              .filter(function (d) {
-                return d.variant === theVariant
-              })
+              .filter(d => d.variant === theVariant)
               .style('stroke', 'black')
             d3.select('.label')
               .selectAll('.variantLabel,.variantLabelBackground')
@@ -352,11 +327,9 @@ export default class IsoformAndVariantTrack {
               })
               .style('opacity', 1)
           })
-          .on('mouseout', function (d) {
+          .on('mouseout', () => {
             d3.selectAll('.variant-SNV')
-              .filter(function (d) {
-                return d.selected != 'true'
-              })
+              .filter(d => d.selected != 'true')
               .style('stroke', null)
             d3.select('.label')
               .selectAll('.variantLabel,.variantLabelBackground')
@@ -386,9 +359,8 @@ export default class IsoformAndVariantTrack {
           .attr('z-index', 30)
           .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
-            let viewer_height = viewer.node().getBBox().height - 22.5
           })
-          .on('mouseover', function (d) {
+          .on('mouseover', d => {
             let theVariant = d.variant
             d3.selectAll('.variant-insertion')
               .filter(function (d) {
@@ -403,7 +375,7 @@ export default class IsoformAndVariantTrack {
               })
               .style('opacity', 1)
           })
-          .on('mouseout', function (d) {
+          .on('mouseout', () => {
             d3.selectAll('.variant-insertion')
               .filter(function (d) {
                 return d.selected != 'true'
@@ -442,14 +414,11 @@ export default class IsoformAndVariantTrack {
           .attr('z-index', 30)
           .on('click', () => {
             renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
-            let viewer_height = viewer.node().getBBox().height - 22.5
           })
           .on('mouseover', function (d) {
             let theVariant = d.variant
             d3.selectAll('.variant-delins')
-              .filter(function (d) {
-                return d.variant === theVariant
-              })
+              .filter(d => d.variant === theVariant)
               .style('stroke', 'black')
             d3.select('.label')
               .selectAll('.variantLabel,.variantLabelBackground')
@@ -459,11 +428,9 @@ export default class IsoformAndVariantTrack {
               })
               .style('opacity', 1)
           })
-          .on('mouseout', function (d) {
+          .on('mouseout', () => {
             d3.selectAll('.variant-delins')
-              .filter(function (d) {
-                return d.selected != 'true'
-              })
+              .filter(d => d.selected != 'true')
               .style('stroke', null)
             d3.select('.label')
               .selectAll('.variantLabel,.variantLabelBackground')
@@ -488,9 +455,6 @@ export default class IsoformAndVariantTrack {
           label_offset = x(fmin)
         }
 
-        const symbol_string_length = symbol_string.length
-          ? symbol_string.length
-          : 1
         let label_height = VARIANT_HEIGHT * numVariantTracks + LABEL_PADDING
         let variant_label = labelTrack
           .append('text')
@@ -547,7 +511,7 @@ export default class IsoformAndVariantTrack {
 
         // May want to remove this and add an external sort function
         // outside of the render method to put certain features on top.
-        featureChildren = featureChildren.sort(function (a, b) {
+        featureChildren = featureChildren.sort((a, b) => {
           if (a.name < b.name) {
             return -1
           }
@@ -559,7 +523,7 @@ export default class IsoformAndVariantTrack {
 
         // For each isoform..
         let warningRendered = false
-        featureChildren.forEach(function (featureChild) {
+        featureChildren.forEach(featureChild => {
           if (
             !(
               isoformFilter.indexOf(featureChild.id) >= 0 ||
@@ -588,7 +552,6 @@ export default class IsoformAndVariantTrack {
             )
             if (row_count < MAX_ROWS) {
               // An isoform container
-
               let text_string
               let text_label
               let addingGeneLabel = false
@@ -603,9 +566,7 @@ export default class IsoformAndVariantTrack {
                 .attr('class', 'isoform')
                 .attr(
                   'transform',
-                  `translate(0,${
-                    row_count * ISOFORM_HEIGHT + 10 + heightBuffer
-                  })`,
+                  `translate(0,${row_count * ISOFORM_HEIGHT + 10 + heightBuffer})`,
                 )
               if (addingGeneLabel) {
                 text_string = feature.name
@@ -640,13 +601,11 @@ export default class IsoformAndVariantTrack {
                 })
                 .attr('class', 'transArrow')
                 .attr('points', ARROW_POINTS)
-                .attr('transform', function (d) {
+                .attr('transform', d => {
                   if (feature.strand > 0) {
                     return `translate(${Number(x(d.fmax))},0)`
                   } else {
-                    return `translate(${Number(x(d.fmin))},${
-                      ARROW_HEIGHT
-                    }) rotate(180)`
+                    return `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`
                   }
                 })
                 .on('click', () => {
@@ -771,18 +730,14 @@ export default class IsoformAndVariantTrack {
                 featureChild.children.forEach(function (innerChild) {
                   let innerType = innerChild.type
 
-                  let validInnerType = false
                   if (exon_feats.includes(innerType)) {
-                    validInnerType = true
                     isoform
                       .append('rect')
                       .attr('class', 'exon')
                       .attr('x', x(innerChild.fmin))
                       .attr(
                         'transform',
-                        `translate(0,${
-                          EXON_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
-                        })`,
+                        `translate(0,${EXON_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT})`,
                       )
                       .attr('height', EXON_HEIGHT)
                       .attr('z-index', 10)
@@ -796,16 +751,13 @@ export default class IsoformAndVariantTrack {
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
                   } else if (CDS_feats.includes(innerType)) {
-                    validInnerType = true
                     isoform
                       .append('rect')
                       .attr('class', 'CDS')
                       .attr('x', x(innerChild.fmin))
                       .attr(
                         'transform',
-                        `translate(0,${
-                          CDS_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
-                        })`,
+                        `translate(0,${CDS_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT})`,
                       )
                       .attr('z-index', 20)
                       .attr('height', CDS_HEIGHT)
@@ -819,16 +771,13 @@ export default class IsoformAndVariantTrack {
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
                   } else if (UTR_feats.includes(innerType)) {
-                    validInnerType = true
                     isoform
                       .append('rect')
                       .attr('class', 'UTR')
                       .attr('x', x(innerChild.fmin))
                       .attr(
                         'transform',
-                        `translate(0,${
-                          UTR_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
-                        })`,
+                        `translate(0,${UTR_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT})`,
                       )
                       .attr('z-index', 20)
                       .attr('height', UTR_HEIGHT)
@@ -862,9 +811,7 @@ export default class IsoformAndVariantTrack {
                 .attr('y', 10)
                 .attr(
                   'transform',
-                  `translate(0,${
-                    row_count * ISOFORM_HEIGHT + 20 + heightBuffer
-                  })`,
+                  `translate(0,${row_count * ISOFORM_HEIGHT + 20 + heightBuffer})`,
                 )
                 .attr('fill', 'red')
                 .attr('opacity', 1)
