@@ -20,6 +20,7 @@ let apolloService = new ApolloService()
 export default class IsoformEmbeddedVariantTrack {
   constructor(
     viewer,
+    _track,
     height,
     width,
     transcriptTypes,
@@ -148,6 +149,8 @@ export default class IsoformEmbeddedVariantTrack {
     let used_space = []
     let fmin_display = -1
     let fmax_display = -1
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     let renderTooltipDescription = this.renderTooltipDescription
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM

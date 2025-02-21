@@ -1,7 +1,7 @@
 import GenomeFeatureViewer from './main'
-import './GenomeFeatureViewer.css'
-
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
+
+import './GenomeFeatureViewer.css'
 
 const BASE_URL = 'https://www.alliancegenome.org/apollo'
 

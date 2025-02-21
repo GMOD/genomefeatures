@@ -1,10 +1,6 @@
 import * as d3 from 'd3'
 
-import {
-  calculateNewTrackPosition,
-  checkSpace,
-  findRange,
-} from '../RenderFunctions'
+import { calculateNewTrackPosition, checkSpace } from '../RenderFunctions'
 import { ApolloService } from '../services/ApolloService'
 import {
   getJBrowseLink,
@@ -68,7 +64,6 @@ export default class IsoformTrack {
     let CDS_feats = ['CDS']
     let exon_feats = ['exon']
     let display_feats = this.transcriptTypes
-    let dataRange = findRange(data, display_feats)
 
     let view_start = this.start
     let view_end = this.end
@@ -82,6 +77,8 @@ export default class IsoformTrack {
     let arrow_height = 20
     let arrow_width = 10
     let arrow_points = `0,0 0,${arrow_height} ${arrow_width},${arrow_width}`
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     let renderTooltipDescription = this.renderTooltipDescription
 
     let x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
@@ -128,8 +125,7 @@ export default class IsoformTrack {
         .append('g')
         .attr('class', 'variants track')
         .attr('transform', 'translate(0,22.5)')
-      let [chr, fmin] = htpVariant.split(':')
-      console.log('things', x(fmin))
+      let [, fmin] = htpVariant.split(':')
       variantContainer
         .append('polygon')
         .attr('class', 'variant-SNV')
