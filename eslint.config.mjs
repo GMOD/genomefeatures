@@ -1,6 +1,7 @@
 import eslint from '@eslint/js'
 import importPlugin from 'eslint-plugin-import'
 import tseslint from 'typescript-eslint'
+import globals from 'globals'
 
 export default tseslint.config(
   {
@@ -14,6 +15,8 @@ export default tseslint.config(
   },
   {
     languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
       parserOptions: {
         project: ['./tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
