@@ -27,7 +27,7 @@ export default class VariantTrack {
     // Create our track container with a simple background
     let track = viewer
       .append('g')
-      .attr('transform', `translate(0,${  newTrackPosition  })`)
+      .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
 
     track
@@ -50,9 +50,7 @@ export default class VariantTrack {
       .attr('class', 'global-variant')
       .attr('stroke', 'red')
       .attr('fill', 'red')
-      .attr('transform', function (d) {
-        return `translate(${  x(d.position)  },10)`
-      })
+      .attr('transform', d => `translate(${x(d.position)},10)`)
   }
 
   /* Method to get reference label */

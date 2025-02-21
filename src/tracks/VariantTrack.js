@@ -25,16 +25,14 @@ export default class VariantTrack {
     let tooltip = d3Tip()
     tooltip
       .attr('class', 'd3-tip')
-      .html(function (d) {
-        let title = 'Case Variant'
-        let tipHtml =
+      .html(
+        d =>
           `<table>` +
-          `<th colspan="2">${title.toUpperCase()}</th>` +
+          `<th colspan="2">${'Case Variant'.toUpperCase()}</th>` +
           `<tr><td>Position</td> <td>${d.position}</td></tr>` +
           `<tr><td>Mutation</td> <td>${d.ref} > ${d.mutant}</td></tr>` +
-          '</table>'
-        return tipHtml
-      })
+          '</table>',
+      )
       .offset([10, 0])
       .direction('s')
     viewer.call(tooltip)
@@ -73,9 +71,7 @@ export default class VariantTrack {
       .attr('class', 'case-variant')
       .attr('stroke', 'red')
       .attr('fill', 'red')
-      .attr('transform', function (d) {
-        return `translate(${x(d.position)},10)`
-      })
+      .attr('transform', d => `translate(${x(d.position)},10)`)
       .on('mouseenter', tooltip.show)
       .on('mouseout', tooltip.hide)
 
