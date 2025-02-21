@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["dom", "esnext"],
     "allowJs": true,
     "outDir": "dist",
     "skipLibCheck": true,
@@ -19,20 +19,5 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "exclude": [
-    "**/build/",
-    "**/docs/",
-    "**/dist/",
-    "**/esm/",
-    "**/lib/",
-    "**/umd/",
-    "**/esm/",
-    "**/tmp/",
-    "**/config/jest/",
-    "**/embedded_demos/",
-    "**/component_tests/",
-    "**/plugin-development-tools/",
-    "**/webpack.config.js",
-    "**/website"
-  ]
+  "include": ["src"]
 }

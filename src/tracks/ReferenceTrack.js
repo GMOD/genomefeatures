@@ -40,9 +40,7 @@ export default class ReferenceTrack {
     let xAxisNumerical = d3
       .axisTop(x)
       .ticks(numTicks)
-      .tickValues(
-        this._getRefTick(this.track.start + 1, this.track.end, 10),
-      )
+      .tickValues(this._getRefTick(this.track.start + 1, this.track.end, 10))
 
     viewer
       .append('g')

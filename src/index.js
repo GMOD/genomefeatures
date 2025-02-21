@@ -100,7 +100,7 @@ export default class GenomeFeatureViewer {
     d3.select(svg_target).selectAll('*').remove()
     let viewer = d3.select(svg_target)
     let svgClass = svg_target.replace('#', '')
-    let mainViewClass = `${svgClass  } main-view`
+    let mainViewClass = `${svgClass} main-view`
 
     if (this.locale === 'global') {
       let margin = { top: 8, right: 30, bottom: 30, left: 40 }
@@ -108,7 +108,7 @@ export default class GenomeFeatureViewer {
         .attr('width', this.width)
         .attr('height', this.height)
         .append('g')
-        .attr('transform', `translate(${  margin.left  },${  margin.top  })`)
+        .attr('transform', `translate(${margin.left},${margin.top})`)
         .attr('class', mainViewClass)
       this.width = this.width - margin.left - margin.right
       this.height = this.height - margin.top - margin.bottom
@@ -122,7 +122,7 @@ export default class GenomeFeatureViewer {
         .attr('class', mainViewClass)
       this.height = this.height - margin.top - margin.bottom
     }
-    let mainViewTarget = `${svg_target  } .main-view`
+    let mainViewTarget = `${svg_target} .main-view`
     return d3.select(mainViewTarget)
   }
 

@@ -81,11 +81,9 @@ function doResize(fmin_display, fmax_display, viewer, width, newx) {
 
   viewer.selectAll('polygon.transArrow').attr('transform', function (d) {
     if (d.strand > 0) {
-      return `translate(${  Number(newx(d.fmax))  },${  d.y_val  })`
+      return `translate(${Number(newx(d.fmax))},${d.y_val})`
     } else {
-      return (
-        `translate(${  Number(newx(d.fmin))  },${  d.y_val  }) rotate(180)`
-      )
+      return `translate(${Number(newx(d.fmin))},${d.y_val}) rotate(180)`
     }
   })
 
@@ -145,7 +143,7 @@ function countIsoforms(data) {
 function calculateNewTrackPosition(viewer) {
   let viewerClass = viewer.attr('class')
   let classNames = viewerClass.split(' ')
-  let viewTrackSelector = `.${  classNames[0]  }.${  classNames[1]  } .track`
+  let viewTrackSelector = `.${classNames[0]}.${classNames[1]} .track`
   let nodes = d3.selectAll(viewTrackSelector).nodes()
   let usedHeight = 0
   let numTracks = 0 // Number of tracks including axis

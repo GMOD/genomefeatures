@@ -68,7 +68,9 @@ function findVariantBinIndexForPosition(variantBins, variant, buffer) {
     const relativeMax = fb.fmax - buffer
 
     // They cannot share a bin if they are different types.
-    if (type !== fb.type) {return false}
+    if (type !== fb.type) {
+      return false
+    }
 
     // if we overlap thAe min edge then take the minimum and whatever the maximum and add
     if (relativeMin <= fmin && relativeMax >= fmin) {
@@ -100,8 +102,12 @@ export function generateVariantBins(variantData) {
       const relativeMin = fb.fmin
       const relativeMax = fb.fmax
 
-      if (fb.type !== type) {return false}
-      if (fb.consequence !== consequence) {return false}
+      if (fb.type !== type) {
+        return false
+      }
+      if (fb.consequence !== consequence) {
+        return false
+      }
 
       // if we overlap thAe min edge then take the minimum and whatever the maximum and add
       if (relativeMin <= fmin && relativeMax >= fmin) {
@@ -276,46 +282,44 @@ export function renderVariantDescription(description) {
   if (description.type === 'SNV') {
     length = '1bp'
   } else if (description.type === 'deletion') {
-    length = `${ref_allele.length - 1  }bp deleted`
+    length = `${ref_allele.length - 1}bp deleted`
   } else if (description.type === 'insertion') {
     if (alt_allele === 'ALT_MISSING') {
       length = 'unknown length inserted'
       alt_allele = 'n+'
     } else {
-      length = `${alt_allele.length - 1  }bp inserted`
+      length = `${alt_allele.length - 1}bp inserted`
     }
   } else if (description.type === 'MNV') {
-    length = `${ref_allele.length  }bp`
+    length = `${ref_allele.length}bp`
   } else if (description.type === 'delins') {
-    let del = `${ref_allele.length - 1  }bp deleted`
+    let del = `${ref_allele.length - 1}bp deleted`
     let ins
     if (alt_allele === 'ALT_MISSING') {
       ins = 'unknown length inserted'
       alt_allele = 'n+'
     } else {
-      ins = `${alt_allele.length - 1  }bp inserted`
+      ins = `${alt_allele.length - 1}bp inserted`
     }
-    length = `${del  }; ${  ins}`
+    length = `${del}; ${ins}`
   } else {
-    length = `${stop - start  }bp`
+    length = `${stop - start}bp`
   }
   if (ref_allele.length > 20) {
-    ref_allele =
-      `${ref_allele.substring(0, 1).toLowerCase() +
-      ref_allele.substring(1, 8).toUpperCase() 
-      }...${ 
-      ref_allele.substring(ref_allele.length - 8).toUpperCase()}`
+    ref_allele = `${
+      ref_allele.substring(0, 1).toLowerCase() +
+      ref_allele.substring(1, 8).toUpperCase()
+    }...${ref_allele.substring(ref_allele.length - 8).toUpperCase()}`
   } else {
     ref_allele =
       ref_allele.substring(0, 1).toLowerCase() +
       ref_allele.substring(1).toUpperCase()
   }
   if (alt_allele.length > 20) {
-    alt_allele =
-      `${alt_allele.substring(0, 1).toLowerCase() +
-      alt_allele.substring(1, 8).toUpperCase() 
-      }...${ 
-      alt_allele.substring(alt_allele.length - 8).toUpperCase()}`
+    alt_allele = `${
+      alt_allele.substring(0, 1).toLowerCase() +
+      alt_allele.substring(1, 8).toUpperCase()
+    }...${alt_allele.substring(alt_allele.length - 8).toUpperCase()}`
   } else {
     alt_allele =
       alt_allele.substring(0, 1).toLowerCase() +
@@ -327,11 +331,11 @@ export function renderVariantDescription(description) {
   }
   let change = ''
   if (description.type === 'insertion') {
-    change = `ins: ${  alt_allele}`
+    change = `ins: ${alt_allele}`
   } else if (description.type === 'deletion') {
-    change = `del: ${  ref_allele}`
+    change = `del: ${ref_allele}`
   } else {
-    change = `${ref_allele  }->${  alt_allele}`
+    change = `${ref_allele}->${alt_allele}`
   }
   returnString += `<table class="tooltip-table"><tbody>`
   returnString += `<tr><th>Symbol</th><td>${description.symbolDetail}</td></tr>`
@@ -521,12 +525,10 @@ export function getVariantSymbolDetail(variant) {
       }
     } else {
       const clean_text = variant.allele_symbols.values[0].replace(/"/g, '')
-      return (
-        `${clean_text 
-        }(${ 
-        variant.allele_ids.values[0].replace(/"|\[|\]/g, '') 
-        })`
-      )
+      return `${clean_text}(${variant.allele_ids.values[0].replace(
+        /"|\[|\]/g,
+        '',
+      )})`
     }
   }
   return undefined

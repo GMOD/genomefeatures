@@ -49,8 +49,12 @@ export default class Drawer {
     if (locale === 'local') {
       width = document.body.clientWidth
       // Other setup
-      draggingViewer = evt => { this.dragged(this) }
-      draggingStart = evt => { this.drag_start(this) }
+      draggingViewer = evt => {
+        this.dragged(this)
+      }
+      draggingStart = evt => {
+        this.drag_start(this)
+      }
       // Setting our clip path view to enable the scrolling effect
       d3.select(svg_target)
         .append('defs')
@@ -62,7 +66,7 @@ export default class Drawer {
         .attr('y', '0')
         .attr('height', height)
         .attr('width', this.gfc.width - LABEL_OFFSET)
-        .attr('transform', `translate(${  LABEL_OFFSET  },0)`)
+        .attr('transform', `translate(${LABEL_OFFSET},0)`)
       viewer.attr('clip-path', 'url(#clip)')
     }
 
@@ -184,10 +188,7 @@ export default class Drawer {
         await variantTrack.getTrackData()
         variantTrack.DrawTrack()
       } else {
-        console.error(
-          `TrackType not found for ${  track.id  }...`,
-          track.type,
-        )
+        console.error(`TrackType not found for ${track.id}...`, track.type)
       }
       d3.select(svg_target).attr('height', track_height)
     })
@@ -208,7 +209,7 @@ export default class Drawer {
     */
   dragged(ref) {
     // Get tick size for our scroll value
-    let viewerTicks = `${ref.gfc.svg_target  } .x-local-axis .tick`
+    let viewerTicks = `${ref.gfc.svg_target} .x-local-axis .tick`
     let scrollValue =
       parseInt(d3.select(viewerTicks).node().getBoundingClientRect().width) * 2
     if (ref.drag_cx != d3.event.x) {
@@ -245,7 +246,7 @@ export default class Drawer {
     }
     // We are moving get our elements and translate them
     // the distance of a tick.
-    let viewerTracks = `${ref.gfc.svg_target  } .main-view .track`
+    let viewerTracks = `${ref.gfc.svg_target} .main-view .track`
     d3.selectAll(viewerTracks).attr('transform', function () {
       let trs = getTranslate(d3.select(this).attr('transform'))
       let newX = 0
@@ -259,10 +260,10 @@ export default class Drawer {
         newX <= dragThresh.maxNegative ||
         newX > -ref.range[0] + 100 + scrollValue / 2
       ) {
-        return `translate(${  trs[0]  },${  trs[1]  })`
+        return `translate(${trs[0]},${trs[1]})`
       }
 
-      return `translate(${  newX  },${  trs[1]  })`
+      return `translate(${newX},${trs[1]})`
     })
   }
 

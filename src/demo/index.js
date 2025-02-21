@@ -419,7 +419,7 @@ function createExample(
   }
   const gfc = new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
 
-  const closeButton = document.getElementById(`${divId  }CloseButton`)
+  const closeButton = document.getElementById(`${divId}CloseButton`)
   if (closeButton) {
     closeButton.addEventListener('click', () => {
       gfc.closeModal()
@@ -427,7 +427,7 @@ function createExample(
   }
 
   // const legendButton = document.getElementById(divId+'LegendButton');
-  const legendTarget = document.getElementById(`${divId  }LegendTarget`)
+  const legendTarget = document.getElementById(`${divId}LegendTarget`)
   if (legendTarget) {
     legendTarget.innerHTML = gfc.generateLegend()
     // legendButton.addEventListener( 'click', () => {
