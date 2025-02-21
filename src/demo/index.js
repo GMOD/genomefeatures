@@ -1,22 +1,16 @@
 import GenomeFeatureViewer from 'GenomeFeatureViewer'
 import { TRACK_TYPE } from '../tracks/TrackTypeEnum'
 
-// const BASE_URL = 'http://localhost:8080/apollo';
-// const BASE_URL = 'http://54.91.83.120:8080/apollo';
-// const BASE_URL = 'https://agr-apollo.berkeleybop.io/apollo';
-//const BASE_URL = 'https://build.alliancegenome.org/apollo';
 const BASE_URL = 'https://build.alliancegenome.org/apollo'
 
-// Global View Example
-
-//oldExamples();
-//isoformExamples();
-//wormExamples();
-//fishExamples();
-//ratExamples();
-//mouseExamples();
-//flyExamples();
-//covidExamples();
+oldExamples()
+isoformExamples()
+wormExamples()
+fishExamples()
+ratExamples()
+mouseExamples()
+flyExamples()
+covidExamples()
 currentExamples()
 
 function getTranscriptTypes() {
@@ -422,7 +416,6 @@ function createExample(
       },
     ],
   }
-  console.log(configGlobal1)
   const gfc = new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
 
   const closeButton = document.getElementById(divId + 'CloseButton')

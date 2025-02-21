@@ -9,16 +9,13 @@
     "src"
   ],
   "scripts": {
+    "format": "prettier --write .",
     "clean": "rm -rf dist/",
-    "rmdsstore": "find . -name '.DS_Store' -print -delete",
-    "cleanstart": "npm run clean && webpack && webpack-dev-server",
-    "start": "webpack && webpack-dev-server",
+    "start": "webpack-dev-server",
     "lint": "npx eslint src/",
-    "buildandserve": "npm run clean && webpack && http-server -c-1 dist/",
-    "test": "NODE_ENV=test mocha-webpack --webpack-config webpack.config-test.js \"tests/index-test.js\"",
-    "cleanbuild": "npm run clean && webpack",
-    "build": "webpack",
-    "pack": "rm -rf dist && npm run rmdsstore && npm run build && npm pack"
+    "buildandserve": "yarn clean && webpack && http-server -c-1 dist/",
+    "cleanbuild": "yarn clean && webpack",
+    "build": "webpack"
   },
   "dependencies": {
     "@gmod/nclist": "^2.0.0",
@@ -33,7 +30,6 @@
     "@babel/preset-env": "^7.2.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
-    "babel-polyfill": "^6.26.0",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.0.1",
     "eslint": "^5.10.0",
@@ -45,8 +41,6 @@
     "expect": "latest",
     "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.11.1",
-    "mocha": "^7.0.0",
-    "mocha-webpack": "^1.1.0",
     "prettier": "^3.5.1",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
