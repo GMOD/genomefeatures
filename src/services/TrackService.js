@@ -56,7 +56,6 @@ export function getJBrowseLink(source, chr, start, end) {
     }%3A${start}..${end}`
   } else {
     console.warn('no source found', source)
-    console.warn('wtf')
     return 'Maximum features displayed.  See full view for more.'
   }
   return `<a href="${

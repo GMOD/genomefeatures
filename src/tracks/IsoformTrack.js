@@ -32,8 +32,8 @@ export default class IsoformTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      .style('left', `${d3.event.pageX + 10}px`)
-      .style('top', `${d3.event.pageY + 10}px`)
+      .style('left', `${window.event.pageX + 10}px`)
+      .style('top', `${window.event.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')

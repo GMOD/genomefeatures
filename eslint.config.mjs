@@ -45,7 +45,7 @@ export default tseslint.config(
 
       'prefer-template': 'error',
       'one-var': ['error', 'never'],
-
+      '@typescript-eslint/no-deprecated': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -61,7 +61,6 @@ export default tseslint.config(
           caughtErrors: 'none',
         },
       ],
-      'import/namespace': 'off',
       'import/no-unresolved': 'off',
       'import/order': [
         'error',

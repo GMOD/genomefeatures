@@ -196,7 +196,7 @@ export default class Drawer {
 
   // Trigger for when we start dragging. Save the intial point.
   drag_start(ref) {
-    ref.drag_cx = d3.event.x
+    ref.drag_cx = window.event.x
   }
 
   // Trigger while we are dragging. Figure out the direction
@@ -209,12 +209,12 @@ export default class Drawer {
     let viewerTicks = `${ref.gfc.svg_target} .x-local-axis .tick`
     let scrollValue =
       parseInt(d3.select(viewerTicks).node().getBoundingClientRect().width) * 2
-    if (ref.drag_cx != d3.event.x) {
+    if (ref.drag_cx != window.event.x) {
       // Figure out which way the user wants to go.
       // 1 -> going up
       // -1 -> going
       let direction = 0
-      if (ref.drag_cx < d3.event.x) {
+      if (ref.drag_cx < window.event.x) {
         direction = 1
       } else {
         direction = -1
@@ -222,7 +222,7 @@ export default class Drawer {
       ref.scrollView(direction, scrollValue)
       // Always want to compare next drag direction compared to previous to
       // enable smooth back and forth scrolling
-      ref.drag_cx = d3.event.x
+      ref.drag_cx = window.event.x
     }
   }
 
