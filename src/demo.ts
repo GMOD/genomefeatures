@@ -1,5 +1,5 @@
+import { fetchNCListData } from './NCListFetcher'
 import GenomeFeatureViewer from './main'
-import { NCListService } from './services/NCListService'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 
 import './GenomeFeatureViewer.css'
@@ -563,7 +563,7 @@ function createIsoformExample(
 //  )
 // }
 
-function createCoVExampleNCList(
+async function createCoVExampleNCList(
   range: string,
   genome: string,
   divId: string,
@@ -573,6 +573,13 @@ function createCoVExampleNCList(
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
+  const features = await fetchNCListData({
+    chromosome,
+    start,
+    end,
+    baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
+    urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
+  })
   new GenomeFeatureViewer(
     {
       locale: 'global',
@@ -582,17 +589,13 @@ function createCoVExampleNCList(
       transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
       variantFilter: variantFilter ?? [],
-      service: new NCListService(),
       tracks: [
+        // @ts-expect-error
         {
           id: '12',
           genome: genome,
           type: type,
-          url: {
-            // @ts-expect-error
-            baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
-            urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
-          },
+          features,
         },
       ],
     },

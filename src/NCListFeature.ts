@@ -1,4 +1,4 @@
-import { SimpleFeatureSerialized } from './types'
+import { SimpleFeatureSerialized } from './services/types'
 
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/prefer-nullish-coalescing */
 const jb2ToJb1 = { refName: 'seq_id' }

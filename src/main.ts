@@ -4,6 +4,8 @@ import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
 
+import type { SimpleFeatureSerialized } from './services/types'
+
 import './GenomeFeatureViewer.css'
 
 interface Track {
@@ -18,6 +20,7 @@ interface Track {
   isoform_url: string[]
   variant_url: string[]
   url: string[]
+  features?: SimpleFeatureSerialized[]
 }
 
 interface ViewerConfig {
@@ -31,14 +34,13 @@ interface ViewerConfig {
   [key: string]: any
 }
 
-/*
- * Main viewer.
- *
- * @Param config: A configuration file full of tracks & metadata
- * @Param svg_target: The id of an svg element
- * @Param height: height of svg
- * @Param width: width of svg
- */
+d3.selection.prototype.first = function () {
+  return d3.select(this.nodes()[0])
+}
+d3.selection.prototype.last = function () {
+  return d3.select(this.nodes()[this.size() - 1])
+}
+
 export default class GenomeFeatureViewer {
   public tracks: Track[]
   public locale: string
@@ -60,7 +62,6 @@ export default class GenomeFeatureViewer {
     height: number,
   ) {
     this.tracks = []
-    this._extendD3()
     this.height = height
     this.width = width
     this.config = config
@@ -106,17 +107,6 @@ export default class GenomeFeatureViewer {
     setHighlights(selectedAlleles, svgTarget)
   }
 
-  // Create an extension on our d3
-  private _extendD3(): void {
-    d3.selection.prototype.first = function () {
-      return d3.select(this.nodes()[0])
-    }
-    d3.selection.prototype.last = function () {
-      return d3.select(this.nodes()[this.size() - 1])
-    }
-  }
-
-  // Creating our drawing space.
   private _initViewer(svg_target: string) {
     d3.select(svg_target).selectAll('*').remove()
     const viewer = d3.select(svg_target)
@@ -160,3 +150,5 @@ export default class GenomeFeatureViewer {
     this.config.end = end
   }
 }
+
+export { fetchNCListData } from './NCListFetcher'

@@ -75,22 +75,6 @@ export function findRange(
   }
 }
 
-export function countIsoforms(data: SimpleFeatureSerialized[]) {
-  let isoform_count = 0
-  // gene level
-  for (const feature of data) {
-    if (feature.children) {
-      feature.children.forEach(geneChild => {
-        // isoform level
-        if (geneChild.type == 'mRNA') {
-          isoform_count += 1
-        }
-      })
-    }
-  }
-  return isoform_count
-}
-
 export function calculateNewTrackPosition(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, any>,
