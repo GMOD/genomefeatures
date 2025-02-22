@@ -23,19 +23,19 @@ interface ViewerConfig {
  * @Param height: height of svg
  * @Param width: width of svg
  */
-export default class GenomeFeatureViewer {
-  private tracks: Track[]
-  private locale: string
-  private config: ViewerConfig
-  private height: number
-  private width: number
-  private drawer: Drawer
+export default class MainGenomeFeatureViewer {
+  public tracks: Track[]
+  public locale: string
+  public config: ViewerConfig
+  public height: number
+  public width: number
+  public drawer: Drawer
   public svg_target: string
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private viewer: any
+  public viewer: d3.Selection<d3.BaseType, unknown, HTMLElement | null, any>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private service: any
+  public service: any
 
   constructor(
     config: ViewerConfig,
@@ -131,9 +131,6 @@ export default class GenomeFeatureViewer {
     return d3.select(`${svg_target} .main-view`)
   }
 
-  /*
-     Methods to interact with viewer.
-    */
   getTracks(defaultTrack?: boolean): Track | Track[] {
     // Return all tracks if a default track
     // is not requested

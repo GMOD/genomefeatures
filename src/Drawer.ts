@@ -2,12 +2,25 @@ import * as d3 from 'd3'
 
 import { getTranslate } from './RenderFunctions'
 import IsoformAndVariantTrack from './tracks/IsoformAndVariantTrack'
-import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack2'
+import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack'
 import IsoformTrack from './tracks/IsoformTrack'
 import ReferenceTrack from './tracks/ReferenceTrack'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 import VariantTrack from './tracks/VariantTrack'
 import VariantTrackGlobal from './tracks/VariantTrackGlobal'
+import GenomeFeatureViewer from './main'
+
+declare module 'd3' {
+  interface Selection<
+    GElement extends d3.BaseType,
+    Datum,
+    PElement extends d3.BaseType,
+    PDatum,
+  > {
+    first(): Selection<GElement, Datum, PElement, PDatum>
+    last(): Selection<GElement, Datum, PElement, PDatum>
+  }
+}
 
 const LABEL_OFFSET = 100
 
@@ -62,13 +75,13 @@ interface DragThreshold {
 }
 
 export default class Drawer {
-  private gfc: GFC
+  private gfc: GenomeFeatureViewer
   private used: number
   private drag_cx: number
   private drag_prev: number
   private range: number[]
 
-  constructor(gfc: GFC) {
+  constructor(gfc: GenomeFeatureViewer) {
     this.gfc = gfc
     this.used = 0
     this.drag_cx = 0
@@ -249,6 +262,7 @@ export default class Drawer {
 
   // Trigger for when we start dragging. Save the intial point.
   drag_start(ref: Drawer) {
+    // @ts-expect-error
     ref.drag_cx = window.event.x
   }
 
@@ -264,15 +278,18 @@ export default class Drawer {
       // @ts-expect-error
       parseInt(d3.select(viewerTicks).node().getBoundingClientRect().width) * 2
 
+    // @ts-expect-error
     if (ref.drag_cx != window.event.x) {
       // Figure out which way the user wants to go.
       // 1 -> going up
       // -1 -> going
       let direction = 0
+      // @ts-expect-error
       direction = ref.drag_cx < window.event.x ? 1 : -1
       ref.scrollView(direction, scrollValue)
       // Always want to compare next drag direction compared to previous to
       // enable smooth back and forth scrolling
+      // @ts-expect-error
       ref.drag_cx = window.event.x
     }
   }
@@ -284,13 +301,14 @@ export default class Drawer {
   // @Param scrollValue: The amount you want to move the view.
   //                    Typically you get the tick size then multiply.
   scrollView(direction: number, scrollValue: number) {
-    // We want to move the track in a direction when dragging
-    // thresholds for end of the sequence
+    // We want to move the track in a direction when dragging thresholds for
+    // end of the sequence
     const dragThresh = {
       maxNegative: this.gfc.width - this.range[1] + -(scrollValue / 2),
     }
-    // We are moving get our elements and translate them
-    // the distance of a tick.
+
+    // We are moving get our elements and translate them the distance of a
+    // tick.
     const viewerTracks = `${this.gfc.svg_target} .main-view .track`
     d3.selectAll(viewerTracks).attr('transform', function () {
       const trs = getTranslate(d3.select(this).attr('transform'))
@@ -300,8 +318,11 @@ export default class Drawer {
       } else if (direction == -1) {
         newX = trs[0] - scrollValue
       }
-      // Want to make sure we don't go beyond our sequence length. Which is defined by our range.
+
+      // Want to make sure we don't go beyond our sequence length. Which is
+      // defined by our range.
       return newX <= dragThresh.maxNegative ||
+        // @ts-expect-error
         newX > -this.range[0] + 100 + scrollValue / 2
         ? `translate(${trs[0]},${trs[1]})`
         : `translate(${newX},${trs[1]})`
