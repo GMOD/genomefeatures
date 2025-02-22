@@ -150,7 +150,6 @@ export default class Drawer {
             isoformFilter,
             service: this.gfc.service,
           })
-          // @ts-expect-error
           await isoformVariantTrack.populateTrack(track)
           track_height += isoformVariantTrack.DrawTrack()
         } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {

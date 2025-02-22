@@ -17,6 +17,8 @@ covidExamples()
 covidExamplesNCList()
 currentExamples()
 
+type TrackType = keyof typeof TRACK_TYPE
+
 function getTranscriptTypes() {
   return [
     'mRNA',
@@ -194,7 +196,6 @@ function ratExamples() {
     'networkExampleRat1',
     TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT,
     true,
-    null,
   )
   createExample(
     '10:94485648..94489071',
@@ -202,7 +203,6 @@ function ratExamples() {
     'networkExampleRat1And',
     TRACK_TYPE.ISOFORM_AND_VARIANT,
     true,
-    null,
   )
   createExample(
     '1:34987290..35280466',
@@ -354,7 +354,6 @@ function wormExamples() {
     'networkExampleWorm1',
     TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT,
     true,
-    null,
   )
   createExample(
     'V:7114..57432',
@@ -362,7 +361,6 @@ function wormExamples() {
     'networkExampleWorm1And',
     TRACK_TYPE.ISOFORM_AND_VARIANT,
     true,
-    null,
   )
 }
 
@@ -384,14 +382,14 @@ function isoformExamples() {
 }
 
 function createExample(
-  range,
-  genome,
-  divId,
-  type,
-  showLabel,
-  variantFilter,
-  isoformFilter,
-  initialHighlight,
+  range: string,
+  genome: string,
+  divId: string,
+  type: TrackType,
+  showLabel: boolean,
+  variantFilter?: string[],
+  isoformFilter?: string[],
+  initialHighlight?: string[],
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
@@ -400,19 +398,20 @@ function createExample(
     {
       locale: 'global',
       chromosome: chromosome,
-      start: start,
-      end: end,
+      start: +start,
+      end: +end,
       showVariantLabel: showLabel,
       transcriptTypes: getTranscriptTypes(),
-      isoformFilter: isoformFilter || [],
-      variantFilter: variantFilter || [],
-      initialHighlight: initialHighlight || [],
+      isoformFilter: isoformFilter ?? [],
+      variantFilter: variantFilter ?? [],
+      initialHighlight: initialHighlight ?? [],
       binRatio: ratio,
       tracks: [
+        // @ts-expect-error
         {
-          id: 12,
-          genome: genome,
-          type: type,
+          id: '12',
+          genome,
+          type,
           isoform_url: [
             `${BASE_URL}/track/`,
             '/All%20Genes/',
@@ -442,33 +441,37 @@ function createExample(
 
   if (divId === 'networkExampleWorm1And') {
     document
-      .getElementById('wormbutton')
+      .getElementById('wormbutton')!
       .addEventListener('click', function () {
         gfc.setSelectedAlleles(
           ['WB:WBVar00089535', 'WB:WBVar02125540', 'WB:WBVar00242477'],
           '#networkExampleWorm1And',
         )
       })
-    document.getElementById('clrbutton').addEventListener('click', function () {
-      gfc.setSelectedAlleles([], '#networkExampleWorm1And')
-    })
+    document
+      .getElementById('clrbutton')!
+      .addEventListener('click', function () {
+        gfc.setSelectedAlleles([], '#networkExampleWorm1And')
+      })
   }
   if (divId === 'viewerFlyExample2NoLabelAnd') {
-    document.getElementById('flybutton').addEventListener('click', function () {
-      gfc.setSelectedAlleles(
-        ['FB:FBal0242675', 'FB:FBal0302371', 'FB:FBal0012433'],
-        '#viewerFlyExample2NoLabelAnd',
-      )
-    })
     document
-      .getElementById('clrbuttonfly')
+      .getElementById('flybutton')!
+      .addEventListener('click', function () {
+        gfc.setSelectedAlleles(
+          ['FB:FBal0242675', 'FB:FBal0302371', 'FB:FBal0012433'],
+          '#viewerFlyExample2NoLabelAnd',
+        )
+      })
+    document
+      .getElementById('clrbuttonfly')!
       .addEventListener('click', function () {
         gfc.setSelectedAlleles([], '#viewerFlyExample2NoLabelAnd')
       })
   }
   if (divId === 'viewerHighlightExample') {
     document
-      .getElementById('mausbutton')
+      .getElementById('mausbutton')!
       .addEventListener('click', function () {
         gfc.setSelectedAlleles(
           ['ZFIN:ZDB-ALT-130411-164'],
@@ -476,7 +479,7 @@ function createExample(
         )
       })
     document
-      .getElementById('clrbuttonmaus')
+      .getElementById('clrbuttonmaus')!
       .addEventListener('click', function () {
         gfc.setSelectedAlleles([], '#viewerHighlightExample')
       })
@@ -484,29 +487,30 @@ function createExample(
 }
 
 function createIsoformExample(
-  range,
-  genome,
-  divId,
-  type,
-  showLabel,
-  variantFilter,
+  range: string,
+  genome: string,
+  divId: string,
+  type: TrackType,
+  showLabel: boolean,
+  variantFilter?: string[],
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome: chromosome,
-      start: start,
-      end: end,
+      chromosome,
+      start: +start,
+      end: +end,
       transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
-      variantFilter: variantFilter || [],
+      variantFilter: variantFilter ?? [],
       tracks: [
+        // @ts-expect-error
         {
-          id: 12,
-          genome: genome,
-          type: type,
+          id: '12',
+          genome,
+          type,
           url: [`${BASE_URL}/track/`, '/All%20Genes/', '.json'],
         },
       ],
@@ -560,12 +564,12 @@ function createIsoformExample(
 // }
 
 function createCoVExampleNCList(
-  range,
-  genome,
-  divId,
-  type,
-  showLabel,
-  variantFilter,
+  range: string,
+  genome: string,
+  divId: string,
+  type: TrackType,
+  showLabel: boolean,
+  variantFilter?: string[],
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
@@ -573,18 +577,19 @@ function createCoVExampleNCList(
     {
       locale: 'global',
       chromosome: chromosome,
-      start: start,
-      end: end,
+      start: +start,
+      end: +end,
       transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
-      variantFilter: variantFilter || [],
+      variantFilter: variantFilter ?? [],
       service: new NCListService(),
       tracks: [
         {
-          id: 12,
+          id: '12',
           genome: genome,
           type: type,
           url: {
+            // @ts-expect-error
             baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
             urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
           },
@@ -598,12 +603,12 @@ function createCoVExampleNCList(
 }
 
 function createCoVExample(
-  range,
-  genome,
-  divId,
-  type,
-  showLabel,
-  variantFilter,
+  range: string,
+  genome: string,
+  divId: string,
+  type: TrackType,
+  showLabel: boolean,
+  variantFilter?: string[],
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
@@ -611,16 +616,17 @@ function createCoVExample(
     {
       locale: 'global',
       chromosome: chromosome,
-      start: start,
-      end: end,
+      start: +start,
+      end: +end,
       transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
-      variantFilter: variantFilter || [],
+      variantFilter: variantFilter ?? [],
       tracks: [
+        // @ts-expect-error
         {
-          id: 12,
-          genome: genome,
-          type: type,
+          id: '12',
+          genome,
+          type,
           url: [
             `${BASE_URL}/track/`,
             '/Mature%20peptides/',
@@ -643,13 +649,15 @@ function oldExamples() {
       start: 75574916,
       end: 75656722,
       tracks: [
+        // @ts-expect-error
         {
-          id: 2,
+          id: '2',
           genome: 'Mus musculus',
           type: TRACK_TYPE.VARIANT_GLOBAL,
         },
+        // @ts-expect-error
         {
-          id: 1,
+          id: '1',
           genome: 'Mus musculus',
           type: TRACK_TYPE.ISOFORM,
           url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json'],
@@ -681,15 +689,15 @@ function oldExamples() {
         'rRNA',
         'ARS',
         'antisense_RNA',
-
         'C_gene_segment',
         'V_gene_segment',
         'pseudogene_attribute',
         'snoRNA_gene',
       ],
       tracks: [
+        // @ts-expect-error
         {
-          id: 1,
+          id: '1',
           genome: 'Drosophila melanogaster',
           type: TRACK_TYPE.ISOFORM,
           url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json?name=Pax'],
@@ -712,17 +720,19 @@ function oldExamples() {
       end: 48515461,
       centerVariant: true,
       tracks: [
+        // @ts-expect-error
         {
-          id: 1,
+          id: '1',
           label: 'Case Variants',
           type: TRACK_TYPE.VARIANT,
-          chromosome: 5,
+          chromosome: '5',
         },
+        // @ts-expect-error
         {
-          id: 2,
+          id: '2',
           label: 'ClinVar Cases',
           type: TRACK_TYPE.VARIANT,
-          chromosome: 5,
+          chromosome: '5',
         },
       ],
     },

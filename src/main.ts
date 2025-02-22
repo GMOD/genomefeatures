@@ -11,7 +11,11 @@ interface Track {
   chromosome: string
   genome: string
   type: string
+  label?: string
   id: string
+  isoform_url: string[]
+  variant_url: string[]
+  url: string[]
 }
 
 interface ViewerConfig {
