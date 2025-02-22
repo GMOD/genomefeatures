@@ -61,17 +61,3 @@ VanillaJS). Height is calculated on the fly for 'global' isoform tracks.
 Result:
 
 ![Example 1](images/ExampleIsoform1.png)
-
-# Long Term Goal
-
-The idea is that we can have multiple interactive tracks.
-
-This is an example of how they might be used. The controls / filters can be used
-to interact and the details section could be part of that interaction.
-
-The top genomic view is the "overview", consisting of a (very sad) variant track
-and an isoform track, though it could be any number. The red arrow at top
-indicates a selected region that is linked to the scrollable track at the bottom
-through a separate eventing model.
-
-![alt text](images/Version1Output.png 'Logo Title Text 1')
