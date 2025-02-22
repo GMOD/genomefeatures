@@ -110,7 +110,7 @@ export default class IsoformAndVariantTrack {
   // Draw our track on the viewer
   // TODO: Potentially seperate this large section of code
   // for both testing/extensibility
-  DrawTrack(): number {
+  DrawTrack() {
     const isoformFilter = this.isoformFilter
     let isoformData = this.trackData
     const initialHighlight = this.initialHighlight

@@ -10,6 +10,7 @@ export interface SimpleFeatureSerializedNoId {
   alleles?: string[]
   selected?: string
   strand: number
+  source: string
 }
 
 // base serialized feature has to have a uniqueId

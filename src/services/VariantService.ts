@@ -61,7 +61,7 @@ export function getDescriptionDimensions(description: Record<string, string>) {
 
 // we have to guard for type
 function findVariantBinIndexForPosition(
-  variantBins: Variant[],
+  variantBins: VariantBin[],
   variant: VariantFeature,
   buffer: number,
 ) {
@@ -92,21 +92,25 @@ function findVariantBinIndexForPosition(
   })
 }
 
-type VariantFeature = SimpleFeatureSerialized & Variant
+type VariantFeature = SimpleFeatureSerialized & VariantBin
 
-// TODO: Delete, this is deprecated
-interface Variant {
+interface VariantBin {
   fmin: number
   fmax: number
   type: string
   consequence: string
-  variantSet: Variant[]
-  variants: Variant[]
+  variantSet: VariantBin[]
+  variants: VariantBin[]
   allele_symbols_text?: { values: string[] }
+  allele_symbols?: { values: string[] }
+  allele_ids: { values: string[] }
+  geneLevelConsequence?: { values: string[] }
 }
 
-export function generateVariantBins(variantData: VariantFeature[]): Variant[] {
-  const variantBins: Variant[] = []
+export function generateVariantBins(
+  variantData: VariantFeature[],
+): VariantBin[] {
+  const variantBins: VariantBin[] = []
   variantData.forEach(variant => {
     const consequence = getConsequence(variant)
     const { type, fmax, fmin } = variant
@@ -147,6 +151,7 @@ export function generateVariantBins(variantData: VariantFeature[]): Variant[] {
         variantBins[foundMatchingVariantSetIndex].variantSet.push(variant)
       } else {
         variantBins[foundVariantBinIndex].variantSet = [
+          // @ts-expect-error
           {
             variants: [variant],
             type,
@@ -160,12 +165,13 @@ export function generateVariantBins(variantData: VariantFeature[]): Variant[] {
       foundBin.fmax = Math.max(fmax, foundBin.fmax)
       variantBins[foundVariantBinIndex] = foundBin
     } else {
-      const newBin: Variant = {
+      const newBin: VariantBin = {
         fmin,
         fmax,
         type,
         consequence,
         variantSet: [
+          // @ts-expect-error
           {
             variants: [variant],
             type,
@@ -184,7 +190,7 @@ export function generateVariantDataBinsAndDataSets(
   variantData: VariantFeature[],
   ratio: number,
 ) {
-  const variantBins = [] as Variant[]
+  const variantBins = [] as VariantBin[]
   variantData.forEach(variant => {
     const consequence = getConsequence(variant)
     const { type, fmax, fmin } = variant
@@ -230,6 +236,7 @@ export function generateVariantDataBinsAndDataSets(
 
         foundBin.fmin = foundMin
         foundBin.fmax = foundMax
+        // @ts-expect-error
         foundBin.variantSet.push({
           variants: [variant],
           type,
@@ -244,12 +251,13 @@ export function generateVariantDataBinsAndDataSets(
       foundBin.fmax = Math.max(fmax, foundBin.fmax)
       variantBins[foundVariantBinIndex] = foundBin
     } else {
-      const newBin = {
+      variantBins.push({
         fmin,
         fmax,
         type,
         consequence,
         variantSet: [
+          // @ts-expect-error
           {
             variants: [variant],
             type,
@@ -259,8 +267,7 @@ export function generateVariantDataBinsAndDataSets(
           },
         ],
         variants: [variant],
-      }
-      variantBins.push(newBin)
+      })
     }
   })
   return variantBins
@@ -362,19 +369,15 @@ export function renderVariantDescription(description: Record<string, string>) {
   } else if (description.allele_of_genes) {
     returnString += `<tr><th>Allele of Genes</th><td>${description.allele_of_genes.length > descriptionWidth ? description.allele_of_genes.slice(0, Math.max(0, descriptionWidth)) : description.allele_of_genes}</td></tr>`
   }
-  // if(description.alleles){
-  //   returnString += `<tr><th>Alleles</th><td>${description.alleles.length>descriptionWidth ? description.alleles.substr(0,descriptionWidth) : description.alleles}</td></tr>`;
-  // }
   if (description.alternative_alleles) {
     returnString += `<tr><th>Sequence Change</th><td>${change}</td></tr>`
-    // returnString += `<tr><th>Alternative Alleles</th><td>${description.alternative_alleles.length>descriptionWidth ? description.alternative_alleles.substr(0,descriptionWidth) : description.alternative_alleles}</td></tr>`;
   }
 
   returnString += '</tbody></table>'
   return returnString
 }
 
-export function getVariantDescriptions(variant: Variant) {
+export function getVariantDescriptions(variant: VariantBin) {
   return variant.variants.map(v => {
     const description = getVariantDescription(v)
     description.consequence = description.consequence ?? 'UNKNOWN'
@@ -382,8 +385,8 @@ export function getVariantDescriptions(variant: Variant) {
   })
 }
 
-export function getVariantAlleles(variant) {
-  const returnObj = []
+export function getVariantAlleles(variant: VariantBin) {
+  const returnObj = [] as string[]
   variant.variants.forEach(val => {
     const allele = val.allele_ids.values[0].replace(/"/g, '')
     if (allele.split(',').length > 1) {
@@ -404,13 +407,15 @@ export function mergeConsequenceColors() {
   // })
 }
 
-export function getColorsForConsequences(descriptions) {
+export function getColorsForConsequences(
+  descriptions: { consequence: string }[],
+) {
   return descriptions.map(d => {
     return getColorForConsequence(d.consequence)
   })
 }
 
-export function getConsequence(variant) {
+export function getConsequence(variant: VariantBin) {
   let consequence = 'UNKNOWN'
 
   if (
@@ -429,70 +434,52 @@ export function getConsequence(variant) {
  * @param variant
  * @returns {object}
  */
-export function getVariantDescription(variant) {
-  const returnObject = {}
-  returnObject.symbol = getVariantSymbol(variant)
-  returnObject.symbolDetail = getVariantSymbolDetail(variant)
-  returnObject.location = `${variant.seqId}:${variant.fmin}..${variant.fmax}`
-  returnObject.consequence = getConsequence(variant)
-  returnObject.type = variant.type
-  returnObject.name = variant.name
-  returnObject.description = variant.description
-  returnObject.reference_allele = variant.reference_allele
+export function getVariantDescription(variant: VariantFeature) {
+  const formatArrayValues = (field?: { values: string[] | string }) =>
+    field?.values && field.values.length > 0
+      ? (Array.isArray(field.values)
+          ? field.values.join(' ')
+          : field.values
+        ).replace(/"/g, '')
+      : field
 
-  returnObject.geneId = variant.allele_of_gene_ids
-    ? variant.allele_of_gene_ids.values[0].replace(/"/g, '')
-    : undefined
-  returnObject.geneSymbol = variant.allele_of_gene_symbols
-    ? variant.allele_of_gene_symbols.values[0].replace(/"/g, '')
-    : undefined
-
-  if (variant.allele_of_genes) {
-    returnObject.allele_of_genes =
-      variant.allele_of_genes.values &&
-      variant.allele_of_genes.values.length > 0
-        ? (Array.isArray(variant.allele_of_genes.values)
-            ? variant.allele_of_genes.values.join(' ')
-            : variant.allele_of_genes.values
-          ).replace(/"/g, '')
-        : variant.allele_of_genes
+  return {
+    symbol: getVariantSymbol(variant),
+    symbolDetail: getVariantSymbolDetail(variant),
+    location: `${variant.seqId}:${variant.fmin}..${variant.fmax}`,
+    consequence: getConsequence(variant),
+    type: variant.type,
+    name: variant.name,
+    description: variant.description,
+    reference_allele: variant.reference_allele,
+    geneId: variant.allele_of_gene_ids
+      ? variant.allele_of_gene_ids.values[0].replace(/"/g, '')
+      : undefined,
+    geneSymbol: variant.allele_of_gene_symbols
+      ? variant.allele_of_gene_symbols.values[0].replace(/"/g, '')
+      : undefined,
+    ...(variant.allele_of_genes && {
+      allele_of_genes: formatArrayValues(variant.allele_of_genes),
+    }),
+    ...(variant.allele_ids && {
+      allele_ids: formatArrayValues(variant.allele_ids),
+    }),
+    ...(variant.alternative_alleles && {
+      alternative_alleles: formatArrayValues(variant.alternative_alleles),
+    }),
+    ...(variant.impact && {
+      impact: formatArrayValues(variant.impact),
+    }),
   }
-  if (variant.allele_ids) {
-    returnObject.allele_ids =
-      variant.allele_ids.values && variant.allele_ids.values.length > 0
-        ? (Array.isArray(variant.allele_ids.values)
-            ? variant.allele_ids.values.join(' ')
-            : variant.allele_ids.values
-          ).replace(/"/g, '')
-        : variant.allele_ids
-  }
-  if (variant.alternative_alleles) {
-    returnObject.alternative_alleles =
-      variant.alternative_alleles.values &&
-      variant.alternative_alleles.values.length > 0
-        ? (Array.isArray(variant.alternative_alleles.values)
-            ? variant.alternative_alleles.values.join(' ')
-            : variant.alternative_alleles.values
-          ).replace(/"/g, '')
-        : variant.alternative_alleles
-  }
-  if (variant.impact) {
-    returnObject.impact =
-      variant.impact.values && variant.impact.values.length > 0
-        ? (Array.isArray(variant.impact.values)
-            ? variant.impact.values.join(' ')
-            : variant.impact.values
-          ).replace(/"/g, '')
-        : variant.impact
-  }
-
-  return returnObject
 }
 
-export function getVariantSymbolDetail(variant) {
+export function getVariantSymbolDetail(
+  variant: VariantBin,
+): string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant.variants) {
     return variant.variants.length !== 1
-      ? variant.variants.length
+      ? `${variant.variants.length}`
       : getVariantSymbolDetail(variant.variants[0])
   }
   // note that using the html version of this gets swallowed in the text svg
@@ -507,14 +494,15 @@ export function getVariantSymbolDetail(variant) {
         const clean_ids = variant.allele_ids.values[0].replace(/"|\[|\]/g, '')
         const clean_text_array = clean_text.split(',')
         const clean_id_array = clean_ids.split(',')
-        for (const i in clean_text.split(',')) {
-          const text = `${clean_text_array[i].trim()} (${clean_id_array[i].trim()})`
-          text_array.push(text)
+        for (let i = 0; i < clean_id_array.length; i++) {
+          text_array.push(
+            `${clean_text_array[i].trim()} (${clean_id_array[i].trim()})`,
+          )
         }
         return text_array.join(', ')
       } catch (e) {
         console.error(e)
-        return variant.allele_symbols.values[0].split(',').length
+        return `${variant.allele_symbols.values[0].split(',').length}`
       }
     } else {
       const clean_text = variant.allele_symbols.values[0].replace(/"/g, '')
@@ -527,17 +515,18 @@ export function getVariantSymbolDetail(variant) {
   return undefined
 }
 
-export function getVariantSymbol(variant: Variant) {
+export function getVariantSymbol(variant: VariantBin): string | undefined {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant.variants) {
     return variant.variants.length !== 1
-      ? variant.variants.length
+      ? `${variant.variants.length}`
       : getVariantSymbol(variant.variants[0])
   }
   // note that using the html version of this gets swallowed in the text svg
   if (variant.allele_symbols_text?.values) {
-    return variant.allele_symbols_text.values[0].split(',').length > 1
-      ? variant.allele_symbols_text.values[0].split(',').length
+    const r = variant.allele_symbols_text.values[0].split(',')
+    return r.length > 1
+      ? `${r.length}`
       : variant.allele_symbols_text.values[0].replace(/"/g, '')
   }
   return undefined
