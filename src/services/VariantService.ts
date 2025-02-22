@@ -60,8 +60,8 @@ export function getDescriptionDimensions(description: Record<string, string>) {
 
 // we have to guard for type
 function findVariantBinIndexForPosition(
-  variantBins: SimpleFeatureSerialized[],
-  variant: SimpleFeatureSerialized,
+  variantBins: Variant[],
+  variant: VariantFeature,
   buffer: number,
 ) {
   const { fmax, fmin, type } = variant
@@ -91,15 +91,24 @@ function findVariantBinIndexForPosition(
   })
 }
 
+type VariantFeature = SimpleFeatureSerialized & Variant
+
 // TODO: Delete, this is deprecated
-export function generateVariantBins(variantData: SimpleFeatureSerialized[]) {
-  // create variant bins for overlap over a single isoform
-  // initially we do this for all of them, for both position and type
-  const variantBins = []
+interface Variant {
+  fmin: number
+  fmax: number
+  type: string
+  consequence: string
+  variantSet: Variant[]
+  variants: Variant[]
+  allele_symbols_text?: { values: string[] }
+}
+
+export function generateVariantBins(variantData: VariantFeature[]): Variant[] {
+  const variantBins: Variant[] = []
   variantData.forEach(variant => {
     const consequence = getConsequence(variant)
     const { type, fmax, fmin } = variant
-    // we should ONLY ever find one or zero
     const foundVariantBinIndex = variantBins.findIndex(fb => {
       const relativeMin = fb.fmin
       const relativeMax = fb.fmax
@@ -111,15 +120,12 @@ export function generateVariantBins(variantData: SimpleFeatureSerialized[]) {
         return false
       }
 
-      // if we overlap thAe min edge then take the minimum and whatever the maximum and add
       if (relativeMin <= fmin && relativeMax >= fmin) {
         return true
       }
-      // if we overlap the max edge then take the maximum and whatever the maximum and add
       if (relativeMax <= fmax && relativeMax >= fmax) {
         return true
       }
-      // if both are within the edges then just add it
       if (relativeMin >= fmin && relativeMax <= fmax) {
         return true
       }
@@ -128,8 +134,8 @@ export function generateVariantBins(variantData: SimpleFeatureSerialized[]) {
     })
 
     if (foundVariantBinIndex !== -1) {
-      // add variant to this bin and adust the min and max
       const foundBin = variantBins[foundVariantBinIndex]
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const foundMatchingVariantSetIndex = variantBins[foundVariantBinIndex]
         .variantSet
         ? variantBins[foundVariantBinIndex].variantSet.findIndex(
@@ -153,7 +159,7 @@ export function generateVariantBins(variantData: SimpleFeatureSerialized[]) {
       foundBin.fmax = Math.max(fmax, foundBin.fmax)
       variantBins[foundVariantBinIndex] = foundBin
     } else {
-      const newBin = {
+      const newBin: Variant = {
         fmin,
         fmax,
         type,
@@ -173,8 +179,11 @@ export function generateVariantBins(variantData: SimpleFeatureSerialized[]) {
   return variantBins
 }
 
-export function generateVariantDataBinsAndDataSets(variantData, ratio) {
-  const variantBins = []
+export function generateVariantDataBinsAndDataSets(
+  variantData: VariantFeature[],
+  ratio: number,
+) {
+  const variantBins = [] as Variant[]
   variantData.forEach(variant => {
     const consequence = getConsequence(variant)
     const { type, fmax, fmin } = variant
@@ -191,6 +200,7 @@ export function generateVariantDataBinsAndDataSets(variantData, ratio) {
     if (foundVariantBinIndex >= 0 && type != 'deletion') {
       // add variant to this bin and adjust the min and max
       const foundBin = variantBins[foundVariantBinIndex]
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const foundMatchingVariantSetIndex = foundBin.variantSet
         ? foundBin.variantSet.findIndex(
             b => b.type === type && b.consequence === consequence,
@@ -255,7 +265,9 @@ export function generateVariantDataBinsAndDataSets(variantData, ratio) {
   return variantBins
 }
 
-export function renderVariantDescriptions(descriptions) {
+export function renderVariantDescriptions(
+  descriptions: Record<string, string>[],
+) {
   if (descriptions.length === 1) {
     let stringBuffer = `<div style="margin-top: 30px;">`
     stringBuffer += renderVariantDescription(descriptions[0])
@@ -273,7 +285,7 @@ export function renderVariantDescriptions(descriptions) {
   }
 }
 
-export function renderVariantDescription(description) {
+export function renderVariantDescription(description: Record<string, string>) {
   const { descriptionWidth } = getDescriptionDimensions(description)
   let returnString = ''
   const location = description.location
@@ -305,7 +317,7 @@ export function renderVariantDescription(description) {
     }
     length = `${del}; ${ins}`
   } else {
-    length = `${stop - start}bp`
+    length = `${+stop - +start}bp`
   }
   ref_allele =
     ref_allele.length > 20
@@ -345,7 +357,7 @@ export function renderVariantDescription(description) {
     returnString += `<tr><th>Name</th><td>${description.name}</td></tr>`
   }
   if (description.geneId && description.geneSymbol) {
-    returnString += `<tr><th>Allele of Genes</th><td> ${description.geneSymbol > descriptionWidth ? description.geneSymbol.slice(0, Math.max(0, descriptionWidth)) : description.geneSymbol} (${description.geneId})</td></tr>`
+    returnString += `<tr><th>Allele of Genes</th><td> ${description.geneSymbol.length > descriptionWidth ? description.geneSymbol.slice(0, Math.max(0, descriptionWidth)) : description.geneSymbol} (${description.geneId})</td></tr>`
   } else if (description.allele_of_genes) {
     returnString += `<tr><th>Allele of Genes</th><td>${description.allele_of_genes.length > descriptionWidth ? description.allele_of_genes.slice(0, Math.max(0, descriptionWidth)) : description.allele_of_genes}</td></tr>`
   }
@@ -361,7 +373,7 @@ export function renderVariantDescription(description) {
   return returnString
 }
 
-export function getVariantDescriptions(variant) {
+export function getVariantDescriptions(variant: Variant) {
   return variant.variants.map(v => {
     const description = getVariantDescription(v)
     description.consequence = description.consequence ?? 'UNKNOWN'
@@ -514,7 +526,8 @@ export function getVariantSymbolDetail(variant) {
   return undefined
 }
 
-export function getVariantSymbol(variant) {
+export function getVariantSymbol(variant: Variant) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant.variants) {
     return variant.variants.length !== 1
       ? variant.variants.length
@@ -529,7 +542,7 @@ export function getVariantSymbol(variant) {
   return undefined
 }
 
-export function getVariantTrackPositions(variantData) {
+export function getVariantTrackPositions(variantData: VariantFeature[]) {
   const presentVariants = []
   for (const variant of variantData) {
     if (variant.type.toLowerCase() === 'deletion') {
@@ -551,6 +564,5 @@ export function getVariantTrackPositions(variantData) {
       presentVariants.push('delins')
     }
   }
-  const distinctVariants = [...new Set(presentVariants)]
-  return distinctVariants.sort()
+  return [...new Set(presentVariants)].sort()
 }

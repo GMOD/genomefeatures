@@ -35,7 +35,6 @@ export interface Feature {
 
 // subfeatures do not have to have uniqueId
 export interface SimpleFeatureSerializedNoId {
-  [key: string]: unknown
   parentId?: string
   fmin: number
   fmax: number
@@ -43,6 +42,8 @@ export interface SimpleFeatureSerializedNoId {
   type?: string
   name?: string
   children?: SimpleFeatureSerializedNoId[]
+  alleles?: string[]
+  selected?: string
 }
 
 // base serialized feature has to have a uniqueId

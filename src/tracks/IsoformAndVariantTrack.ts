@@ -41,19 +41,6 @@ interface IsoformAndVariantTrackProps {
   service?: ApolloService
 }
 
-interface Feature {
-  id: string
-  name: string
-  type: string
-  selected?: boolean
-  strand: number
-  children?: Feature[]
-  fmin: number
-  fmax: number
-  seqId?: string
-  source?: string
-}
-
 interface VariantData {
   type: string
   fmin: number
@@ -528,7 +515,7 @@ export default class IsoformAndVariantTrack {
       .attr('class', 'track')
 
     let row_count = 0
-    const used_space = []
+    const used_space = [] as unknown[]
     let fmin_display = -1
     let fmax_display = -1
 
@@ -676,7 +663,7 @@ export default class IsoformAndVariantTrack {
                 .attr('opacity', selected ? 1 : 0.5)
                 .attr('height', ISOFORM_TITLE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
-                .text(text_string)
+                .text(text_string ?? '')
                 .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
@@ -783,7 +770,7 @@ export default class IsoformAndVariantTrack {
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                  } else if (CDS_feats.includes(innerType)) {
+                  } else if (CDS_feats.includes(innerType ?? '')) {
                     isoform
                       .append('rect')
                       .attr('class', 'CDS')
@@ -831,7 +818,7 @@ export default class IsoformAndVariantTrack {
             if (row_count === MAX_ROWS && !warningRendered) {
               // *** DANGER EDGE CASE ***/
               const link = getJBrowseLink(source, chr, viewStart, viewEnd)
-              ++current_row
+              ++current_row!
               warningRendered = true
               track
                 .append('a')
@@ -874,61 +861,47 @@ export default class IsoformAndVariantTrack {
     return row_count * ISOFORM_HEIGHT + heightBuffer + VARIANT_TRACK_HEIGHT
   }
 
-  filterVariantData(
-    variantData: VariantData[],
-    variantFilter: string[],
-  ): VariantData[] {
+  filterVariantData(variantData: VariantData[], variantFilter: string[]) {
     if (variantFilter.length === 0) {
       return variantData
     }
-    try {
-      return variantData.filter(v => {
-        let returnVal = false
-        try {
-          if (
-            variantFilter.includes(v.name) ||
-            (v.allele_symbols?.values &&
-              variantFilter.includes(
-                v.allele_symbols.values[0].replace(/"/g, ''),
-              )) ||
-            (v.symbol?.values &&
-              variantFilter.includes(v.symbol.values[0].replace(/"/g, ''))) ||
-            (v.symbol_text?.values &&
-              variantFilter.includes(v.symbol_text.values[0].replace(/"/g, '')))
-          ) {
-            returnVal = true
-          }
-          const ids = v.allele_ids.values[0]
-            .replace(/"|\[|\]| /g, '')
-            .split(',')
-          ids.forEach(id => {
-            if (variantFilter.includes(id)) {
-              returnVal = true
-            }
-          })
-        } catch (e) {
-          console.error(
-            'error processing filter with so returning anyway',
-            variantFilter,
-            v,
-            e,
-          )
+    return variantData.filter(v => {
+      let returnVal = false
+      try {
+        if (
+          variantFilter.includes(v.name ?? '') ||
+          (v.allele_symbols?.values &&
+            variantFilter.includes(
+              v.allele_symbols.values[0].replace(/"/g, ''),
+            )) ||
+          (v.symbol?.values &&
+            variantFilter.includes(v.symbol.values[0].replace(/"/g, ''))) ||
+          (v.symbol_text?.values &&
+            variantFilter.includes(v.symbol_text.values[0].replace(/"/g, '')))
+        ) {
           returnVal = true
         }
-        return returnVal
-      })
-    } catch (e) {
-      console.warn(
-        'problem filtering variant data',
-        variantData,
-        variantFilter,
-        e,
-      )
-    }
+        const ids = v.allele_ids.values[0].replace(/"|\[|\]| /g, '').split(',')
+        ids.forEach(id => {
+          if (variantFilter.includes(id)) {
+            returnVal = true
+          }
+        })
+      } catch (e) {
+        console.error(
+          'error processing filter with so returning anyway',
+          variantFilter,
+          v,
+          e,
+        )
+        returnVal = true
+      }
+      return returnVal
+    })
   }
 
   renderTooltipDescription(
-    tooltipDiv: Selection<HTMLDivElement, unknown, null, undefined>,
+    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>,
     descriptionHtml: string,
     closeFunction: () => void,
   ): void {
@@ -942,8 +915,10 @@ export default class IsoformAndVariantTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      .style('left', `${window.event.pageX + 10}px`)
-      .style('top', `${window.event.pageY + 10}px`)
+      // @ts-expect-error
+      .style('left', `${window.event!.pageX + 10}px`)
+      // @ts-expect-error
+      .style('top', `${window.event!.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')
@@ -965,14 +940,14 @@ export default class IsoformAndVariantTrack {
     selectedAlleles: string[],
     svgTarget: Selection<SVGGElement, unknown, null, undefined>,
   ): void {
-    const viewer_height = svgTarget.node().getBBox().height
+    const viewer_height = svgTarget.node()?.getBBox().height ?? 0
 
     // This code needs to be simplified and put in another function
     const highlights = svgTarget
       .selectAll(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
       )
-      .filter(d => {
+      .filter((d: SimpleFeatureSerialized) => {
         let returnVal = false
         // TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
         // and sometimes in an array.
@@ -991,19 +966,15 @@ export default class IsoformAndVariantTrack {
         }
         return returnVal
       })
-      .datum(d => {
+      .datum((d: SimpleFeatureSerialized) => {
         d.selected = 'true'
         return d
       })
       .style('stroke', 'black')
 
     highlights.each(function () {
-      let x_val = d3.select(this).attr('x')
-      let width_val = d3.select(this).attr('width')
-      if (width_val == null) {
-        width_val = 3
-        x_val = x_val - width_val / 2
-      }
+      const width_val = +(d3.select(this).attr('width') || 3)
+      const x_val = +d3.select(this).attr('x') - width_val / 2
       svgTarget
         .select('.deletions.track')
         .append('rect')

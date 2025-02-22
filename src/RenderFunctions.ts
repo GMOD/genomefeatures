@@ -94,7 +94,7 @@ export function countIsoforms(data: SimpleFeatureSerialized[]) {
 
 export function calculateNewTrackPosition(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  viewer: d3.Selection<SVGElement, unknown, HTMLElement, any>,
+  viewer: d3.Selection<SVGGElement, unknown, null, any>,
 ): number {
   const viewerClass = viewer.attr('class')
   const classNames = viewerClass.split(' ')
@@ -136,7 +136,7 @@ interface VariantData {
 export function setHighlights(
   selectedAlleles: string[],
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  svgTarget: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>,
+  svgTarget: d3.Selection<SVGGElement, unknown, HTMLElement | null, any>,
 ) {
   const viewer_height = svgTarget.node()?.getBBox().height ?? 0
   const highlights = svgTarget
