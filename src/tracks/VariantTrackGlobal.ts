@@ -2,8 +2,33 @@ import * as d3 from 'd3'
 
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
+import type { Selection } from 'd3'
+
+interface Track {
+  start: number
+  end: number
+  range: [number, number]
+}
+
+interface Variant {
+  position: number
+}
+
+interface VariantTrackGlobalProps {
+  viewer: Selection<SVGGElement, unknown, HTMLElement, any>
+  track: Track
+  height: number
+  width: number
+}
+
 export default class VariantTrackGlobal {
-  constructor({ viewer, track, height, width }) {
+  private variants: Variant[]
+  private viewer: Selection<SVGGElement, unknown, HTMLElement, any>
+  private width: number
+  private height: number
+  private track: Track
+
+  constructor({ viewer, track, height, width }: VariantTrackGlobalProps) {
     this.variants = []
     this.viewer = viewer
     this.width = width
@@ -11,20 +36,20 @@ export default class VariantTrackGlobal {
     this.track = track
   }
 
-  DrawTrack() {
-    let viewer = this.viewer
-    let variants = this.variants
-    let x = d3
+  DrawTrack(): void {
+    const viewer = this.viewer
+    const variants = this.variants
+    const x = d3
       .scaleLinear()
       .domain([this.track.start, this.track.end])
       .range(this.track.range)
-    let triangle = d3.symbol().type(d3.symbolTriangle).size(20)
+    const triangle = d3.symbol().type(d3.symbolTriangle).size(20)
 
-    let trackHeight = 20
-    let newTrackPosition = calculateNewTrackPosition(this.viewer)
+    const trackHeight = 20
+    // @ts-expect-error
+    const newTrackPosition = calculateNewTrackPosition(this.viewer)
 
-    // Create our track container with a simple background
-    let track = viewer
+    const track = viewer
       .append('g')
       .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
@@ -38,8 +63,6 @@ export default class VariantTrackGlobal {
       .attr('stroke-width', 0)
       .attr('stroke-opacity', 0)
 
-    // Draw our variants
-    // Global Size based on amount of variants?
     track
       .selectAll('path')
       .data(variants)
@@ -49,11 +72,10 @@ export default class VariantTrackGlobal {
       .attr('class', 'global-variant')
       .attr('stroke', 'red')
       .attr('fill', 'red')
-      .attr('transform', d => `translate(${x(d.position)},10)`)
+      .attr('transform', (d: Variant) => `translate(${x(d.position)},10)`)
   }
 
-  /* Method to get reference label */
-  async getTrackData() {
+  async getTrackData(): Promise<void> {
     // this.variants = await new ApolloService().GetFakeGlobalVariants()
   }
 }
