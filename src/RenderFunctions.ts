@@ -7,8 +7,7 @@ export function checkSpace(used_space: string[][], start: number, end: number) {
   let row = 0
   let assigned
   let fits
-  // if empty... this is the first entry... on the first row.
-
+  // if empty, this is the first entry, on the first row.
   if (used_space.length == 0) {
     row = 1
   } else {

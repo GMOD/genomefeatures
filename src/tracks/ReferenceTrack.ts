@@ -70,9 +70,7 @@ export default class ReferenceTrack {
       .call(xAxisNumerical)
 
     const numericTickLabel = d3.selectAll('.x-local-numerical .tick text')
-    // @ts-expect-error
     numericTickLabel.first().attr('text-anchor', 'start')
-    // @ts-expect-error
     numericTickLabel.last().attr('text-anchor', 'end')
 
     d3.selectAll('.x-local-axis .tick text').each(function () {
