@@ -27,8 +27,8 @@ export function renderTrackDescription(feature: SimpleFeatureSerialized) {
 export function getJBrowseLink(
   source: string,
   chr: string,
-  start: string,
-  end: string,
+  start: number,
+  end: number,
 ) {
   let link = ''
   if (source === 'FlyBase') {

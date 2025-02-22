@@ -23,10 +23,10 @@ import {
   getVariantSymbol,
   getVariantTrackPositions,
   renderVariantDescriptions,
-  VariantFeature,
 } from '../services/VariantService'
-import { SimpleFeatureSerialized } from '../services/types'
 
+import type { VariantFeature } from '../services/VariantService'
+import type { SimpleFeatureSerialized } from '../services/types'
 import type { Selection } from 'd3'
 
 interface IsoformAndVariantTrackProps {
@@ -41,12 +41,6 @@ interface IsoformAndVariantTrackProps {
   isoformFilter: string[]
   initialHiglight?: string[]
   service?: ApolloService
-}
-
-interface DeletionSpace {
-  fmin: number
-  fmax: number
-  row: number
 }
 
 const apolloService = new ApolloService()
@@ -193,9 +187,7 @@ export default class IsoformAndVariantTrack {
         .style('opacity', 10)
         .style('visibility', 'hidden')
     }
-    // **************************************
     // Seperate isoform and variant render
-    // **************************************
     const variantBins = generateVariantDataBinsAndDataSets(
       variantData,
       (viewEnd - viewStart) * binRatio,
@@ -205,7 +197,7 @@ export default class IsoformAndVariantTrack {
     const deletionBins = variantBins.filter(v => v.type == 'deletion')
     const otherBins = variantBins.filter(v => v.type !== 'deletion')
 
-    const deletionSpace = [] // Array of array of objects for deletion layout.
+    const deletionSpace = [] as { fmin: number; fmax: number; row: number }[] // Array of array of objects for deletion layout.
     deletionBins.forEach(variant => {
       const { fmax, fmin } = variant
       const drawnVariant = true
@@ -218,9 +210,11 @@ export default class IsoformAndVariantTrack {
       const consequenceColor = getColorsForConsequences(descriptions)[0]
 
       // Function to determine what row this goes on... not working yet.
-      const currentHeight = getDeletionHeight(deletionSpace, fmin, fmax)
-      // Add start/end to array
-      deletionSpace.push({ fmin: fmin, fmax: fmax, row: currentHeight })
+      deletionSpace.push({
+        fmin: fmin,
+        fmax: fmax,
+        row: getDeletionHeight(deletionSpace, fmin, fmax),
+      })
 
       const width = Math.max(Math.ceil(x(fmax) - x(fmin)), MIN_WIDTH)
       deletionTrack
@@ -228,7 +222,10 @@ export default class IsoformAndVariantTrack {
         .attr('class', 'variant-deletion')
         .attr('id', `variant-${fmin}`)
         .attr('x', x(fmin))
-        .attr('transform', `translate(0,${VARIANT_HEIGHT * currentHeight})`)
+        .attr(
+          'transform',
+          `translate(0,${VARIANT_HEIGHT * getDeletionHeight(deletionSpace, fmin, fmax)})`,
+        )
         .attr('z-index', 30)
         .attr('fill', consequenceColor)
         .attr('height', VARIANT_HEIGHT)
@@ -238,18 +235,23 @@ export default class IsoformAndVariantTrack {
         })
         .on('mouseover', d => {
           const theVariant = d.variant
-          d3.selectAll('.variant-deletion')
+          d3.selectAll<SVGGElement, { variant: VariantFeature }>(
+            '.variant-deletion',
+          )
             .filter(d => d.variant === theVariant)
             .style('stroke', 'black')
+
           d3.select('.label')
-            .selectAll('.variantLabel,.variantLabelBackground')
+            .selectAll<SVGGElement, { variant: VariantFeature }>(
+              '.variantLabel,.variantLabelBackground',
+            )
             .raise()
             .filter(d => d.variant === theVariant)
             .style('opacity', 1)
         })
         .on('mouseout', () => {
-          d3.selectAll('.variant-deletion')
-            .filter(d => d.selected != 'true')
+          d3.selectAll<SVGGElement, { selected: string }>('.variant-deletion')
+            .filter(d => d.selected !== 'true')
             .style('stroke', null)
           d3.select('.label')
             .selectAll('.variantLabel,.variantLabelBackground')
@@ -261,7 +263,7 @@ export default class IsoformAndVariantTrack {
           variant: symbol_string + fmin,
           alleles: variant_alleles,
         })
-      // TESTY
+
       // drawnVariant = false;//disable lables for now;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (drawnVariant) {
@@ -335,19 +337,21 @@ export default class IsoformAndVariantTrack {
           })
           .on('mouseover', function (d) {
             const theVariant = d.variant
-            d3.selectAll('.variant-SNV')
-              .filter(function (d) {
-                return d.variant === theVariant
-              })
+            d3.selectAll<SVGGElement, { variant: VariantFeature }>(
+              '.variant-SNV',
+            )
+              .filter(d => d.variant === theVariant)
               .style('stroke', 'black')
             d3.select('.label')
-              .selectAll('.variantLabel,.variantLabelBackground')
+              .selectAll<SVGGElement, { variant: VariantFeature }>(
+                '.variantLabel,.variantLabelBackground',
+              )
               .raise()
               .filter(d => d.variant === theVariant)
               .style('opacity', 1)
           })
           .on('mouseout', () => {
-            d3.selectAll('.variant-SNV')
+            d3.selectAll<SVGGElement, { selected: string }>('.variant-SNV')
               .filter(d => d.selected != 'true')
               .style('stroke', null)
             d3.select('.label')
@@ -381,17 +385,23 @@ export default class IsoformAndVariantTrack {
           })
           .on('mouseover', d => {
             const theVariant = d.variant
-            d3.selectAll('.variant-insertion')
+            d3.selectAll<SVGGElement, { variant: VariantFeature }>(
+              '.variant-insertion',
+            )
               .filter(d => d.variant === theVariant)
               .style('stroke', 'black')
             d3.select('.label')
-              .selectAll('.variantLabel,.variantLabelBackground')
+              .selectAll<SVGGElement, { variant: VariantFeature }>(
+                '.variantLabel,.variantLabelBackground',
+              )
               .raise()
               .filter(d => d.variant === theVariant)
               .style('opacity', 1)
           })
           .on('mouseout', () => {
-            d3.selectAll('.variant-insertion')
+            d3.selectAll<SVGGElement, { selected: string }>(
+              '.variant-insertion',
+            )
               .filter(d => d.selected != 'true')
               .style('stroke', null)
             d3.select('.label')
@@ -430,17 +440,21 @@ export default class IsoformAndVariantTrack {
           })
           .on('mouseover', d => {
             const theVariant = d.variant
-            d3.selectAll('.variant-delins')
+            d3.selectAll<SVGGElement, { variant: VariantFeature }>(
+              '.variant-delins',
+            )
               .filter(d => d.variant === theVariant)
               .style('stroke', 'black')
             d3.select('.label')
-              .selectAll('.variantLabel,.variantLabelBackground')
+              .selectAll<SVGGElement, { variant: VariantFeature }>(
+                '.variantLabel,.variantLabelBackground',
+              )
               .raise()
               .filter(d => d.variant === theVariant)
               .style('opacity', 1)
           })
           .on('mouseout', () => {
-            d3.selectAll('.variant-delins')
+            d3.selectAll<SVGGElement, { selected: string }>('.variant-delins')
               .filter(d => d.selected != 'true')
               .style('stroke', null)
             d3.select('.label')
@@ -477,7 +491,7 @@ export default class IsoformAndVariantTrack {
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
-        const symbol_string_width = variant_label.node()?.getBBox().width || 0
+        const symbol_string_width = variant_label.node()?.getBBox().width ?? 0
         if (symbol_string_width + label_offset > viewerWidth) {
           const diff = symbol_string_width + label_offset - viewerWidth
           label_offset -= diff
@@ -554,13 +568,14 @@ export default class IsoformAndVariantTrack {
             )
             if (row_count < MAX_ROWS) {
               // An isoform container
-              let text_string
+              let text_string = ''
               let text_label
               let addingGeneLabel = false
-              if (!Object.keys(geneList).includes(feature.name)) {
+              const featName = feature.name
+              if (!Object.keys(geneList).includes(featName)) {
                 heightBuffer += GENE_LABEL_HEIGHT
                 addingGeneLabel = true
-                geneList[feature.name] = 'Green'
+                geneList[featName] = 'Green'
               }
 
               const isoform = track
@@ -571,7 +586,7 @@ export default class IsoformAndVariantTrack {
                   `translate(0,${row_count * ISOFORM_HEIGHT + 10 + heightBuffer})`,
                 )
               if (addingGeneLabel) {
-                text_string = feature.name
+                text_string = featName
                 text_label = isoform
                   .append('text')
                   .attr('class', 'geneLabel')
@@ -589,7 +604,9 @@ export default class IsoformAndVariantTrack {
                       closeToolTip,
                     )
                   })
-                  .datum({ fmin: featureChild.fmin })
+                  .datum({
+                    fmin: featureChild.fmin,
+                  })
               }
 
               isoform
@@ -628,7 +645,10 @@ export default class IsoformAndVariantTrack {
                     closeToolTip,
                   )
                 })
-                .datum({ fmin: featureChild.fmin, fmax: featureChild.fmax })
+                .datum({
+                  fmin: featureChild.fmin,
+                  fmax: featureChild.fmax,
+                })
 
               text_string = featureChild.name
               text_label = isoform
@@ -638,7 +658,7 @@ export default class IsoformAndVariantTrack {
                 .attr('opacity', selected ? 1 : 0.5)
                 .attr('height', ISOFORM_TITLE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
-                .text(text_string ?? '')
+                .text(text_string)
                 .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
@@ -646,7 +666,9 @@ export default class IsoformAndVariantTrack {
                     closeToolTip,
                   )
                 })
-                .datum({ fmin: featureChild.fmin })
+                .datum({
+                  fmin: featureChild.fmin,
+                })
 
               // Now that the label has been created we can calculate the space that
               // this new element is taking up making sure to add in the width of
@@ -833,7 +855,7 @@ export default class IsoformAndVariantTrack {
     return row_count * ISOFORM_HEIGHT + heightBuffer + VARIANT_TRACK_HEIGHT
   }
 
-  filterVariantData(variantData: VariantData[], variantFilter: string[]) {
+  filterVariantData(variantData: VariantFeature[], variantFilter: string[]) {
     if (variantFilter.length === 0) {
       return variantData
     }
@@ -841,7 +863,7 @@ export default class IsoformAndVariantTrack {
       let returnVal = false
       try {
         if (
-          variantFilter.includes(v.name ?? '') ||
+          variantFilter.includes(v.name) ||
           (v.allele_symbols?.values &&
             variantFilter.includes(
               v.allele_symbols.values[0].replace(/"/g, ''),
@@ -853,7 +875,8 @@ export default class IsoformAndVariantTrack {
         ) {
           returnVal = true
         }
-        const ids = v.allele_ids.values[0].replace(/"|\[|\]| /g, '').split(',')
+        const ids =
+          v.allele_ids?.values[0].replace(/"|\[|\]| /g, '').split(',') ?? []
         ids.forEach(id => {
           if (variantFilter.includes(id)) {
             returnVal = true
@@ -916,12 +939,12 @@ export default class IsoformAndVariantTrack {
 
     // This code needs to be simplified and put in another function
     const highlights = svgTarget
-      .selectAll(
+      .selectAll<SVGGElement, VariantFeature>(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
       )
-      .filter((d: SimpleFeatureSerialized) => {
+      .filter(d => {
         let returnVal = false
-        // TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
+        // TODO: This needs to be standardized.  We sometimes get these returned in a comma sperated list
         // and sometimes in an array.
         if (d.alleles) {
           const ids = d.alleles[0].replace(/"|\[|\]| /g, '').split(',')

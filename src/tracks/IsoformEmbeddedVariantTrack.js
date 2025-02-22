@@ -549,7 +549,7 @@ export default class IsoformEmbeddedVariantTrack {
                         }
                         if (drawnVariant && showVariantLabel) {
                           let symbol_string = getVariantSymbol(variant)
-                          const symbol_string_length = symbol_string.length ?? 1
+                          const symbol_string_length = symbol_string.length || 1
                           isoform
                             .append('text')
                             .attr('class', 'variantLabel')

@@ -89,5 +89,7 @@ export default class VariantTrack {
   }
 
   /* Method to get reference label */
-  async getTrackData() {}
+  async getTrackData() {
+    // stuff
+  }
 }
