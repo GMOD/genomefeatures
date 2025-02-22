@@ -11,8 +11,64 @@ import VariantTrackGlobal from './tracks/VariantTrackGlobal'
 
 const LABEL_OFFSET = 100
 
+interface GFCConfig {
+  transcriptTypes?: string[]
+  variantTypes?: string[]
+  binRatio?: number
+  start: number
+  end: number
+  chromosome: string
+  variantFilter?: string[]
+  isoformFilter?: string[]
+  initialHighlight?: string[]
+  htpVariant?: string
+  showVariantLabel?: boolean
+}
+
+interface GFC {
+  width: number
+  height: number
+  config: GFCConfig
+  locale: string
+  svg_target: string
+  viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, undefined>
+  tracks: Track[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  service: any
+}
+
+interface Track {
+  id: string
+  type: keyof typeof TRACK_TYPE
+  start?: number
+  end?: number
+  chromosome?: string
+  variant_filter?: string[]
+  isoform_filter?: string[]
+  initialHighlight?: string[]
+  range?: number[]
+  isoformFunction?: () => void
+  variantFunction?: () => void
+}
+
+interface SequenceOptions {
+  range: number[]
+  start: number
+  end: number
+}
+
+interface DragThreshold {
+  maxNegative: number
+}
+
 export default class Drawer {
-  constructor(gfc) {
+  private gfc: GFC
+  private used: number
+  private drag_cx: number
+  private drag_prev: number
+  private range: number[]
+
+  constructor(gfc: GFC) {
     this.gfc = gfc
     this.used = 0
     this.drag_cx = 0
@@ -22,20 +78,18 @@ export default class Drawer {
 
   draw() {
     let width = this.gfc.width
-    let transcriptTypes = this.gfc.config.transcriptTypes ?? ['mRNA']
-    let variantTypes = this.gfc.config.variantTypes ?? [
+    const transcriptTypes = this.gfc.config.transcriptTypes ?? ['mRNA']
+    const variantTypes = this.gfc.config.variantTypes ?? [
       'point_mutation',
       'MNV',
       'Deletion',
       'Insertion',
       'Delins',
     ]
-    let binRatio = this.gfc.config.binRatio ?? 0.01
+    const binRatio = this.gfc.config.binRatio ?? 0.01
     let draggingViewer = null
     let draggingStart = null
 
-    // TODO: Try to eliminate this if statement.
-    // Potentially refactor the style for this.
     if (this.gfc.locale === 'local') {
       width = document.body.clientWidth
       // Other setup
@@ -60,21 +114,21 @@ export default class Drawer {
       this.gfc.viewer.attr('clip-path', 'url(#clip)')
     }
 
-    let options = this.gfc.config
+    const options = this.gfc.config
     // Sequence information
-    let sequenceOptions = this._configureRange(
+    const sequenceOptions = this._configureRange(
       options.start,
       options.end,
       width,
     )
     this.range = sequenceOptions.range
-    let chromosome = options.chromosome
-    let variantFilter = options.variantFilter ?? []
-    let isoformFilter = options.isoformFilter ?? []
-    let initialHighlight = options.initialHighlight ?? []
-    let htpVariant = options.htpVariant ?? ''
-    let start = sequenceOptions.start
-    let end = sequenceOptions.end
+    const chromosome = options.chromosome
+    const variantFilter = options.variantFilter ?? []
+    const isoformFilter = options.isoformFilter ?? []
+    const initialHighlight = options.initialHighlight ?? []
+    const htpVariant = options.htpVariant ?? ''
+    const start = sequenceOptions.start
+    const end = sequenceOptions.end
 
     // Draw our reference if it's local for now.
     const referenceTrack = new ReferenceTrack({
@@ -194,7 +248,7 @@ export default class Drawer {
   }
 
   // Trigger for when we start dragging. Save the intial point.
-  drag_start(ref) {
+  drag_start(ref: Drawer) {
     ref.drag_cx = window.event.x
   }
 
@@ -203,11 +257,13 @@ export default class Drawer {
   //
   // @Param ref, a reference to the drawer class since event methods
   // scope of this becomes the element it triggers on.
-  dragged(ref) {
+  dragged(ref: Drawer) {
     // Get tick size for our scroll value
-    let viewerTicks = `${ref.gfc.svg_target} .x-local-axis .tick`
-    let scrollValue =
+    const viewerTicks = `${ref.gfc.svg_target} .x-local-axis .tick`
+    const scrollValue =
+      // @ts-expect-error
       parseInt(d3.select(viewerTicks).node().getBoundingClientRect().width) * 2
+
     if (ref.drag_cx != window.event.x) {
       // Figure out which way the user wants to go.
       // 1 -> going up
@@ -227,17 +283,17 @@ export default class Drawer {
   //        -1 -> going down
   // @Param scrollValue: The amount you want to move the view.
   //                    Typically you get the tick size then multiply.
-  scrollView(direction, scrollValue) {
+  scrollView(direction: number, scrollValue: number) {
     // We want to move the track in a direction when dragging
     // thresholds for end of the sequence
-    let dragThresh = {
+    const dragThresh = {
       maxNegative: this.gfc.width - this.range[1] + -(scrollValue / 2),
     }
     // We are moving get our elements and translate them
     // the distance of a tick.
-    let viewerTracks = `${this.gfc.svg_target} .main-view .track`
-    d3.selectAll(viewerTracks).attr('transform', () => {
-      let trs = getTranslate(d3.select(this).attr('transform'))
+    const viewerTracks = `${this.gfc.svg_target} .main-view .track`
+    d3.selectAll(viewerTracks).attr('transform', function () {
+      const trs = getTranslate(d3.select(this).attr('transform'))
       let newX = 0
       if (direction == 1) {
         newX = trs[0] + scrollValue
@@ -252,15 +308,13 @@ export default class Drawer {
     })
   }
 
-  /*
-        Configure the range for our tracks two use cases
-            1. Entered with a position
-            2. TODO: Entered with a range start at 0?
-            3. Are we in overview or scrollable?
-    */
-  _configureRange(start, end, width) {
+  // Configure the range for our tracks two use cases
+  //    1. Entered with a position
+  //    2. TODO: Entered with a range start at 0?
+  //    3. Are we in overview or scrollable?
+  _configureRange(start: number, end: number, width: number) {
     let sequenceLength = null
-    let desiredScaling = 17 // most optimal for ~50bp in the view.
+    const desiredScaling = 17 // most optimal for ~50bp in the view.
     let rangeWidth = 0
     let range = [0, 0]
 
@@ -274,9 +328,12 @@ export default class Drawer {
       rangeWidth = desiredScaling * sequenceLength
       start = start - sequenceLength / 2 - 1
       end = end + sequenceLength / 2
+
       // Plus 100 for the label offset.
-      let middleOfView =
-        d3.select('#clip-rect').node().getBoundingClientRect().width / 2 + 100
+      const middleOfView =
+        // @ts-expect-error
+        d3.select('#clip-rect').node()!.getBoundingClientRect().width / 2 + 100
+
       range = [middleOfView - rangeWidth / 2, middleOfView + rangeWidth / 2]
     } else {
       // This statement will not work with scrollable setting and a defined range
