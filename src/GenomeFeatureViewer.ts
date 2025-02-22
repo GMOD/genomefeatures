@@ -5,9 +5,7 @@ import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
 
-interface Track {
-  [key: string]: any
-}
+type Track = Record<string, any>;
 
 interface Config {
   locale: string
