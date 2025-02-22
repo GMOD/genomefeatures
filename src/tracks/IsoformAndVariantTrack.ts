@@ -30,7 +30,7 @@ import type { SimpleFeatureSerialized } from '../services/types'
 import type { Selection } from 'd3'
 
 interface IsoformAndVariantTrackProps {
-  viewer: Selection<SVGGElement, unknown, null, undefined>
+  viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   height: number
   width: number
   transcriptTypes: string[]
@@ -51,7 +51,7 @@ const apolloService = new ApolloService()
 export default class IsoformAndVariantTrack {
   private trackData: SimpleFeatureSerialized[]
   private variantData: VariantFeature[]
-  private viewer: Selection<SVGGElement, unknown, null, undefined>
+  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   private width: number
   private variantFilter: string[]
   private isoformFilter: string[]

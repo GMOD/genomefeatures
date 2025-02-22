@@ -5,6 +5,7 @@ import type { Selection } from 'd3'
 interface Track {
   start: number
   end: number
+  chromosome: string
   range: [number, number]
 }
 

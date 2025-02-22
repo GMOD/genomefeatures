@@ -16,7 +16,7 @@ interface Variant {
 
 interface VariantTrackGlobalProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  viewer: Selection<SVGGElement, unknown, HTMLElement, any>
+  viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
   track: Track
   height: number
   width: number
@@ -25,7 +25,7 @@ interface VariantTrackGlobalProps {
 export default class VariantTrackGlobal {
   private variants: Variant[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private viewer: Selection<SVGGElement, unknown, HTMLElement, any>
+  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
   private width: number
   private height: number
   private track: Track

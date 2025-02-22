@@ -4,15 +4,23 @@ import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
 
-type Track = Record<string, unknown>
+interface Track {
+  start: number
+  end: number
+  range: any
+  type: string
+  id: string
+}
 
 interface ViewerConfig {
   locale: 'global' | 'local'
   tracks?: Track[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   service?: any
-  start?: number
-  end?: number
+  start: number
+  end: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
 
 /*
@@ -33,7 +41,7 @@ export default class MainGenomeFeatureViewer {
   public svg_target: string
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public viewer: d3.Selection<d3.BaseType, unknown, HTMLElement | null, any>
+  public viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, any>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public service: any
 
@@ -128,7 +136,8 @@ export default class MainGenomeFeatureViewer {
         .attr('class', mainViewClass)
       this.height = this.height - margin.top - margin.bottom
     }
-    return d3.select(`${svg_target} .main-view`)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return d3.select<SVGGElement, any>(`${svg_target} .main-view`)
   }
 
   getTracks(defaultTrack?: boolean): Track | Track[] {

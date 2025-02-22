@@ -8,7 +8,7 @@ import type { VariantFeature } from '../services/VariantService'
 import type { Selection } from 'd3'
 
 interface VariantTrackProps {
-  viewer: Selection<SVGGElement, unknown, null, undefined>
+  viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   height: number
   width: number
   transcriptTypes: string[]
@@ -30,7 +30,7 @@ interface Track {
 
 export default class VariantTrack {
   private variants: VariantFeature[]
-  private viewer: Selection<SVGGElement, unknown, null, undefined>
+  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   private width: number
   private height: number
   private track: Track

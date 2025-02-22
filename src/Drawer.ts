@@ -147,14 +147,13 @@ export default class Drawer {
     const referenceTrack = new ReferenceTrack({
       viewer: this.gfc.viewer,
       track: {
-        chromosome: chromosome,
-        start: start,
-        end: end,
+        chromosome,
+        start,
+        end,
         range: sequenceOptions.range,
       },
       height: this.gfc.height,
       width,
-      service: this.gfc.service,
     })
     if (this.gfc.locale === 'local') {
       // Scrollable View
@@ -194,11 +193,7 @@ export default class Drawer {
           initialHighlight,
           service: this.gfc.service,
         })
-        await isoformVariantTrack.populateTrack(
-          track,
-          () => track.isoformFunction,
-          () => track.variantFunction,
-        )
+        await isoformVariantTrack.populateTrack(track)
         track_height += isoformVariantTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
         const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
@@ -213,11 +208,7 @@ export default class Drawer {
           binRatio,
           service: this.gfc.service,
         })
-        await isoformVariantTrack.populateTrack(
-          track,
-          () => track.isoformFunction,
-          () => track.variantFunction,
-        )
+        await isoformVariantTrack.populateTrack(track)
         track_height += isoformVariantTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.ISOFORM) {
         const isoformTrack = new IsoformTrack({
@@ -333,11 +324,15 @@ export default class Drawer {
   //    1. Entered with a position
   //    2. TODO: Entered with a range start at 0?
   //    3. Are we in overview or scrollable?
-  _configureRange(start: number, end: number, width: number) {
+  _configureRange(
+    start: number,
+    end: number,
+    width: number,
+  ): { start: number; end: number; range: [number, number] } {
     let sequenceLength = null
     const desiredScaling = 17 // most optimal for ~50bp in the view.
     let rangeWidth = 0
-    let range = [0, 0]
+    let range: [number, number] = [0, 0]
 
     // We have entered with a variant position
     // create our sequence 'padding'
@@ -355,13 +350,24 @@ export default class Drawer {
         // @ts-expect-error
         d3.select('#clip-rect').node()!.getBoundingClientRect().width / 2 + 100
 
-      range = [middleOfView - rangeWidth / 2, middleOfView + rangeWidth / 2]
+      range = [
+        middleOfView - rangeWidth / 2,
+        middleOfView + rangeWidth / 2,
+      ] as const
     } else {
       // This statement will not work with scrollable setting and a defined range
       // TODO: FIX THIS
-      return { range: [0, width], start: start, end: end }
+      return {
+        range: [0, width] as const,
+        start: start,
+        end: end,
+      }
     }
 
-    return { range: range, start: start, end: end }
+    return {
+      range,
+      start,
+      end,
+    }
   }
 }
