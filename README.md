@@ -19,6 +19,10 @@ yarn dev
 
 ![Example 1](images/ExampleIsoform1.png)
 
+## Live demo
+
+https://gmod.org/genomefeatures/
+
 ## Loading data
 
 ### Apollo REST API
