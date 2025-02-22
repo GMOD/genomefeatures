@@ -1,15 +1,18 @@
 import { getColorForConsequence } from './ConsequenceService'
+import { SimpleFeatureSerialized } from './types'
 
 const SNV_HEIGHT = 10
 const SNV_WIDTH = 10
 
-export function generateSnvPoints(x) {
+export function generateSnvPoints(x: number) {
   return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT / 2} ${x},0 ${x - SNV_WIDTH / 2},${SNV_HEIGHT / 2}`
 }
-export function generateInsertionPoint(x) {
+export function generateInsertionPoint(x: number) {
   return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2},${SNV_HEIGHT}`
 }
-export function getDeletionHeight(x, fmin, fmax) {
+
+type Feat = SimpleFeatureSerialized & { row: number }
+export function getDeletionHeight(x: Feat[], fmin: number, fmax: number) {
   if (x.length == 0) {
     return 0
   } else {
@@ -39,23 +42,29 @@ export function getDeletionHeight(x, fmin, fmax) {
   }
 }
 
-export function generateDelinsPoint(x) {
+export function generateDelinsPoint(x: number) {
   return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT} ${x - SNV_WIDTH / 2},0 ${x + SNV_WIDTH / 2},0`
 }
 
-export function getDescriptionDimensions(description) {
+export function getDescriptionDimensions(description: Record<string, string>) {
   const descriptionHeight = Object.keys(description).length
   const descriptionWidth = Object.entries(description)
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     .filter(d => d[1] !== undefined)
-    .sort((a, b) => {
-      return b[1].length - a[1].length
-    })[0][1].length
-  return { descriptionWidth, descriptionHeight }
+    .sort((a, b) => b[1].length - a[1].length)[0][1].length
+  return {
+    descriptionWidth,
+    descriptionHeight,
+  }
 }
 
 // we have to guard for type
-function findVariantBinIndexForPosition(variantBins, variant, buffer) {
-  let { fmax, fmin, type } = variant
+function findVariantBinIndexForPosition(
+  variantBins: SimpleFeatureSerialized[],
+  variant: SimpleFeatureSerialized,
+  buffer: number,
+) {
+  const { fmax, fmin, type } = variant
   return variantBins.findIndex(fb => {
     const relativeMin = fb.fmin + buffer
     const relativeMax = fb.fmax - buffer
@@ -83,15 +92,15 @@ function findVariantBinIndexForPosition(variantBins, variant, buffer) {
 }
 
 // TODO: Delete, this is deprecated
-export function generateVariantBins(variantData) {
+export function generateVariantBins(variantData: SimpleFeatureSerialized[]) {
   // create variant bins for overlap over a single isoform
   // initially we do this for all of them, for both position and type
-  let variantBins = []
+  const variantBins = []
   variantData.forEach(variant => {
-    let consequence = getConsequence(variant)
-    let { type, fmax, fmin } = variant
+    const consequence = getConsequence(variant)
+    const { type, fmax, fmin } = variant
     // we should ONLY ever find one or zero
-    let foundVariantBinIndex = variantBins.findIndex(fb => {
+    const foundVariantBinIndex = variantBins.findIndex(fb => {
       const relativeMin = fb.fmin
       const relativeMax = fb.fmax
 
@@ -118,9 +127,9 @@ export function generateVariantBins(variantData) {
       return false
     })
 
-    if (foundVariantBinIndex >= 0) {
+    if (foundVariantBinIndex !== -1) {
       // add variant to this bin and adust the min and max
-      let foundBin = variantBins[foundVariantBinIndex]
+      const foundBin = variantBins[foundVariantBinIndex]
       const foundMatchingVariantSetIndex = variantBins[foundVariantBinIndex]
         .variantSet
         ? variantBins[foundVariantBinIndex].variantSet.findIndex(
@@ -165,13 +174,13 @@ export function generateVariantBins(variantData) {
 }
 
 export function generateVariantDataBinsAndDataSets(variantData, ratio) {
-  let variantBins = []
+  const variantBins = []
   variantData.forEach(variant => {
-    let consequence = getConsequence(variant)
-    let { type, fmax, fmin } = variant
+    const consequence = getConsequence(variant)
+    const { type, fmax, fmin } = variant
     // we should ONLY ever find one or zero
 
-    let foundVariantBinIndex = findVariantBinIndexForPosition(
+    const foundVariantBinIndex = findVariantBinIndexForPosition(
       variantBins,
       variant,
       ratio,
@@ -181,7 +190,7 @@ export function generateVariantDataBinsAndDataSets(variantData, ratio) {
     // also dont bin deletions at all.
     if (foundVariantBinIndex >= 0 && type != 'deletion') {
       // add variant to this bin and adjust the min and max
-      let foundBin = variantBins[foundVariantBinIndex]
+      const foundBin = variantBins[foundVariantBinIndex]
       const foundMatchingVariantSetIndex = foundBin.variantSet
         ? foundBin.variantSet.findIndex(
             b => b.type === type && b.consequence === consequence,
@@ -191,11 +200,11 @@ export function generateVariantDataBinsAndDataSets(variantData, ratio) {
       // if matching type and consequence, add the variant to the found variant set
       // adjust the bin min and max though
       if (foundMatchingVariantSetIndex >= 0) {
-        let foundFmin = Math.min(
+        const foundFmin = Math.min(
           foundBin.variantSet[foundMatchingVariantSetIndex].fmin,
           fmin,
         )
-        let foundFmax = Math.max(
+        const foundFmax = Math.max(
           foundBin.variantSet[foundMatchingVariantSetIndex].fmax,
           fmax,
         )
@@ -205,8 +214,8 @@ export function generateVariantDataBinsAndDataSets(variantData, ratio) {
         foundBin.variantSet[foundMatchingVariantSetIndex].fmax = foundFmax
         foundBin.variantSet[foundMatchingVariantSetIndex].variants.push(variant)
       } else {
-        let foundMin = Math.min(foundBin.fmin, fmin)
-        let foundMax = Math.max(foundBin.fmax, fmax)
+        const foundMin = Math.min(foundBin.fmin, fmin)
+        const foundMax = Math.max(foundBin.fmax, fmax)
 
         foundBin.fmin = foundMin
         foundBin.fmax = foundMax
@@ -254,7 +263,7 @@ export function renderVariantDescriptions(descriptions) {
     return stringBuffer
   } else if (descriptions.length > 1) {
     let stringBuffer = '<ul style="list-style-type: none; margin-top: 30px;">'
-    for (let d of descriptions) {
+    for (const d of descriptions) {
       stringBuffer += `<li style="border-bottom: solid 1px black;">${renderVariantDescription(d)}</li>`
     }
     stringBuffer += '</ul>'
@@ -265,7 +274,7 @@ export function renderVariantDescriptions(descriptions) {
 }
 
 export function renderVariantDescription(description) {
-  let { descriptionWidth } = getDescriptionDimensions(description)
+  const { descriptionWidth } = getDescriptionDimensions(description)
   let returnString = ''
   const location = description.location
   const [start, stop] = location.split(':')[1].split('..')
@@ -286,7 +295,7 @@ export function renderVariantDescription(description) {
   } else if (description.type === 'MNV') {
     length = `${ref_allele.length}bp`
   } else if (description.type === 'delins') {
-    let del = `${ref_allele.length - 1}bp deleted`
+    const del = `${ref_allele.length - 1}bp deleted`
     let ins
     if (alt_allele === 'ALT_MISSING') {
       ins = 'unknown length inserted'
@@ -354,16 +363,16 @@ export function renderVariantDescription(description) {
 
 export function getVariantDescriptions(variant) {
   return variant.variants.map(v => {
-    let description = getVariantDescription(v)
+    const description = getVariantDescription(v)
     description.consequence = description.consequence ?? 'UNKNOWN'
     return description
   })
 }
 
 export function getVariantAlleles(variant) {
-  let returnObj = []
+  const returnObj = []
   variant.variants.forEach(val => {
-    let allele = val.allele_ids.values[0].replace(/"/g, '')
+    const allele = val.allele_ids.values[0].replace(/"/g, '')
     if (allele.split(',').length > 1) {
       allele.split(',').forEach(val2 => {
         returnObj.push(val2.replace(/\[|\]| /g, ''))
@@ -408,7 +417,7 @@ export function getConsequence(variant) {
  * @returns {object}
  */
 export function getVariantDescription(variant) {
-  let returnObject = {}
+  const returnObject = {}
   returnObject.symbol = getVariantSymbol(variant)
   returnObject.symbolDetail = getVariantSymbolDetail(variant)
   returnObject.location = `${variant.seqId}:${variant.fmin}..${variant.fmax}`
@@ -477,7 +486,7 @@ export function getVariantSymbolDetail(variant) {
   if (variant.allele_symbols?.values) {
     if (variant.allele_symbols.values[0].split(',').length > 1) {
       try {
-        let text_array = []
+        const text_array = []
         const clean_text = variant.allele_symbols.values[0].replace(
           /"|\[|\]/g,
           '',
@@ -485,7 +494,7 @@ export function getVariantSymbolDetail(variant) {
         const clean_ids = variant.allele_ids.values[0].replace(/"|\[|\]/g, '')
         const clean_text_array = clean_text.split(',')
         const clean_id_array = clean_ids.split(',')
-        for (let i in clean_text.split(',')) {
+        for (const i in clean_text.split(',')) {
           const text = `${clean_text_array[i].trim()} (${clean_id_array[i].trim()})`
           text_array.push(text)
         }
@@ -521,8 +530,8 @@ export function getVariantSymbol(variant) {
 }
 
 export function getVariantTrackPositions(variantData) {
-  let presentVariants = []
-  for (var variant of variantData) {
+  const presentVariants = []
+  for (const variant of variantData) {
     if (variant.type.toLowerCase() === 'deletion') {
       // Ignore deletions for now
       // presentVariants.push('deletion');
@@ -542,6 +551,6 @@ export function getVariantTrackPositions(variantData) {
       presentVariants.push('delins')
     }
   }
-  let distinctVariants = [...new Set(presentVariants)]
+  const distinctVariants = [...new Set(presentVariants)]
   return distinctVariants.sort()
 }

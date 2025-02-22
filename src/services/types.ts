@@ -41,6 +41,7 @@ export interface SimpleFeatureSerializedNoId {
   fmax: number
   seqId: string
   type?: string
+  name?: string
   children?: SimpleFeatureSerializedNoId[]
 }
 

@@ -1,4 +1,5 @@
 import * as d3 from 'd3-selection'
+
 import { SimpleFeatureSerialized } from './services/types'
 
 // Takes in the current entry start/end and the array of used space and assigns a row
