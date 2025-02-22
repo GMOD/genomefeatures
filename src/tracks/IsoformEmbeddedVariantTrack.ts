@@ -20,7 +20,7 @@ import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
 
 interface IsoformEmbeddedVariantTrackProps {
-  viewer: d3.Selection<SVGGElement, unknown, null, undefined>
+  viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   height: number
   width: number
   transcriptTypes: string[]
@@ -35,7 +35,12 @@ const apolloService = new ApolloService()
 export default class IsoformEmbeddedVariantTrack {
   private trackData: SimpleFeatureSerialized[] = []
   private variantData: VariantFeature[] = []
-  private viewer: d3.Selection<SVGGElement, unknown, null, undefined>
+  private viewer: d3.Selection<
+    SVGGElement,
+    unknown,
+    HTMLElement | null,
+    undefined
+  >
   private width: number
   private variantFilter: string[]
   private height: number

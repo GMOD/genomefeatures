@@ -19,7 +19,7 @@ interface Track {
 
 interface IsoformTrackProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  viewer: Selection<SVGGElement, unknown, HTMLElement, any>
+  viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
   track: Track
   height: number
   width: number
@@ -33,7 +33,7 @@ const apolloService = new ApolloService()
 export default class IsoformTrack {
   private trackData: SimpleFeatureSerialized[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private viewer: Selection<SVGGElement, unknown, HTMLElement, any>
+  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
   private width: number
   private height: number
   private transcriptTypes: string[]

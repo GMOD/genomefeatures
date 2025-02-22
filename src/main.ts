@@ -7,7 +7,9 @@ import { createLegendBox } from './services/LegenedService'
 interface Track {
   start: number
   end: number
-  range: any
+  range: [number, number]
+  chromosome: string
+  genome: string
   type: string
   id: string
 }

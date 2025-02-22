@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 
 import { getTranslate } from './RenderFunctions'
+import GenomeFeatureViewer from './main'
 import IsoformAndVariantTrack from './tracks/IsoformAndVariantTrack'
 import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack'
 import IsoformTrack from './tracks/IsoformTrack'
@@ -8,7 +9,6 @@ import ReferenceTrack from './tracks/ReferenceTrack'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 import VariantTrack from './tracks/VariantTrack'
 import VariantTrackGlobal from './tracks/VariantTrackGlobal'
-import GenomeFeatureViewer from './main'
 
 declare module 'd3' {
   interface Selection<
@@ -23,56 +23,6 @@ declare module 'd3' {
 }
 
 const LABEL_OFFSET = 100
-
-interface GFCConfig {
-  transcriptTypes?: string[]
-  variantTypes?: string[]
-  binRatio?: number
-  start: number
-  end: number
-  chromosome: string
-  variantFilter?: string[]
-  isoformFilter?: string[]
-  initialHighlight?: string[]
-  htpVariant?: string
-  showVariantLabel?: boolean
-}
-
-interface GFC {
-  width: number
-  height: number
-  config: GFCConfig
-  locale: string
-  svg_target: string
-  viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, undefined>
-  tracks: Track[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  service: any
-}
-
-interface Track {
-  id: string
-  type: keyof typeof TRACK_TYPE
-  start?: number
-  end?: number
-  chromosome?: string
-  variant_filter?: string[]
-  isoform_filter?: string[]
-  initialHighlight?: string[]
-  range?: number[]
-  isoformFunction?: () => void
-  variantFunction?: () => void
-}
-
-interface SequenceOptions {
-  range: number[]
-  start: number
-  end: number
-}
-
-interface DragThreshold {
-  maxNegative: number
-}
 
 export default class Drawer {
   private gfc: GenomeFeatureViewer
@@ -159,7 +109,11 @@ export default class Drawer {
       // Scrollable View
       // await referenceTrack.getTrackData()
       referenceTrack.DrawScrollableTrack()
+
+      // NOTE: not sure what does
+      // @ts-expect-error
       this.gfc.viewer.call(
+        // @ts-expect-error
         d3.drag().on('start', draggingStart).on('drag', draggingViewer),
       )
     } else {
@@ -171,83 +125,88 @@ export default class Drawer {
     let track_height = LABEL_OFFSET
 
     // TODO: refactor so that both come in and are re-ordered
-    this.gfc.tracks.forEach(async track => {
-      track.start = start
-      track.end = end
-      track.chromosome = chromosome
-      track.variant_filter = variantFilter
-      track.isoform_filter = isoformFilter
-      track.initialHighlight = initialHighlight
-      if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
-        const isoformVariantTrack = new IsoformAndVariantTrack({
-          viewer: this.gfc.viewer,
-          track,
-          height: this.gfc.height,
-          width,
-          transcriptTypes,
-          variantTypes,
-          showVariantLabel: this.gfc.config.showVariantLabel,
-          variantFilter,
-          binRatio,
-          isoformFilter,
+     
+    Promise.all(
+      this.gfc.tracks.map(async baseTrack => {
+        const track = {
+          ...baseTrack,
+          start,
+          end,
+          chromosome,
+          variant_filter: variantFilter,
+          isoform_filter: isoformFilter,
           initialHighlight,
-          service: this.gfc.service,
-        })
-        await isoformVariantTrack.populateTrack(track)
-        track_height += isoformVariantTrack.DrawTrack()
-      } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
-        const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
-          viewer: this.gfc.viewer,
-          track,
-          height: this.gfc.height,
-          width,
-          transcriptTypes,
-          variantTypes,
-          showVariantLabel: this.gfc.config.showVariantLabel,
-          variantFilter,
-          binRatio,
-          service: this.gfc.service,
-        })
-        await isoformVariantTrack.populateTrack(track)
-        track_height += isoformVariantTrack.DrawTrack()
-      } else if (track.type === TRACK_TYPE.ISOFORM) {
-        const isoformTrack = new IsoformTrack({
-          viewer: this.gfc.viewer,
-          track,
-          height: this.gfc.height,
-          width,
-          transcriptTypes,
-          htpVariant,
-          service: this.gfc.service,
-        })
-        await isoformTrack.getTrackData(track)
-        track_height += isoformTrack.DrawTrack()
-      } else if (track.type === TRACK_TYPE.VARIANT) {
-        track.range = sequenceOptions.range
-        const variantTrack = new VariantTrack({
-          viewer: this.gfc.viewer,
-          track,
-          height: this.gfc.height,
-          width,
-          service: this.gfc.service,
-        })
-        await variantTrack.getTrackData()
-        variantTrack.DrawTrack()
-      } else if (track.type === TRACK_TYPE.VARIANT_GLOBAL) {
-        track.range = sequenceOptions.range
-        const variantTrack = new VariantTrackGlobal({
-          viewer: this.gfc.viewer,
-          track,
-          height: this.gfc.height,
-          width,
-          service: this.gfc.service,
-        })
-        await variantTrack.getTrackData()
-        variantTrack.DrawTrack()
-      } else {
-        console.error(`TrackType not found for ${track.id}...`, track.type)
-      }
-      d3.select(this.gfc.svg_target).attr('height', track_height)
+        }
+        if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
+          const isoformVariantTrack = new IsoformAndVariantTrack({
+            viewer: this.gfc.viewer,
+            height: this.gfc.height,
+            width,
+            transcriptTypes,
+            variantTypes,
+            showVariantLabel: this.gfc.config.showVariantLabel,
+            variantFilter,
+            binRatio,
+            isoformFilter,
+            service: this.gfc.service,
+          })
+          // @ts-expect-error
+          await isoformVariantTrack.populateTrack(track)
+          track_height += isoformVariantTrack.DrawTrack()
+        } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
+          const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
+            viewer: this.gfc.viewer,
+            height: this.gfc.height,
+            width,
+            transcriptTypes,
+            variantTypes,
+            showVariantLabel: this.gfc.config.showVariantLabel,
+            variantFilter,
+            service: this.gfc.service,
+          })
+          await isoformVariantTrack.populateTrack(track)
+          track_height += isoformVariantTrack.DrawTrack()
+        } else if (track.type === TRACK_TYPE.ISOFORM) {
+          const isoformTrack = new IsoformTrack({
+            viewer: this.gfc.viewer,
+            track,
+            height: this.gfc.height,
+            width,
+            transcriptTypes,
+            htpVariant,
+            service: this.gfc.service,
+          })
+          await isoformTrack.getTrackData(track)
+          track_height += isoformTrack.DrawTrack()
+        } else if (track.type === TRACK_TYPE.VARIANT) {
+          track.range = sequenceOptions.range
+          // @ts-expect-error
+          const variantTrack = new VariantTrack({
+            viewer: this.gfc.viewer,
+            track,
+            height: this.gfc.height,
+            width,
+            service: this.gfc.service,
+          })
+          await variantTrack.getTrackData()
+          variantTrack.DrawTrack()
+        } else if (track.type === TRACK_TYPE.VARIANT_GLOBAL) {
+          track.range = sequenceOptions.range
+          const variantTrack = new VariantTrackGlobal({
+            viewer: this.gfc.viewer,
+            track,
+            height: this.gfc.height,
+            width,
+          })
+          await variantTrack.getTrackData()
+          variantTrack.DrawTrack()
+        } else {
+          console.error(`TrackType not found for ${track.id}...`, track.type)
+        }
+        d3.select(this.gfc.svg_target).attr('height', track_height)
+      }),
+    ).catch((e: unknown) => {
+      console.error(e)
     })
   }
 
