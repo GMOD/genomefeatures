@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+
 import type { Selection } from 'd3'
 
 interface Track {
@@ -8,6 +9,7 @@ interface Track {
 }
 
 interface ReferenceTrackProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   viewer: Selection<SVGGElement, unknown, HTMLElement, any>
   track: Track
   height: number
@@ -16,6 +18,7 @@ interface ReferenceTrackProps {
 
 export default class ReferenceTrack {
   private refSeq: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private viewer: Selection<SVGGElement, unknown, HTMLElement, any>
   private width: number
   private height: number
@@ -29,7 +32,7 @@ export default class ReferenceTrack {
     this.track = track
   }
 
-  DrawScrollableTrack(): void {
+  DrawScrollableTrack() {
     const viewer = this.viewer
     const data = this.refSeq
 
@@ -122,7 +125,8 @@ export default class ReferenceTrack {
       : new Array(end - start + 1).fill(0).map((_, idx) => start + idx)
   }
 
-  async getTrackData(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async getTrackData() {
     try {
       // this.refSeq = await apolloService.GetLocalSequence(
       //  '',

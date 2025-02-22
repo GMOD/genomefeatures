@@ -94,7 +94,7 @@ export function countIsoforms(data: SimpleFeatureSerialized[]) {
 
 export function calculateNewTrackPosition(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  viewer: d3.Selection<SVGGElement, unknown, null, any>,
+  viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, any>,
 ): number {
   const viewerClass = viewer.attr('class')
   const classNames = viewerClass.split(' ')

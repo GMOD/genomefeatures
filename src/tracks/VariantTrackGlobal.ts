@@ -15,6 +15,7 @@ interface Variant {
 }
 
 interface VariantTrackGlobalProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   viewer: Selection<SVGGElement, unknown, HTMLElement, any>
   track: Track
   height: number
@@ -23,6 +24,7 @@ interface VariantTrackGlobalProps {
 
 export default class VariantTrackGlobal {
   private variants: Variant[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private viewer: Selection<SVGGElement, unknown, HTMLElement, any>
   private width: number
   private height: number
@@ -46,7 +48,6 @@ export default class VariantTrackGlobal {
     const triangle = d3.symbol().type(d3.symbolTriangle).size(20)
 
     const trackHeight = 20
-    // @ts-expect-error
     const newTrackPosition = calculateNewTrackPosition(this.viewer)
 
     const track = viewer
