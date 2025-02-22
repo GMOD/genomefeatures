@@ -3,7 +3,6 @@
   "version": "0.3.24",
   "type": "module",
   "description": "A D3 based genome feature rendering",
-  "main": "dist/index.js",
   "license": "MIT",
   "repository": "https://github.com/GMOD/GenomeFeatureComponent",
   "keywords": [
@@ -12,13 +11,18 @@
     "genes",
     "transcripts"
   ],
-  "files": [
-    "dist",
-    "src"
-  ],
+  "main": "./dist/genomefeatures.umd.cjs",
+  "module": "./dist/genomefeatures.js",
+  "exports": {
+    ".": {
+      "import": "./dist/genomefeatures.js",
+      "require": "./dist/genomefeatures.umd.cjs"
+    },
+    "./style.css": "./dist/genomefeatures.css"
+  },
   "scripts": {
     "format": "prettier --write .",
-    "clean": "rm -rf dist/",
+    "clean": "rimraf dist",
     "dev": "vite",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "build": "vite build",
@@ -37,6 +41,7 @@
     "eslint-plugin-unicorn": "^57.0.0",
     "gh-pages": "^6.3.0",
     "prettier": "^3.5.1",
+    "rimraf": "^6.0.1",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.1.0"

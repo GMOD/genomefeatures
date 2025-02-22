@@ -4,6 +4,8 @@ import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
 
+import './GenomeFeatureViewer.css'
+
 interface Track {
   start: number
   end: number
@@ -37,7 +39,7 @@ interface ViewerConfig {
  * @Param height: height of svg
  * @Param width: width of svg
  */
-export default class MainGenomeFeatureViewer {
+export default class GenomeFeatureViewer {
   public tracks: Track[]
   public locale: string
   public config: ViewerConfig
