@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 
 import { getTranslate } from './RenderFunctions'
 import IsoformAndVariantTrack from './tracks/IsoformAndVariantTrack'
-import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack'
+import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack2'
 import IsoformTrack from './tracks/IsoformTrack'
 import ReferenceTrack from './tracks/ReferenceTrack'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'

@@ -1,17 +1,20 @@
 import * as d3 from 'd3'
-import { Selection } from 'd3'
 
 import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
 
-type Track = Record<string, any>;
+import type { Selection } from 'd3'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Track = Record<string, any>
 
 interface Config {
   locale: string
   tracks: Track[]
   start?: number
   end?: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
 
@@ -34,6 +37,7 @@ export default class GenomeFeatureViewer {
   private svg_target: string
   private height: number
   private width: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private viewer: Selection<any, unknown, HTMLElement, any>
   private drawer: Drawer
 
