@@ -12,6 +12,7 @@ export function generateInsertionPoint(x: number) {
 }
 
 type Feat = SimpleFeatureSerialized & { row: number }
+
 export function getDeletionHeight(x: Feat[], fmin: number, fmax: number) {
   if (x.length == 0) {
     return 0

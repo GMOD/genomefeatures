@@ -1,4 +1,4 @@
-import { Feature, SimpleFeatureSerialized } from './types'
+import { SimpleFeatureSerialized } from './types'
 
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/prefer-nullish-coalescing */
 const jb2ToJb1 = { refName: 'seq_id' }
@@ -8,22 +8,18 @@ const jb1ToJb2 = { seq_id: 'refName' }
 /**
  * wrapper to adapt nclist features to act like jbrowse 2 features
  */
-export default class NCListFeature implements Feature {
-  private parentHandle?: Feature
+export default class NCListFeature {
+  private parentHandle?: NCListFeature
 
   private uniqueId: string
 
   constructor(
     private ncFeature: any,
-    parent?: Feature,
+    parent?: NCListFeature,
     id?: string,
   ) {
     this.uniqueId = id || ncFeature.id()
     this.parentHandle = parent
-  }
-
-  set(): void {
-    throw new Error('not implemented')
   }
 
   jb2TagToJb1Tag(tag: string): string {
@@ -64,14 +60,14 @@ export default class NCListFeature implements Feature {
   /**
    * Get this feature's parent feature, or undefined if none.
    */
-  parent(): Feature | undefined {
+  parent() {
     return this.parentHandle
   }
 
   /**
    * Get an array of child features, or undefined if none.
    */
-  children(): Feature[] | undefined {
+  children() {
     return this.get('subfeatures')
   }
 
@@ -84,7 +80,7 @@ export default class NCListFeature implements Feature {
       const mappedTag = this.jb1TagToJb2Tag(tag)
       const value = this.ncFeature.get(tag)
       if (mappedTag === 'subfeatures') {
-        data.children = (value || []).map((f: Feature) =>
+        data.children = (value || []).map((f: any) =>
           new NCListFeature(f, this).toJSON(),
         )
       } else {

@@ -4,7 +4,7 @@ import { SimpleFeatureSerialized } from './services/types'
 
 // Takes in the current entry start/end and the array of used space and assigns a row
 export function checkSpace(used_space: string[][], start: number, end: number) {
-  let row
+  let row = 0
   let assigned
   let fits
   // if empty... this is the first entry... on the first row.

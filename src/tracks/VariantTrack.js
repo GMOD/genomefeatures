@@ -37,11 +37,6 @@ export default class VariantTrack {
       .direction('s')
     viewer.call(tooltip)
 
-    /*
-            Calculate the height and spacing for each track.
-            Get the total height of where we are.
-            draw new variant track
-         */
     let trackHeight = 20
     let newTrackPosition = calculateNewTrackPosition(this.viewer)
 
@@ -94,7 +89,5 @@ export default class VariantTrack {
   }
 
   /* Method to get reference label */
-  async getTrackData() {
-    // this.variants = await new ApolloService().GetFakeVariants()
-  }
+  async getTrackData() {}
 }

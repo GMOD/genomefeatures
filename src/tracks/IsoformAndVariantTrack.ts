@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import { Selection } from 'd3'
 
 import {
   calculateNewTrackPosition,
@@ -26,6 +25,8 @@ import {
   renderVariantDescriptions,
 } from '../services/VariantService'
 import { SimpleFeatureSerialized } from '../services/types'
+
+import type { Selection } from 'd3'
 
 interface IsoformAndVariantTrackProps {
   viewer: Selection<SVGGElement, unknown, null, undefined>
@@ -177,7 +178,7 @@ export default class IsoformAndVariantTrack {
       sortWeight[exon_feats[i]] = 100
     }
 
-    const geneList = {}
+    const geneList = {} as Record<string, string>
 
     isoformData = isoformData.sort((a, b) => {
       if (a.selected && !b.selected) {
@@ -186,7 +187,7 @@ export default class IsoformAndVariantTrack {
       if (!a.selected && b.selected) {
         return 1
       }
-      return (a.name ?? '').localeCompare(b.name ?? '')
+      return a.name.localeCompare(b.name)
     })
 
     let heightBuffer = 0
@@ -296,11 +297,9 @@ export default class IsoformAndVariantTrack {
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
-        const symbol_string_width = variant_label.node().getBBox().width
-        if (parseFloat(symbol_string_width + label_offset) > viewerWidth) {
-          const diff = parseFloat(
-            symbol_string_width + label_offset - viewerWidth,
-          )
+        const symbol_string_width = variant_label.node()?.getBBox().width ?? 0
+        if (symbol_string_width + label_offset > viewerWidth) {
+          const diff = symbol_string_width + label_offset - viewerWidth
           label_offset -= diff
           variant_label.attr(
             'transform',
@@ -491,11 +490,9 @@ export default class IsoformAndVariantTrack {
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
-        const symbol_string_width = variant_label.node().getBBox().width
-        if (parseFloat(symbol_string_width + label_offset) > viewerWidth) {
-          const diff = parseFloat(
-            symbol_string_width + label_offset - viewerWidth,
-          )
+        const symbol_string_width = variant_label.node()?.getBBox().width || 0
+        if (symbol_string_width + label_offset > viewerWidth) {
+          const diff = symbol_string_width + label_offset - viewerWidth
           label_offset -= diff
           variant_label.attr('transform', `translate(${label_offset},35)`)
         }
@@ -515,14 +512,14 @@ export default class IsoformAndVariantTrack {
       .attr('class', 'track')
 
     let row_count = 0
-    const used_space = [] as unknown[]
+    const used_space = [] as string[][]
     let fmin_display = -1
     let fmax_display = -1
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     const renderTooltipDescription = this.renderTooltipDescription
 
-    const alreadyRendered = [] // hack fix for multiple transcript returns.
+    const alreadyRendered = [] as string[] // hack fix for multiple transcript returns.
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
     // **************************************
@@ -535,19 +532,13 @@ export default class IsoformAndVariantTrack {
 
         // May want to remove this and add an external sort function
         // outside of the render method to put certain features on top.
-        featureChildren = featureChildren.sort(function (a, b) {
-          if (a.name < b.name) {
-            return -1
-          }
-          if (a.name > b.name) {
-            return 1
-          }
-          return a - b
-        })
+        featureChildren = featureChildren.sort((a, b) =>
+          a.name.localeCompare(b.name),
+        )
 
         // For each isoform..
         let warningRendered = false
-        featureChildren.forEach(function (featureChild) {
+        featureChildren.forEach(featureChild => {
           if (
             !(
               isoformFilter.includes(featureChild.id) ||
@@ -576,7 +567,6 @@ export default class IsoformAndVariantTrack {
             )
             if (row_count < MAX_ROWS) {
               // An isoform container
-
               let text_string
               let text_label
               let addingGeneLabel = false
@@ -591,9 +581,7 @@ export default class IsoformAndVariantTrack {
                 .attr('class', 'isoform')
                 .attr(
                   'transform',
-                  `translate(0,${
-                    row_count * ISOFORM_HEIGHT + 10 + heightBuffer
-                  })`,
+                  `translate(0,${row_count * ISOFORM_HEIGHT + 10 + heightBuffer})`,
                 )
               if (addingGeneLabel) {
                 text_string = feature.name
@@ -626,11 +614,11 @@ export default class IsoformAndVariantTrack {
                 }))
                 .attr('class', 'transArrow')
                 .attr('points', ARROW_POINTS)
-                .attr('transform', d => {
-                  return feature.strand > 0
+                .attr('transform', d =>
+                  feature.strand > 0
                     ? `translate(${Number(x(d.fmax))},0)`
-                    : `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`
-                })
+                    : `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`,
+                )
                 .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
@@ -678,11 +666,10 @@ export default class IsoformAndVariantTrack {
               // the box.
               // TODO: this is just an estimate of the length
               let text_width = text_string.length * 2
-              let feat_end
 
               // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
               try {
-                text_width = text_label.node().getBBox().width
+                text_width = text_label.node()?.getBBox().width ?? 0
               } catch (e) {
                 // console.error('Not yet rendered',e)
               }
@@ -690,7 +677,7 @@ export default class IsoformAndVariantTrack {
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
-              feat_end =
+              const feat_end =
                 text_width > x(featureChild.fmax) - x(featureChild.fmin)
                   ? x(featureChild.fmin) + text_width
                   : x(featureChild.fmax)
@@ -744,7 +731,7 @@ export default class IsoformAndVariantTrack {
                     return 1
                   }
                   // NOTE: type not found and weighted
-                  return a.type - b.type
+                  return a.type.localeCompare(b.type)
                 })
 
                 featureChild.children.forEach(innerChild => {
@@ -770,7 +757,7 @@ export default class IsoformAndVariantTrack {
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                  } else if (CDS_feats.includes(innerType ?? '')) {
+                  } else if (CDS_feats.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'CDS')
@@ -818,7 +805,7 @@ export default class IsoformAndVariantTrack {
             if (row_count === MAX_ROWS && !warningRendered) {
               // *** DANGER EDGE CASE ***/
               const link = getJBrowseLink(source, chr, viewStart, viewEnd)
-              ++current_row!
+              ++current_row
               warningRendered = true
               track
                 .append('a')
@@ -829,9 +816,7 @@ export default class IsoformAndVariantTrack {
                 .attr('y', 10)
                 .attr(
                   'transform',
-                  `translate(0,${
-                    row_count * ISOFORM_HEIGHT + 20 + heightBuffer
-                  })`,
+                  `translate(0,${row_count * ISOFORM_HEIGHT + 20 + heightBuffer})`,
                 )
                 .attr('fill', 'red')
                 .attr('opacity', 1)
