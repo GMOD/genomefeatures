@@ -1,7 +1,31 @@
 import * as d3 from 'd3'
 
+import type { Selection } from 'd3'
+
+interface Track {
+  start: number
+  end: number
+  chromosome: string
+  range: [number, number]
+}
+
+interface ReferenceTrackProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
+  track: Track
+  height: number
+  width: number
+}
+
 export default class ReferenceTrack {
-  constructor({ viewer, track, height, width }) {
+  private refSeq: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
+  private width: number
+  private height: number
+  private track: Track
+
+  constructor({ viewer, track, height, width }: ReferenceTrackProps) {
     this.refSeq = ''
     this.viewer = viewer
     this.width = width
@@ -10,16 +34,15 @@ export default class ReferenceTrack {
   }
 
   DrawScrollableTrack() {
-    let viewer = this.viewer
-    let data = this.refSeq
+    const viewer = this.viewer
+    const data = this.refSeq
 
-    let x = d3
+    const x = d3
       .scaleLinear()
       .domain([this.track.start, this.track.end + 1])
       .range(this.track.range)
 
-    // Represent our sequence in integers on an x-axis
-    let xAxis = d3
+    const xAxis = d3
       .axisBottom(x)
       .tickValues(this._getRefTick(this.track.start + 1, this.track.end))
       .tickFormat((_d, i) => data[i])
@@ -27,9 +50,8 @@ export default class ReferenceTrack {
       .tickSizeInner(8)
       .tickPadding(6)
 
-    // Set sequence length ticks
-    let numTicks = Math.floor(data.length / 10)
-    let xAxisNumerical = d3
+    const numTicks = Math.floor(data.length / 10)
+    const xAxisNumerical = d3
       .axisTop(x)
       .ticks(numTicks)
       .tickValues(this._getRefTick(this.track.start + 1, this.track.end, 10))
@@ -48,24 +70,23 @@ export default class ReferenceTrack {
       .attr('transform', 'translate(0, 20)')
       .call(xAxisNumerical)
 
-    let numericTickLabel = d3.selectAll('.x-local-numerical .tick text')
+    const numericTickLabel = d3.selectAll('.x-local-numerical .tick text')
     numericTickLabel.first().attr('text-anchor', 'start')
     numericTickLabel.last().attr('text-anchor', 'end')
 
-    // For each tick
     d3.selectAll('.x-local-axis .tick text').each(function () {
-      var tick = d3.select(this)
-      var text = tick.text() // Figure out what nucleotide we have
-      var rectClass = 'nucleotide nt-a'
-      if (text == 'T') {
+      const tick = d3.select(this)
+      const text = tick.text()
+      let rectClass = 'nucleotide nt-a'
+      if (text === 'T') {
         rectClass = 'nucleotide nt-t'
-      } else if (text == 'C') {
+      } else if (text === 'C') {
         rectClass = 'nucleotide nt-c'
-      } else if (text == 'G') {
+      } else if (text === 'G') {
         rectClass = 'nucleotide nt-g'
       }
-      // Get the parent tick and create a box to color
-      // code the nucleotides
+
+      // @ts-expect-error
       d3.select(this.parentNode)
         .append('rect')
         .attr('class', rectClass)
@@ -73,18 +94,18 @@ export default class ReferenceTrack {
     })
   }
 
-  DrawOverviewTrack() {
-    let viewer = this.viewer
-    let view_start = this.track.start
-    let view_end = this.track.end
-    let width = this.width
+  DrawOverviewTrack(): void {
+    const viewer = this.viewer
+    const view_start = this.track.start
+    const view_end = this.track.end
+    const width = this.width
 
-    let x = d3
+    const x = d3
       .scaleLinear()
       .domain([view_start, view_end])
       .range(this.track.range)
 
-    let xAxis = d3.axisTop(x).ticks(8, 's').tickSize(8)
+    const xAxis = d3.axisTop(x).ticks(8, 's').tickSize(8)
 
     viewer
       .append('g')
@@ -95,22 +116,14 @@ export default class ReferenceTrack {
       .call(xAxis)
   }
 
-  /*
-        Method that takes start and end and
-        creates array of in between values
-        that represents our nucleotides
-    */
-  _getRefTick(start, end, skip) {
-    let arr = []
-    arr = skip
+  private _getRefTick(start: number, end: number, skip?: number): number[] {
+    return skip
       ? new Array(Math.ceil((end - start + 1) / 10))
-          .fill()
+          .fill(0)
           .map((_, idx) => start + idx * 10)
-      : new Array(end - start + 1).fill().map((_, idx) => start + idx)
-    return arr
+      : new Array(end - start + 1).fill(0).map((_, idx) => start + idx)
   }
 
-  /* Method to get reference label */
   // eslint-disable-next-line @typescript-eslint/require-await
   async getTrackData() {
     try {

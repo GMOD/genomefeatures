@@ -15,9 +15,40 @@ import {
   getVariantSymbol,
   renderVariantDescriptions,
 } from '../services/VariantService'
-let apolloService = new ApolloService()
+
+import type { VariantFeature } from '../services/VariantService'
+import type { SimpleFeatureSerialized } from '../services/types'
+
+interface IsoformEmbeddedVariantTrackProps {
+  viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, undefined>
+  height: number
+  width: number
+  transcriptTypes: string[]
+  variantTypes: string[]
+  showVariantLabel?: boolean
+  variantFilter: string[]
+  service?: ApolloService
+}
+
+const apolloService = new ApolloService()
 
 export default class IsoformEmbeddedVariantTrack {
+  private trackData: SimpleFeatureSerialized[] = []
+  private variantData: VariantFeature[] = []
+  private viewer: d3.Selection<
+    SVGGElement,
+    unknown,
+    HTMLElement | null,
+    undefined
+  >
+  private width: number
+  private variantFilter: string[]
+  private height: number
+  private transcriptTypes: string[]
+  private variantTypes: string[]
+  private showVariantLabel: boolean
+  private service: ApolloService
+
   constructor({
     viewer,
     height,
@@ -27,18 +58,15 @@ export default class IsoformEmbeddedVariantTrack {
     showVariantLabel,
     variantFilter,
     service,
-  }) {
-    this.trackData = {}
-    this.variantData = {}
+  }: IsoformEmbeddedVariantTrackProps) {
     this.viewer = viewer
     this.width = width
     this.variantFilter = variantFilter
     this.height = height
     this.transcriptTypes = transcriptTypes
     this.variantTypes = variantTypes
-    this.showVariantLabel =
-      showVariantLabel !== undefined ? showVariantLabel : true
-    this.service = service || apolloService
+    this.showVariantLabel = showVariantLabel ?? true
+    this.service = service ?? apolloService
   }
 
   // Draw our track on the viewer
@@ -46,25 +74,25 @@ export default class IsoformEmbeddedVariantTrack {
   // for both testing/extensibility
   DrawTrack() {
     let isoformData = this.trackData
-    let variantData = this.filterVariantData(
+    const variantData = this.filterVariantData(
       this.variantData,
       this.variantFilter,
     )
-    let viewer = this.viewer
-    let width = this.width
-    let showVariantLabel = this.showVariantLabel
+    const viewer = this.viewer
+    const width = this.width
+    const showVariantLabel = this.showVariantLabel
 
     // TODO: make configurable and a const / default
-    let MAX_ROWS = 10
+    const MAX_ROWS = 10
 
-    let UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
-    let CDS_feats = ['CDS']
-    let exon_feats = ['exon']
-    let display_feats = this.transcriptTypes
-    let dataRange = findRange(isoformData, display_feats)
+    const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
+    const CDS_feats = ['CDS']
+    const exon_feats = ['exon']
+    const display_feats = this.transcriptTypes
+    const dataRange = findRange(isoformData, display_feats)
 
-    let view_start = dataRange.fmin
-    let view_end = dataRange.fmax
+    const view_start = dataRange.fmin
+    const view_end = dataRange.fmax
 
     // constants
     const EXON_HEIGHT = 10 // will be white / transparent
@@ -76,48 +104,44 @@ export default class IsoformEmbeddedVariantTrack {
     const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
     const VARIANT_HEIGHT = 10 // this is the height of the isoform running all of the way through
     const VARIANT_OFFSET = 20 // this is the height of the isoform running all of the way through
-    const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
+    const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way thro>
     const ARROW_HEIGHT = 20
     const ARROW_WIDTH = 10
     const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
     const SNV_HEIGHT = 10
     const SNV_WIDTH = 10
-
-    const insertion_points = x => {
+    const insertion_points = (x: number) => {
       return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2},${SNV_HEIGHT}`
     }
 
-    const delins_points = x => {
-      // const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+    const delins_points = (x: number) => {
       return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT} ${x - SNV_WIDTH / 2},0 ${x + SNV_WIDTH / 2},0`
     }
 
-    const snv_points = x => {
+    const snv_points = (x: number) => {
       return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT / 2} ${x},0 ${x - SNV_WIDTH / 2},${SNV_HEIGHT / 2}`
     }
 
-    let x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
+    const x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
 
-    // Calculate where this track should go and translate it
-    let newTrackPosition = calculateNewTrackPosition(this.viewer)
-    let track = viewer
+    const newTrackPosition = calculateNewTrackPosition(this.viewer)
+    const track = viewer
       .append('g')
       .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
 
-    // need to build a new sortWeight since these can be dynamic
-    let sortWeight = {}
-    for (let i = 0, len = UTR_feats.length; i < len; i++) {
-      sortWeight[UTR_feats[i]] = 200
+    const sortWeight: Record<string, number> = {}
+    for (const feat of UTR_feats) {
+      sortWeight[feat] = 200
     }
-    for (let i = 0, len = CDS_feats.length; i < len; i++) {
-      sortWeight[CDS_feats[i]] = 1000
+    for (const feat of CDS_feats) {
+      sortWeight[feat] = 1000
     }
-    for (let i = 0, len = exon_feats.length; i < len; i++) {
-      sortWeight[exon_feats[i]] = 100
+    for (const feat of exon_feats) {
+      sortWeight[feat] = 100
     }
 
-    let geneList = {}
+    const geneList: Record<string, string> = {}
 
     isoformData = isoformData.sort((a, b) => {
       if (a.selected && !b.selected) {
@@ -126,12 +150,13 @@ export default class IsoformEmbeddedVariantTrack {
       if (!a.selected && b.selected) {
         return 1
       }
+      // @ts-expect-error
       return a.name - b.name
     })
 
     let heightBuffer = 0
 
-    let tooltipDiv = d3
+    const tooltipDiv = d3
       .select('body')
       .append('div')
       .attr('class', 'gfc-tooltip')
@@ -147,21 +172,23 @@ export default class IsoformEmbeddedVariantTrack {
     }
 
     let row_count = 0
-    let used_space = []
+    const used_space: string[][] = []
     let fmin_display = -1
     let fmax_display = -1
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    let renderTooltipDescription = this.renderTooltipDescription
+    const renderTooltipDescription = this.renderTooltipDescription
+
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
     // **************************************
+    //
     // let feature = data[0];
     for (let i = 0; i < isoformData.length && row_count < MAX_ROWS; i++) {
-      let feature = isoformData[i]
+      const feature = isoformData[i]
       let featureChildren = feature.children
       if (featureChildren) {
-        let selected = feature.selected
+        const selected = feature.selected
 
         // May want to remove this and add an external sort function
         // outside of the render method to put certain features on top.
@@ -172,14 +199,14 @@ export default class IsoformEmbeddedVariantTrack {
           if (a.name > b.name) {
             return 1
           }
+          // @ts-expect-error
           return a - b
         })
 
         // For each isoform..
         let warningRendered = false
         featureChildren.forEach(featureChild => {
-          //
-          let featureType = featureChild.type
+          const featureType = featureChild.type
 
           if (display_feats.includes(featureType)) {
             // function to assign row based on available space.
@@ -200,7 +227,7 @@ export default class IsoformEmbeddedVariantTrack {
                 geneList[feature.name] = 'Green'
               }
 
-              let isoform = track
+              const isoform = track
                 .append('g')
                 .attr('class', 'isoform')
                 .attr(
@@ -290,10 +317,10 @@ export default class IsoformEmbeddedVariantTrack {
               // the box.
               // TODO: this is just an estimate of the length
               let text_width = text_string.length * 2
-              let feat_end
 
               // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
               try {
+                // @ts-expect-error
                 text_width = text_label.node().getBBox().width
               } catch (e) {
                 // console.error('Not yet rendered',e)
@@ -302,7 +329,7 @@ export default class IsoformEmbeddedVariantTrack {
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
-              feat_end =
+              const feat_end =
                 text_width > x(featureChild.fmax) - x(featureChild.fmin)
                   ? x(featureChild.fmin) + text_width
                   : x(featureChild.fmax)
@@ -313,7 +340,7 @@ export default class IsoformEmbeddedVariantTrack {
               // Also using colons as spacers seems very perl... maybe change that?
               // *** DANGER EDGE CASE ***/
               if (used_space[current_row]) {
-                let temp = used_space[current_row]
+                const temp = used_space[current_row]
                 temp.push(`${x(featureChild.fmin)}:${feat_end}`)
                 used_space[current_row] = temp
               } else {
@@ -334,8 +361,8 @@ export default class IsoformEmbeddedVariantTrack {
               // have to sort this so we draw the exons BEFORE the CDS
               if (featureChild.children) {
                 featureChild.children = featureChild.children.sort((a, b) => {
-                  let sortAValue = sortWeight[a.type]
-                  let sortBValue = sortWeight[b.type]
+                  const sortAValue = sortWeight[a.type]
+                  const sortBValue = sortWeight[b.type]
 
                   if (
                     typeof sortAValue === 'number' &&
@@ -356,11 +383,12 @@ export default class IsoformEmbeddedVariantTrack {
                     return 1
                   }
                   // NOTE: type not found and weighted
+                  // @ts-expect-error
                   return a.type - b.type
                 })
 
                 featureChild.children.forEach(innerChild => {
-                  let innerType = innerChild.type
+                  const innerType = innerChild.type
 
                   let validInnerType = false
                   if (exon_feats.includes(innerType)) {
@@ -428,14 +456,17 @@ export default class IsoformEmbeddedVariantTrack {
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
                   }
                   if (validInnerType) {
-                    let variantBins =
-                      generateVariantDataBinsAndDataSets(variantData)
+                    const variantBins = generateVariantDataBinsAndDataSets(
+                      variantData,
+                      // NOTE: made up value
+                      1,
+                    )
                     // TODO: remove this once no longer needed
                     generateVariantBins(variantData)
 
                     // 12 if all have 1
                     variantBins.forEach(variant => {
-                      let { type, fmax, fmin } = variant
+                      const { type, fmax, fmin } = variant
                       if (
                         (fmin < innerChild.fmin && fmax > innerChild.fmin) ||
                         (fmax > innerChild.fmax && fmin < innerChild.fmax) ||
@@ -446,7 +477,7 @@ export default class IsoformEmbeddedVariantTrack {
                         // const consequence = description.consequence ? description.consequence : "UNKNOWN";
                         const consequenceColor =
                           getColorsForConsequences(descriptions)[0]
-                        let descriptionHtml =
+                        const descriptionHtml =
                           renderVariantDescriptions(descriptions)
                         const width = Math.max(
                           Math.ceil(x(fmax) - x(fmin)),
@@ -548,8 +579,8 @@ export default class IsoformEmbeddedVariantTrack {
                           drawnVariant = false
                         }
                         if (drawnVariant && showVariantLabel) {
-                          let symbol_string = getVariantSymbol(variant)
-                          const symbol_string_length = symbol_string.length ?? 1
+                          const symbol_string = getVariantSymbol(variant)
+                          const symbol_string_length = symbol_string.length || 1
                           isoform
                             .append('text')
                             .attr('class', 'variantLabel')
@@ -621,17 +652,26 @@ export default class IsoformEmbeddedVariantTrack {
     // we return the appropriate height function
     return row_count * ISOFORM_HEIGHT + heightBuffer
   }
-
-  filterVariantData(variantData, variantFilter) {
+  private filterVariantData(
+    variantData: VariantFeature[],
+    variantFilter: string[],
+  ): VariantFeature[] {
     if (variantFilter.length === 0) {
       return variantData
     }
-    return variantData.filter(v => {
-      return variantFilter.includes(v.name)
-    })
+    return variantData.filter(v => variantFilter.includes(v.name))
   }
 
-  renderTooltipDescription(tooltipDiv, descriptionHtml, closeFunction) {
+  private renderTooltipDescription(
+    tooltipDiv: d3.Selection<
+      HTMLDivElement,
+      unknown,
+      HTMLElement | null,
+      undefined
+    >,
+    descriptionHtml: string,
+    closeFunction: () => void,
+  ): void {
     tooltipDiv
       .transition()
       .duration(200)
@@ -642,36 +682,40 @@ export default class IsoformEmbeddedVariantTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      .style('left', `${window.event.pageX + 10}px`)
-      .style('top', `${window.event.pageY + 10}px`)
+      // @ts-expect-error
+      .style('left', `${window.event!.pageX + 10}px`)
+      // @ts-expect-error
+      .style('top', `${window.event!.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')
-      .on('click', () => closeFunction())
+      .on('click', () => {
+        closeFunction()
+      })
 
     tooltipDiv
       .append('button')
       .attr('type', 'button')
       .html('&times;')
       .attr('class', 'tooltipDivX')
-      .on('click', () => closeFunction())
+      .on('click', () => {
+        closeFunction()
+      })
   }
 
-  async populateTrack(track) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async populateTrack(track: any) {
     await this.getTrackData(track)
     await this.getVariantData(track)
   }
 
-  /* Method for isoformTrack service call */
-  async getTrackData(track) {
-    this.trackData = await apolloService.fetchDataFromUrl(track, 'isoform_url')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async getTrackData(track: any) {
+    this.trackData = await this.service.fetchDataFromUrl(track, 'isoform_url')
   }
 
-  /* Method for isoformTrack service call */
-  async getVariantData(track) {
-    this.variantData = await apolloService.fetchDataFromUrl(
-      track,
-      'variant_url',
-    )
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async getVariantData(track: any) {
+    this.variantData = await this.service.fetchDataFromUrl(track, 'variant_url')
   }
 }

@@ -8,9 +8,41 @@ import {
 } from '../services/TrackService'
 import { generateSnvPoints } from '../services/VariantService'
 
-let apolloService = new ApolloService()
+import type { SimpleFeatureSerialized } from '../services/types'
+import type { Selection } from 'd3'
+
+interface Track {
+  start: number
+  end: number
+  genome: string
+}
+
+interface IsoformTrackProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
+  track: Track
+  height: number
+  width: number
+  transcriptTypes: string[]
+  htpVariant?: string
+  service?: ApolloService
+}
+
+const apolloService = new ApolloService()
 
 export default class IsoformTrack {
+  private trackData: SimpleFeatureSerialized[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
+  private width: number
+  private height: number
+  private transcriptTypes: string[]
+  private htpVariant?: string
+  private start: number
+  private end: number
+  private genome: string
+  private service: ApolloService
+
   constructor({
     viewer,
     track,
@@ -19,8 +51,8 @@ export default class IsoformTrack {
     transcriptTypes,
     htpVariant,
     service,
-  }) {
-    this.trackData = {}
+  }: IsoformTrackProps) {
+    this.trackData = []
     this.viewer = viewer
     this.width = width
     this.height = height
@@ -29,10 +61,15 @@ export default class IsoformTrack {
     this.start = track.start
     this.end = track.end
     this.genome = track.genome
-    this.service = service || apolloService
+    this.service = service ?? apolloService
   }
 
-  renderTooltipDescription(tooltipDiv, descriptionHtml, closeFunction) {
+  private renderTooltipDescription(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, any>,
+    descriptionHtml: string,
+    closeFunction: () => void,
+  ) {
     tooltipDiv
       .transition()
       .duration(200)
@@ -43,59 +80,64 @@ export default class IsoformTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      .style('left', `${window.event.pageX + 10}px`)
-      .style('top', `${window.event.pageY + 10}px`)
+      // @ts-expect-error
+      .style('left', `${window.event!.pageX + 10}px`)
+      // @ts-expect-error
+      .style('top', `${window.event!.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')
-      .on('click', () => closeFunction())
+      .on('click', () => {
+        closeFunction()
+      })
 
     tooltipDiv
       .append('button')
       .attr('type', 'button')
       .html('&times;')
       .attr('class', 'tooltipDivX')
-      .on('click', () => closeFunction())
+      .on('click', () => {
+        closeFunction()
+      })
   }
+
   // Draw our track on the viewer
-  // TODO: Potentially seperate this large section of code
-  // for both testing/extensibility
   DrawTrack() {
-    let htpVariant = this.htpVariant
+    const htpVariant = this.htpVariant
     let data = this.trackData
-    let viewer = this.viewer
-    let width = this.width
-    let source = this.genome
-    let chr = this.trackData[0].seqId
+    const viewer = this.viewer
+    const width = this.width
+    const source = this.genome
+    const chr = this.trackData[0].seqId
 
     // TODO: make configurable and a const / default
-    let MAX_ROWS = 10
+    const MAX_ROWS = 10
 
-    let UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
-    let CDS_feats = ['CDS']
-    let exon_feats = ['exon']
-    let display_feats = this.transcriptTypes
+    const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
+    const CDS_feats = ['CDS']
+    const exon_feats = ['exon']
+    const display_feats = this.transcriptTypes
 
-    let view_start = this.start
-    let view_end = this.end
-    let viewerWidth = this.width
-    let exon_height = 10 // will be white / transparent
-    let cds_height = 10 // will be colored in
-    let isoform_height = 40 // height for each isoform
-    let isoform_title_height = 0 // height for each isoform
-    let utr_height = 10 // this is the height of the isoform running all of the way through
-    let transcript_backbone_height = 4 // this is the height of the isoform running all of the way through
-    let arrow_height = 20
-    let arrow_width = 10
-    let arrow_points = `0,0 0,${arrow_height} ${arrow_width},${arrow_width}`
+    const view_start = this.start
+    const view_end = this.end
+    const viewerWidth = this.width
+    const exon_height = 10 // will be white / transparent
+    const cds_height = 10 // will be colored in
+    const isoform_height = 40 // height for each isoform
+    const isoform_title_height = 0 // height for each isoform
+    const utr_height = 10 // this is the height of the isoform running all of the way through
+    const transcript_backbone_height = 4 // this is the height of the isoform running all of the way through
+    const arrow_height = 20
+    const arrow_width = 10
+    const arrow_points = `0,0 0,${arrow_height} ${arrow_width},${arrow_width}`
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    let renderTooltipDescription = this.renderTooltipDescription
+    const renderTooltipDescription = this.renderTooltipDescription
 
-    let x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
+    const x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
 
     // need to build a new sortWeight since these can be dynamic
-    let sortWeight = {}
+    const sortWeight = {} as Record<string, number>
     for (let i = 0, len = UTR_feats.length; i < len; i++) {
       sortWeight[UTR_feats[i]] = 200
     }
@@ -113,10 +155,11 @@ export default class IsoformTrack {
       if (!a.selected && b.selected) {
         return 1
       }
+      // @ts-expect-error
       return a.name - b.name
     })
 
-    let tooltipDiv = d3
+    const tooltipDiv = d3
       .select('body')
       .append('div')
       .attr('class', 'gfc-tooltip')
@@ -132,41 +175,41 @@ export default class IsoformTrack {
     }
 
     if (htpVariant) {
-      let variantContainer = viewer
+      const variantContainer = viewer
         .append('g')
         .attr('class', 'variants track')
         .attr('transform', 'translate(0,22.5)')
-      let [, fmin] = htpVariant.split(':')
+      const [, fmin] = htpVariant.split(':')
       variantContainer
         .append('polygon')
         .attr('class', 'variant-SNV')
-        .attr('points', generateSnvPoints(x(fmin)))
+        .attr('points', generateSnvPoints(x(+fmin)))
         .attr('fill', 'red')
-        .attr('x', x(fmin))
+        .attr('x', x(+fmin))
         .attr('z-index', 30)
     }
 
     // Calculate where this track should go and translate it
-    let newTrackPosition = calculateNewTrackPosition(this.viewer)
-    let track = viewer
+    const newTrackPosition = calculateNewTrackPosition(this.viewer)
+    const track = viewer
       .append('g')
       .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
 
     let row_count = 0
-    let used_space = []
+    const used_space = [] as string[][]
     let fmin_display = -1
     let fmax_display = -1
-    let alreadyRendered = [] // hack fix for multiple transcript returns.
+    const alreadyRendered = [] as string[] // hack fix for multiple transcript returns.
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
     // **************************************
     // let feature = data[0];
     for (let i = 0; i < data.length && row_count < MAX_ROWS; i++) {
-      let feature = data[i]
+      const feature = data[i]
       let featureChildren = feature.children
       if (featureChildren) {
-        let selected = feature.selected
+        const selected = feature.selected
 
         // May want to remove this and add an external sort function
         // outside of the render method to put certain features on top.
@@ -177,12 +220,12 @@ export default class IsoformTrack {
           if (a.name > b.name) {
             return 1
           }
-          return a - b
+          return 0
         })
 
         // For each isoform..
         featureChildren.forEach(function (featureChild) {
-          let featureType = featureChild.type
+          const featureType = featureChild.type
 
           if (alreadyRendered.includes(featureChild.id)) {
             return
@@ -200,7 +243,7 @@ export default class IsoformTrack {
             )
             if (row_count < MAX_ROWS) {
               // An isoform container
-              let isoform = track
+              const isoform = track
                 .append('g')
                 .attr('class', 'isoform')
                 .attr(
@@ -208,8 +251,8 @@ export default class IsoformTrack {
                   `translate(0,${row_count * isoform_height + 10})`,
                 )
 
-              let transcript_start = Math.max(x(featureChild.fmin), 0)
-              let transcript_end = Math.min(x(featureChild.fmax), viewerWidth)
+              const transcript_start = Math.max(x(featureChild.fmin), 0)
+              const transcript_end = Math.min(x(featureChild.fmax), viewerWidth)
               isoform
                 .append('polygon')
                 .datum(function () {
@@ -250,7 +293,7 @@ export default class IsoformTrack {
                 text_string += ` (${feature.name})`
               }
               let label_offset = Math.max(x(featureChild.fmin), 0)
-              let text_label = isoform
+              const text_label = isoform
                 .append('text')
                 .attr('class', 'transcriptLabel')
                 .attr('fill', selected ? 'sandybrown' : 'gray')
@@ -267,13 +310,10 @@ export default class IsoformTrack {
                   )
                 })
 
-              let symbol_string_width = text_label.node().getBBox().width
-              if (
-                parseFloat(symbol_string_width + label_offset) > viewerWidth
-              ) {
-                let diff = parseFloat(
-                  symbol_string_width + label_offset - viewerWidth,
-                )
+              const symbol_string_width =
+                text_label.node()?.getBBox().width ?? 0
+              if (symbol_string_width + label_offset > viewerWidth) {
+                const diff = symbol_string_width + label_offset - viewerWidth
                 label_offset -= diff
                 text_label.attr('transform', `translate(${label_offset},0)`)
               }
@@ -283,11 +323,10 @@ export default class IsoformTrack {
               // the box.
               // TODO: this is just an estimate of the length
               let text_width = text_string.length * 2
-              let feat_end
 
               // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
               try {
-                text_width = text_label.node().getBBox().width
+                text_width = text_label.node()?.getBBox().width ?? 0
               } catch (e) {
                 // console.error('Not yet rendered',e)
               }
@@ -295,7 +334,7 @@ export default class IsoformTrack {
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
-              feat_end =
+              const feat_end =
                 text_width > x(featureChild.fmax) - x(featureChild.fmin)
                   ? x(featureChild.fmin) + text_width
                   : x(featureChild.fmax)
@@ -306,7 +345,7 @@ export default class IsoformTrack {
               // Also using colons as spacers seems very perl... maybe change that?
               // *** DANGER EDGE CASE ***/
               if (used_space[current_row]) {
-                let temp = used_space[current_row]
+                const temp = used_space[current_row]
                 temp.push(`${x(featureChild.fmin)}:${feat_end}`)
                 used_space[current_row] = temp
               } else {
@@ -327,8 +366,8 @@ export default class IsoformTrack {
                 // have to sort this so we draw the exons BEFORE the CDS
                 featureChild.children = featureChild.children.sort(
                   function (a, b) {
-                    let sortAValue = sortWeight[a.type]
-                    let sortBValue = sortWeight[b.type]
+                    const sortAValue = sortWeight[a.type]
+                    const sortBValue = sortWeight[b.type]
 
                     if (
                       typeof sortAValue === 'number' &&
@@ -349,12 +388,12 @@ export default class IsoformTrack {
                       return 1
                     }
                     // NOTE: type not found and weighted
-                    return a.type - b.type
+                    return a.type.localeCompare(b.type)
                   },
                 )
 
                 featureChild.children.forEach(function (innerChild) {
-                  let innerType = innerChild.type
+                  const innerType = innerChild.type
                   // Skip feats out of bounds.
                   if (
                     x(innerChild.fmin) > viewerWidth ||
@@ -362,8 +401,8 @@ export default class IsoformTrack {
                   ) {
                     return // skip feat
                   }
-                  let inner_start = Math.max(x(innerChild.fmin), 0)
-                  let inner_end = Math.min(x(innerChild.fmax), viewerWidth)
+                  const inner_start = Math.max(x(innerChild.fmin), 0)
+                  const inner_end = Math.min(x(innerChild.fmax), viewerWidth)
                   if (exon_feats.includes(innerType)) {
                     isoform
                       .append('rect')
@@ -446,10 +485,8 @@ export default class IsoformTrack {
             }
             if (row_count === MAX_ROWS) {
               // *** DANGER EDGE CASE ***/
-              let link = getJBrowseLink(source, chr, view_start, view_end)
+              const link = getJBrowseLink(source, chr, view_start, view_end)
               ++current_row
-              // let isoform = track.append("g").attr("class", "isoform")
-              //     .attr("transform", "translate(0," + ((row_count * isoform_height) + 10) + ")")
               track
                 .append('a')
                 .attr('class', 'transcriptLabel')
@@ -486,7 +523,8 @@ export default class IsoformTrack {
   }
 
   /* Method for isoformTrack service call */
-  async getTrackData(track) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getTrackData(track: any) {
     this.trackData = await this.service.fetchDataFromUrl(track, 'url')
   }
 }

@@ -3,8 +3,39 @@ import d3Tip from 'd3-tip'
 
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
+import type { ApolloService } from '../services/ApolloService'
+import type { VariantFeature } from '../services/VariantService'
+import type { Selection } from 'd3'
+
+interface VariantTrackProps {
+  viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
+  height: number
+  width: number
+  transcriptTypes: string[]
+  variantTypes: string[]
+  showVariantLabel?: boolean
+  variantFilter: string[]
+  binRatio: number
+  isoformFilter: string[]
+  initialHiglight?: string[]
+  service?: ApolloService
+  track: Track
+}
+
+interface Track {
+  start: number
+  end: number
+  range: number[]
+}
+
 export default class VariantTrack {
-  constructor({ viewer, track, height, width }) {
+  private variants: VariantFeature[]
+  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
+  private width: number
+  private height: number
+  private track: Track
+
+  constructor({ viewer, track, height, width }: VariantTrackProps) {
     this.variants = []
     this.viewer = viewer
     this.width = width
@@ -13,19 +44,21 @@ export default class VariantTrack {
   }
 
   DrawTrack() {
-    let viewer = this.viewer
-    let variants = this.variants
-    let x = d3
+    const viewer = this.viewer
+    const variants = this.variants
+    const x = d3
       .scaleLinear()
       .domain([this.track.start, this.track.end + 1])
       .range(this.track.range)
-    let triangle = d3.symbol().type(d3.symbolTriangle).size(20)
+    const triangle = d3.symbol().type(d3.symbolTriangle).size(20)
 
     // Tooltip configuration
-    let tooltip = d3Tip()
+    // @ts-expect-error
+    const tooltip = d3Tip()
     tooltip
       .attr('class', 'd3-tip')
       .html(
+        // @ts-expect-error
         d =>
           `<table>` +
           `<th colspan="2">${'Case Variant'.toUpperCase()}</th>` +
@@ -37,16 +70,11 @@ export default class VariantTrack {
       .direction('s')
     viewer.call(tooltip)
 
-    /*
-            Calculate the height and spacing for each track.
-            Get the total height of where we are.
-            draw new variant track
-         */
-    let trackHeight = 20
-    let newTrackPosition = calculateNewTrackPosition(this.viewer)
+    const trackHeight = 20
+    const newTrackPosition = calculateNewTrackPosition(this.viewer)
 
     // Create our track container with a simple background
-    let track = viewer
+    const track = viewer
       .append('g')
       .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
@@ -71,13 +99,14 @@ export default class VariantTrack {
       .attr('class', 'case-variant')
       .attr('stroke', 'red')
       .attr('fill', 'red')
+      // @ts-expect-error
       .attr('transform', d => `translate(${x(d.position)},10)`)
       .on('mouseenter', tooltip.show)
       .on('mouseout', tooltip.hide)
 
     // Track Label Boxes currently 100px
-    let labelOffset = 25
-    let trackLabel = d3
+    const labelOffset = 25
+    const trackLabel = d3
       .select('#viewer2')
       .append('g')
       .attr('transform', `translate(${labelOffset},${newTrackPosition})`)
@@ -90,11 +119,12 @@ export default class VariantTrack {
       .attr('y2', trackHeight)
       .attr('stroke-width', 3)
       .attr('stroke', '#609C9C')
+    // @ts-expect-error
     trackLabel.append('text').text(this.track.label.toUpperCase()).attr('y', 12)
   }
 
   /* Method to get reference label */
   async getTrackData() {
-    // this.variants = await new ApolloService().GetFakeVariants()
+    // stuff
   }
 }

@@ -3,27 +3,31 @@ import { inflate } from 'pako'
 
 import NCListFeature from './NCListFeature'
 
-export function isGzip(buf) {
+export function isGzip(buf: Uint8Array) {
   return buf[0] === 31 && buf[1] === 139 && buf[2] === 8
 }
-async function readFile(url) {
+async function readFile(url: string) {
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} fetching ${url}`)
   }
   const r2 = await res.arrayBuffer()
-  return isGzip(r2) ? inflate(r2) : r2
+  return isGzip(new Uint8Array(r2)) ? inflate(r2) : r2
 }
 export class NCListService {
-  async fetchDataFromUrl(track) {
+  async fetchDataFromUrl(track: {
+    url: { urlTemplate: string; baseUrl: string }
+    chromosome: string
+    start: string
+    end: string
+  }) {
     const { urlTemplate, baseUrl } = track.url
     const store = new NCList({
       urlTemplate,
       baseUrl,
       readFile,
-      compressed: true,
     })
-    let feats = []
+    const feats = []
     for await (const feature of store.getFeatures({
       refName: track.chromosome,
       start: +track.start,

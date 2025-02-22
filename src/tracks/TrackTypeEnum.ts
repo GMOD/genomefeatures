@@ -4,4 +4,4 @@ export const TRACK_TYPE = {
   ISOFORM: 'ISOFORM',
   VARIANT: 'VARIANT',
   VARIANT_GLOBAL: 'VARIANT_GLOBAL',
-}
+} as const
