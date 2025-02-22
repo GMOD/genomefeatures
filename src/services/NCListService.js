@@ -12,11 +12,7 @@ async function readFile(url) {
     throw new Error(`HTTP ${res.status} fetching ${url}`)
   }
   const r2 = await res.arrayBuffer()
-  if (isGzip(r2)) {
-    return inflate(r2)
-  } else {
-    return r2
-  }
+  return isGzip(r2) ? inflate(r2) : r2
 }
 export class NCListService {
   async fetchDataFromUrl(track) {

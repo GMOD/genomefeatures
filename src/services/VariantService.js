@@ -4,10 +4,10 @@ const SNV_HEIGHT = 10
 const SNV_WIDTH = 10
 
 export function generateSnvPoints(x) {
-  return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0} ${x},0 ${x - SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0}`
+  return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT / 2} ${x},0 ${x - SNV_WIDTH / 2},${SNV_HEIGHT / 2}`
 }
 export function generateInsertionPoint(x) {
-  return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT}`
+  return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2},${SNV_HEIGHT}`
 }
 export function getDeletionHeight(x, fmin, fmax) {
   if (x.length == 0) {
@@ -35,16 +35,12 @@ export function getDeletionHeight(x, fmin, fmax) {
     })
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (can_place) {
-      return current_row
-    } else {
-      return current_row + 1
-    }
+    return can_place ? current_row : current_row + 1
   }
 }
 
 export function generateDelinsPoint(x) {
-  return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x - SNV_WIDTH / 2.0},0 ${x + SNV_WIDTH / 2.0},0`
+  return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT} ${x - SNV_WIDTH / 2},0 ${x + SNV_WIDTH / 2},0`
 }
 
 export function getDescriptionDimensions(description) {
@@ -302,26 +298,20 @@ export function renderVariantDescription(description) {
   } else {
     length = `${stop - start}bp`
   }
-  if (ref_allele.length > 20) {
-    ref_allele = `${
-      ref_allele.substring(0, 1).toLowerCase() +
-      ref_allele.substring(1, 8).toUpperCase()
-    }...${ref_allele.substring(ref_allele.length - 8).toUpperCase()}`
-  } else {
-    ref_allele =
-      ref_allele.substring(0, 1).toLowerCase() +
-      ref_allele.substring(1).toUpperCase()
-  }
-  if (alt_allele.length > 20) {
-    alt_allele = `${
-      alt_allele.substring(0, 1).toLowerCase() +
-      alt_allele.substring(1, 8).toUpperCase()
-    }...${alt_allele.substring(alt_allele.length - 8).toUpperCase()}`
-  } else {
-    alt_allele =
-      alt_allele.substring(0, 1).toLowerCase() +
-      alt_allele.substring(1).toUpperCase()
-  }
+  ref_allele =
+    ref_allele.length > 20
+      ? `${
+          ref_allele.slice(0, 1).toLowerCase() +
+          ref_allele.slice(1, 8).toUpperCase()
+        }...${ref_allele.slice(Math.max(0, ref_allele.length - 8)).toUpperCase()}`
+      : ref_allele.slice(0, 1).toLowerCase() + ref_allele.slice(1).toUpperCase()
+  alt_allele =
+    alt_allele.length > 20
+      ? `${
+          alt_allele.slice(0, 1).toLowerCase() +
+          alt_allele.slice(1, 8).toUpperCase()
+        }...${alt_allele.slice(Math.max(0, alt_allele.length - 8)).toUpperCase()}`
+      : alt_allele.slice(0, 1).toLowerCase() + alt_allele.slice(1).toUpperCase()
   if (description.type === 'SNV' || description.type === 'MNV') {
     alt_allele = alt_allele.toUpperCase()
     ref_allele = ref_allele.toUpperCase()
@@ -339,16 +329,16 @@ export function renderVariantDescription(description) {
   returnString += `<tr><th>Type</th><td>${description.type}</td></tr>`
   returnString += `<tr><th>Consequence</th><td>${description.consequence}</td></tr>`
   if (description.impact) {
-    returnString += `<tr><th>Impact</th><td>${description.impact.length > descriptionWidth ? description.impact.substr(0, descriptionWidth) : description.impact}</td></tr>`
+    returnString += `<tr><th>Impact</th><td>${description.impact.length > descriptionWidth ? description.impact.slice(0, Math.max(0, descriptionWidth)) : description.impact}</td></tr>`
   }
   returnString += `<tr><th>Length</th><td>${length}</td></tr>`
   if (description.name !== description.symbol) {
     returnString += `<tr><th>Name</th><td>${description.name}</td></tr>`
   }
   if (description.geneId && description.geneSymbol) {
-    returnString += `<tr><th>Allele of Genes</th><td> ${description.geneSymbol > descriptionWidth ? description.geneSymbol.substr(0, descriptionWidth) : description.geneSymbol} (${description.geneId})</td></tr>`
+    returnString += `<tr><th>Allele of Genes</th><td> ${description.geneSymbol > descriptionWidth ? description.geneSymbol.slice(0, Math.max(0, descriptionWidth)) : description.geneSymbol} (${description.geneId})</td></tr>`
   } else if (description.allele_of_genes) {
-    returnString += `<tr><th>Allele of Genes</th><td>${description.allele_of_genes.length > descriptionWidth ? description.allele_of_genes.substr(0, descriptionWidth) : description.allele_of_genes}</td></tr>`
+    returnString += `<tr><th>Allele of Genes</th><td>${description.allele_of_genes.length > descriptionWidth ? description.allele_of_genes.slice(0, Math.max(0, descriptionWidth)) : description.allele_of_genes}</td></tr>`
   }
   // if(description.alleles){
   //   returnString += `<tr><th>Alleles</th><td>${description.alleles.length>descriptionWidth ? description.alleles.substr(0,descriptionWidth) : description.alleles}</td></tr>`;
@@ -365,9 +355,7 @@ export function renderVariantDescription(description) {
 export function getVariantDescriptions(variant) {
   return variant.variants.map(v => {
     let description = getVariantDescription(v)
-    description.consequence = description.consequence
-      ? description.consequence
-      : 'UNKNOWN'
+    description.consequence = description.consequence ?? 'UNKNOWN'
     return description
   })
 }
@@ -438,54 +426,42 @@ export function getVariantDescription(variant) {
     : undefined
 
   if (variant.allele_of_genes) {
-    if (
+    returnObject.allele_of_genes =
       variant.allele_of_genes.values &&
       variant.allele_of_genes.values.length > 0
-    ) {
-      returnObject.allele_of_genes = (
-        Array.isArray(variant.allele_of_genes.values)
-          ? variant.allele_of_genes.values.join(' ')
-          : variant.allele_of_genes.values
-      ).replace(/"/g, '')
-    } else {
-      returnObject.allele_of_genes = variant.allele_of_genes
-    }
+        ? (Array.isArray(variant.allele_of_genes.values)
+            ? variant.allele_of_genes.values.join(' ')
+            : variant.allele_of_genes.values
+          ).replace(/"/g, '')
+        : variant.allele_of_genes
   }
   if (variant.allele_ids) {
-    if (variant.allele_ids.values && variant.allele_ids.values.length > 0) {
-      returnObject.allele_ids = (
-        Array.isArray(variant.allele_ids.values)
-          ? variant.allele_ids.values.join(' ')
-          : variant.allele_ids.values
-      ).replace(/"/g, '')
-    } else {
-      returnObject.allele_ids = variant.allele_ids
-    }
+    returnObject.allele_ids =
+      variant.allele_ids.values && variant.allele_ids.values.length > 0
+        ? (Array.isArray(variant.allele_ids.values)
+            ? variant.allele_ids.values.join(' ')
+            : variant.allele_ids.values
+          ).replace(/"/g, '')
+        : variant.allele_ids
   }
   if (variant.alternative_alleles) {
-    if (
+    returnObject.alternative_alleles =
       variant.alternative_alleles.values &&
       variant.alternative_alleles.values.length > 0
-    ) {
-      returnObject.alternative_alleles = (
-        Array.isArray(variant.alternative_alleles.values)
-          ? variant.alternative_alleles.values.join(' ')
-          : variant.alternative_alleles.values
-      ).replace(/"/g, '')
-    } else {
-      returnObject.alternative_alleles = variant.alternative_alleles
-    }
+        ? (Array.isArray(variant.alternative_alleles.values)
+            ? variant.alternative_alleles.values.join(' ')
+            : variant.alternative_alleles.values
+          ).replace(/"/g, '')
+        : variant.alternative_alleles
   }
   if (variant.impact) {
-    if (variant.impact.values && variant.impact.values.length > 0) {
-      returnObject.impact = (
-        Array.isArray(variant.impact.values)
-          ? variant.impact.values.join(' ')
-          : variant.impact.values
-      ).replace(/"/g, '')
-    } else {
-      returnObject.impact = variant.impact
-    }
+    returnObject.impact =
+      variant.impact.values && variant.impact.values.length > 0
+        ? (Array.isArray(variant.impact.values)
+            ? variant.impact.values.join(' ')
+            : variant.impact.values
+          ).replace(/"/g, '')
+        : variant.impact
   }
 
   return returnObject
@@ -493,11 +469,9 @@ export function getVariantDescription(variant) {
 
 export function getVariantSymbolDetail(variant) {
   if (variant.variants) {
-    if (variant.variants.length !== 1) {
-      return variant.variants.length
-    } else {
-      return getVariantSymbolDetail(variant.variants[0])
-    }
+    return variant.variants.length !== 1
+      ? variant.variants.length
+      : getVariantSymbolDetail(variant.variants[0])
   }
   // note that using the html version of this gets swallowed in the text svg
   if (variant.allele_symbols?.values) {
@@ -533,19 +507,15 @@ export function getVariantSymbolDetail(variant) {
 
 export function getVariantSymbol(variant) {
   if (variant.variants) {
-    if (variant.variants.length !== 1) {
-      return variant.variants.length
-    } else {
-      return getVariantSymbol(variant.variants[0])
-    }
+    return variant.variants.length !== 1
+      ? variant.variants.length
+      : getVariantSymbol(variant.variants[0])
   }
   // note that using the html version of this gets swallowed in the text svg
   if (variant.allele_symbols_text?.values) {
-    if (variant.allele_symbols_text.values[0].split(',').length > 1) {
-      return variant.allele_symbols_text.values[0].split(',').length
-    } else {
-      return variant.allele_symbols_text.values[0].replace(/"/g, '')
-    }
+    return variant.allele_symbols_text.values[0].split(',').length > 1
+      ? variant.allele_symbols_text.values[0].split(',').length
+      : variant.allele_symbols_text.values[0].replace(/"/g, '')
   }
   return undefined
 }

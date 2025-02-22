@@ -27,13 +27,15 @@ export default class Drawer {
 
   draw() {
     let width = this.gfc.width
-    let transcriptTypes = this.gfc.config.transcriptTypes
-      ? this.gfc.config.transcriptTypes
-      : ['mRNA']
-    let variantTypes = this.gfc.config.variantTypes
-      ? this.gfc.config.variantTypes
-      : ['point_mutation', 'MNV', 'Deletion', 'Insertion', 'Delins']
-    let binRatio = this.gfc.config.binRatio ? this.gfc.config.binRatio : 0.01
+    let transcriptTypes = this.gfc.config.transcriptTypes ?? ['mRNA']
+    let variantTypes = this.gfc.config.variantTypes ?? [
+      'point_mutation',
+      'MNV',
+      'Deletion',
+      'Insertion',
+      'Delins',
+    ]
+    let binRatio = this.gfc.config.binRatio ?? 0.01
     let draggingViewer = null
     let draggingStart = null
 
@@ -72,12 +74,10 @@ export default class Drawer {
     )
     this.range = sequenceOptions.range
     let chromosome = options.chromosome
-    let variantFilter = options.variantFilter ? options.variantFilter : []
-    let isoformFilter = options.isoformFilter ? options.isoformFilter : []
-    let initialHighlight = options.initialHighlight
-      ? options.initialHighlight
-      : []
-    let htpVariant = options.htpVariant ? options.htpVariant : ''
+    let variantFilter = options.variantFilter ?? []
+    let isoformFilter = options.isoformFilter ?? []
+    let initialHighlight = options.initialHighlight ?? []
+    let htpVariant = options.htpVariant ?? ''
     let start = sequenceOptions.start
     let end = sequenceOptions.end
 
@@ -218,11 +218,7 @@ export default class Drawer {
       // 1 -> going up
       // -1 -> going
       let direction = 0
-      if (ref.drag_cx < window.event.x) {
-        direction = 1
-      } else {
-        direction = -1
-      }
+      direction = ref.drag_cx < window.event.x ? 1 : -1
       ref.scrollView(direction, scrollValue)
       // Always want to compare next drag direction compared to previous to
       // enable smooth back and forth scrolling
@@ -254,14 +250,10 @@ export default class Drawer {
         newX = trs[0] - scrollValue
       }
       // Want to make sure we don't go beyond our sequence length. Which is defined by our range.
-      if (
-        newX <= dragThresh.maxNegative ||
+      return newX <= dragThresh.maxNegative ||
         newX > -this.range[0] + 100 + scrollValue / 2
-      ) {
-        return `translate(${trs[0]},${trs[1]})`
-      } else {
-        return `translate(${newX},${trs[1]})`
-      }
+        ? `translate(${trs[0]},${trs[1]})`
+        : `translate(${newX},${trs[1]})`
     })
   }
 

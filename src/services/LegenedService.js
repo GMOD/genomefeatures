@@ -10,14 +10,12 @@ function drawDeletion(color, label) {
 }
 
 function drawDeletionForConsequence(consequencesName) {
-  if (consequencesName == 'unknown') {
-    return drawDeletion('grey', consequencesName.replace(/_/g, ' '))
-  } else {
-    return drawDeletion(
-      CONSEQUENCES_ENUM[consequencesName].color,
-      consequencesName.replace(/_/g, ' '),
-    )
-  }
+  return consequencesName == 'unknown'
+    ? drawDeletion('grey', consequencesName.replace(/_/g, ' '))
+    : drawDeletion(
+        CONSEQUENCES_ENUM[consequencesName].color,
+        consequencesName.replace(/_/g, ' '),
+      )
 }
 
 export function createLegendBox() {

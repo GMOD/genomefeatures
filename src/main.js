@@ -130,12 +130,7 @@ export default class GenomeFeatureViewer {
   getTracks(defaultTrack) {
     // Return all tracks if a default track
     // is not requested
-    if (!defaultTrack) {
-      return this.tracks
-    } else {
-      // For now return the first track as default
-      return this.tracks[0]
-    }
+    return !defaultTrack ? this.tracks : this.tracks[0]
   }
 
   // Set our sequence start and sequence end

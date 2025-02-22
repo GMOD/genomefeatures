@@ -68,11 +68,9 @@ function doResize(_fmin_display, _fmax_display, viewer, _width, newx) {
     .attr('width', d => newx(d.fmax) - newx(d.fmin))
 
   viewer.selectAll('polygon.transArrow').attr('transform', d => {
-    if (d.strand > 0) {
-      return `translate(${Number(newx(d.fmax))},${d.y_val})`
-    } else {
-      return `translate(${Number(newx(d.fmin))},${d.y_val}) rotate(180)`
-    }
+    return d.strand > 0
+      ? `translate(${Number(newx(d.fmax))},${d.y_val})`
+      : `translate(${Number(newx(d.fmin))},${d.y_val}) rotate(180)`
   })
 
   viewer.selectAll('text.REMOVE').remove()
@@ -93,7 +91,7 @@ function findRange(data, display_feats) {
     let featureChildren = feature.children
     if (featureChildren) {
       featureChildren.forEach(featureChild => {
-        if (display_feats.indexOf(featureChild.type) >= 0) {
+        if (display_feats.includes(featureChild.type)) {
           if (fmin < 0 || featureChild.fmin < fmin) {
             fmin = featureChild.fmin
           }

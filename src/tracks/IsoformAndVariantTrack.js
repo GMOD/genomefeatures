@@ -187,10 +187,7 @@ export default class IsoformAndVariantTrack {
       // Add start/end to array
       deletionSpace.push({ fmin: fmin, fmax: fmax, row: currentHeight })
 
-      const width =
-        Math.ceil(x(fmax) - x(fmin)) < MIN_WIDTH
-          ? MIN_WIDTH
-          : Math.ceil(x(fmax) - x(fmin))
+      const width = Math.max(Math.ceil(x(fmax) - x(fmin)), MIN_WIDTH)
       deletionTrack
         .append('rect')
         .attr('class', 'variant-deletion')
@@ -235,11 +232,7 @@ export default class IsoformAndVariantTrack {
       if (drawnVariant) {
         let label_offset = 0
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (isPoints) {
-          label_offset = x(fmin) - SNV_WIDTH / 2
-        } else {
-          label_offset = x(fmin)
-        }
+        label_offset = isPoints ? x(fmin) - SNV_WIDTH / 2 : x(fmin)
 
         let label_height = VARIANT_HEIGHT * numVariantTracks + LABEL_PADDING
         let variant_label = labelTrack
@@ -434,11 +427,7 @@ export default class IsoformAndVariantTrack {
 
       if (drawnVariant) {
         let label_offset = 0
-        if (isPoints) {
-          label_offset = x(fmin) - SNV_WIDTH / 2
-        } else {
-          label_offset = x(fmin)
-        }
+        label_offset = isPoints ? x(fmin) - SNV_WIDTH / 2 : x(fmin)
 
         let label_height = VARIANT_HEIGHT * numVariantTracks + LABEL_PADDING
         let variant_label = labelTrack
@@ -514,8 +503,8 @@ export default class IsoformAndVariantTrack {
         featureChildren.forEach(function (featureChild) {
           if (
             !(
-              isoformFilter.indexOf(featureChild.id) >= 0 ||
-              isoformFilter.indexOf(featureChild.name) >= 0
+              isoformFilter.includes(featureChild.id) ||
+              isoformFilter.includes(featureChild.name)
             ) &&
             isoformFilter.length !== 0
           ) {
@@ -530,7 +519,7 @@ export default class IsoformAndVariantTrack {
           //
           let featureType = featureChild.type
 
-          if (display_feats.indexOf(featureType) >= 0) {
+          if (display_feats.includes(featureType)) {
             // function to assign row based on available space.
             // *** DANGER EDGE CASE ***/
             let current_row = checkSpace(
@@ -591,11 +580,9 @@ export default class IsoformAndVariantTrack {
                 .attr('class', 'transArrow')
                 .attr('points', ARROW_POINTS)
                 .attr('transform', d => {
-                  if (feature.strand > 0) {
-                    return `translate(${Number(x(d.fmax))},0)`
-                  } else {
-                    return `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`
-                  }
+                  return feature.strand > 0
+                    ? `translate(${Number(x(d.fmax))},0)`
+                    : `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`
                 })
                 .on('click', () => {
                   renderTooltipDescription(
@@ -656,11 +643,10 @@ export default class IsoformAndVariantTrack {
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
-              if (text_width > x(featureChild.fmax) - x(featureChild.fmin)) {
-                feat_end = x(featureChild.fmin) + text_width
-              } else {
-                feat_end = x(featureChild.fmax)
-              }
+              feat_end =
+                text_width > x(featureChild.fmax) - x(featureChild.fmin)
+                  ? x(featureChild.fmin) + text_width
+                  : x(featureChild.fmax)
 
               // This is probably not the most efficent way to do this.
               // Making an 2d array... each row is the first array (no zer0)
@@ -837,24 +823,21 @@ export default class IsoformAndVariantTrack {
         let returnVal = false
         try {
           if (
-            variantFilter.indexOf(v.name) >= 0 ||
+            variantFilter.includes(v.name) ||
             (v.allele_symbols?.values &&
-              variantFilter.indexOf(
+              variantFilter.includes(
                 v.allele_symbols.values[0].replace(/"/g, ''),
-              ) >= 0) ||
+              )) ||
             (v.symbol?.values &&
-              variantFilter.indexOf(v.symbol.values[0].replace(/"/g, '')) >=
-                0) ||
+              variantFilter.includes(v.symbol.values[0].replace(/"/g, ''))) ||
             (v.symbol_text?.values &&
-              variantFilter.indexOf(
-                v.symbol_text.values[0].replace(/"/g, ''),
-              ) >= 0)
+              variantFilter.includes(v.symbol_text.values[0].replace(/"/g, '')))
           ) {
             returnVal = true
           }
           let ids = v.allele_ids.values[0].replace(/"|\[|\]| /g, '').split(',')
           ids.forEach(id => {
-            if (variantFilter.indexOf(id) >= 0) {
+            if (variantFilter.includes(id)) {
               returnVal = true
             }
           })

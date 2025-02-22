@@ -84,16 +84,16 @@ export default class IsoformEmbeddedVariantTrack {
     const SNV_WIDTH = 10
 
     const insertion_points = x => {
-      return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT}`
+      return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2},${SNV_HEIGHT}`
     }
 
     const delins_points = x => {
       // const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
-      return `${x - SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT} ${x - SNV_WIDTH / 2.0},0 ${x + SNV_WIDTH / 2.0},0`
+      return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT} ${x - SNV_WIDTH / 2},0 ${x + SNV_WIDTH / 2},0`
     }
 
     const snv_points = x => {
-      return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0} ${x},0 ${x - SNV_WIDTH / 2.0},${SNV_HEIGHT / 2.0}`
+      return `${x},${SNV_HEIGHT} ${x + SNV_WIDTH / 2},${SNV_HEIGHT / 2} ${x},0 ${x - SNV_WIDTH / 2},${SNV_HEIGHT / 2}`
     }
 
     let x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
@@ -181,7 +181,7 @@ export default class IsoformEmbeddedVariantTrack {
           //
           let featureType = featureChild.type
 
-          if (display_feats.indexOf(featureType) >= 0) {
+          if (display_feats.includes(featureType)) {
             // function to assign row based on available space.
             // *** DANGER EDGE CASE ***/
             let current_row = checkSpace(
@@ -239,11 +239,9 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('class', 'transArrow')
                 .attr('points', ARROW_POINTS)
                 .attr('transform', d => {
-                  if (feature.strand > 0) {
-                    return `translate(${Number(x(d.fmax))},0)`
-                  } else {
-                    return `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`
-                  }
+                  return feature.strand > 0
+                    ? `translate(${Number(x(d.fmax))},0)`
+                    : `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`
                 })
                 .on('click', () => {
                   renderTooltipDescription(
@@ -304,11 +302,10 @@ export default class IsoformEmbeddedVariantTrack {
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
-              if (text_width > x(featureChild.fmax) - x(featureChild.fmin)) {
-                feat_end = x(featureChild.fmin) + text_width
-              } else {
-                feat_end = x(featureChild.fmax)
-              }
+              feat_end =
+                text_width > x(featureChild.fmax) - x(featureChild.fmin)
+                  ? x(featureChild.fmin) + text_width
+                  : x(featureChild.fmax)
 
               // This is probably not the most efficent way to do this.
               // Making an 2d array... each row is the first array (no zer0)
@@ -451,10 +448,10 @@ export default class IsoformEmbeddedVariantTrack {
                           getColorsForConsequences(descriptions)[0]
                         let descriptionHtml =
                           renderVariantDescriptions(descriptions)
-                        const width =
-                          Math.ceil(x(fmax) - x(fmin)) < MIN_WIDTH
-                            ? MIN_WIDTH
-                            : Math.ceil(x(fmax) - x(fmin))
+                        const width = Math.max(
+                          Math.ceil(x(fmax) - x(fmin)),
+                          MIN_WIDTH,
+                        )
                         if (
                           type.toLowerCase() === 'deletion' ||
                           type.toLowerCase() === 'mnv'
@@ -552,9 +549,7 @@ export default class IsoformEmbeddedVariantTrack {
                         }
                         if (drawnVariant && showVariantLabel) {
                           let symbol_string = getVariantSymbol(variant)
-                          const symbol_string_length = symbol_string.length
-                            ? symbol_string.length
-                            : 1
+                          const symbol_string_length = symbol_string.length ?? 1
                           isoform
                             .append('text')
                             .attr('class', 'variantLabel')
@@ -566,7 +561,7 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('height', ISOFORM_TITLE_HEIGHT)
                             .attr(
                               'transform',
-                              `translate(${x(fmin - (symbol_string_length / 2.0) * 100)},${VARIANT_OFFSET * 2.2 - TRANSCRIPT_BACKBONE_HEIGHT})`,
+                              `translate(${x(fmin - (symbol_string_length / 2) * 100)},${VARIANT_OFFSET * 2.2 - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .html(symbol_string)
                             .on('click', () => {
@@ -632,7 +627,7 @@ export default class IsoformEmbeddedVariantTrack {
       return variantData
     }
     return variantData.filter(v => {
-      return variantFilter.indexOf(v.name) >= 0
+      return variantFilter.includes(v.name)
     })
   }
 

@@ -9,10 +9,6 @@ export class ApolloService {
       encodeURI(externalLocationString) +
       comp[2]
     const response = await fetch(url)
-    if (response.ok) {
-      return response.json()
-    } else {
-      return []
-    }
+    return response.ok ? response.json() : []
   }
 }

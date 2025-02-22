@@ -190,7 +190,7 @@ export default class IsoformTrack {
             alreadyRendered.push(featureChild.id)
           }
 
-          if (display_feats.indexOf(featureType) >= 0) {
+          if (display_feats.includes(featureType)) {
             // function to assign row based on available space.
             // *** DANGER EDGE CASE ***/
             let current_row = checkSpace(
@@ -208,12 +208,8 @@ export default class IsoformTrack {
                   `translate(0,${row_count * isoform_height + 10})`,
                 )
 
-              let transcript_start =
-                x(featureChild.fmin) > 0 ? x(featureChild.fmin) : 0
-              let transcript_end =
-                x(featureChild.fmax) > viewerWidth
-                  ? viewerWidth
-                  : x(featureChild.fmax)
+              let transcript_start = Math.max(x(featureChild.fmin), 0)
+              let transcript_end = Math.min(x(featureChild.fmax), viewerWidth)
               isoform
                 .append('polygon')
                 .datum(function () {
@@ -222,11 +218,9 @@ export default class IsoformTrack {
                 .attr('class', 'transArrow')
                 .attr('points', arrow_points)
                 .attr('transform', () => {
-                  if (feature.strand > 0) {
-                    return `translate(${transcript_end},0)`
-                  } else {
-                    return `translate(${transcript_start},${arrow_height}) rotate(180)`
-                  }
+                  return feature.strand > 0
+                    ? `translate(${transcript_end},0)`
+                    : `translate(${transcript_start},${arrow_height}) rotate(180)`
                 })
                 .on('click', () => {
                   renderTooltipDescription(
@@ -255,8 +249,7 @@ export default class IsoformTrack {
               if (feature.name !== featureChild.name) {
                 text_string += ` (${feature.name})`
               }
-              let label_offset =
-                x(featureChild.fmin) > 0 ? x(featureChild.fmin) : 0
+              let label_offset = Math.max(x(featureChild.fmin), 0)
               let text_label = isoform
                 .append('text')
                 .attr('class', 'transcriptLabel')
@@ -302,11 +295,10 @@ export default class IsoformTrack {
               if (Number(text_width + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
-              if (text_width > x(featureChild.fmax) - x(featureChild.fmin)) {
-                feat_end = x(featureChild.fmin) + text_width
-              } else {
-                feat_end = x(featureChild.fmax)
-              }
+              feat_end =
+                text_width > x(featureChild.fmax) - x(featureChild.fmin)
+                  ? x(featureChild.fmin) + text_width
+                  : x(featureChild.fmax)
 
               // This is probably not the most efficent way to do this.
               // Making an 2d array... each row is the first array (no zer0)
@@ -370,12 +362,8 @@ export default class IsoformTrack {
                   ) {
                     return // skip feat
                   }
-                  let inner_start =
-                    x(innerChild.fmin) > 0 ? x(innerChild.fmin) : 0
-                  let inner_end =
-                    x(innerChild.fmax) > viewerWidth
-                      ? viewerWidth
-                      : x(innerChild.fmax)
+                  let inner_start = Math.max(x(innerChild.fmin), 0)
+                  let inner_end = Math.min(x(innerChild.fmax), viewerWidth)
                   if (exon_feats.includes(innerType)) {
                     isoform
                       .append('rect')

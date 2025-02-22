@@ -102,15 +102,11 @@ export default class ReferenceTrack {
     */
   _getRefTick(start, end, skip) {
     let arr = []
-    if (skip) {
-      arr = Array(Math.ceil((end - start + 1) / 10))
-        .fill()
-        .map((_, idx) => start + idx * 10)
-    } else {
-      arr = Array(end - start + 1)
-        .fill()
-        .map((_, idx) => start + idx)
-    }
+    arr = skip
+      ? new Array(Math.ceil((end - start + 1) / 10))
+          .fill()
+          .map((_, idx) => start + idx * 10)
+      : new Array(end - start + 1).fill().map((_, idx) => start + idx)
     return arr
   }
 

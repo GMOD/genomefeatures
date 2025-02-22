@@ -62,6 +62,6 @@ export function getColorForConsequence(consequence) {
   } else if (consequence === '3_prime_UTR_variant') {
     return CONSEQUENCES_ENUM.three_prime_UTR_variant.color
   } else {
-    console.warn('Consequence ', consequence, 'not found')
+    console.warn('Consequence', consequence, 'not found')
   }
 }

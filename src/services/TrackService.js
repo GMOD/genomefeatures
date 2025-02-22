@@ -11,11 +11,9 @@ function renderStrand(strand) {
 export function renderTrackDescription(feature) {
   let returnString = ''
   returnString += `<table class="tooltip-table" style="margin-top: 30px;"><tbody>`
-  if (feature.id.indexOf('http') < 0) {
-    returnString += `<tr><th>Name</th><td>${feature.name} (${feature.id})</td></tr>`
-  } else {
-    returnString += `<tr><th>Name</th><td>${feature.name}</td></tr>`
-  }
+  returnString += !feature.id.includes('http')
+    ? `<tr><th>Name</th><td>${feature.name} (${feature.id})</td></tr>`
+    : `<tr><th>Name</th><td>${feature.name}</td></tr>`
   returnString += `<tr><th>Type</th><td>${feature.type}</td></tr>`
   returnString += `<tr><th>Source</th><td>${feature.source}</td></tr>`
 
