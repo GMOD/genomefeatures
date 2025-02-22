@@ -1,19 +1,15 @@
 // subfeatures do not have to have uniqueId
-export interface SimpleFeatureSerializedNoId {
+export interface SimpleFeatureSerialized {
+  id: string
   parentId?: string
   fmin: number
   fmax: number
   seqId: string
   type: string
   name: string
-  children?: SimpleFeatureSerializedNoId[]
+  children?: SimpleFeatureSerialized[]
   alleles?: string[]
   selected?: string
   strand: number
   source: string
-}
-
-// base serialized feature has to have a uniqueId
-export interface SimpleFeatureSerialized extends SimpleFeatureSerializedNoId {
-  uniqueId: string
 }

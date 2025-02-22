@@ -92,9 +92,9 @@ function findVariantBinIndexForPosition(
   })
 }
 
-type VariantFeature = SimpleFeatureSerialized & VariantBin
+export type VariantFeature = SimpleFeatureSerialized & VariantBin
 
-interface VariantBin {
+export interface VariantBin {
   fmin: number
   fmax: number
   type: string
@@ -386,33 +386,16 @@ export function getVariantDescriptions(variant: VariantBin) {
 }
 
 export function getVariantAlleles(variant: VariantBin) {
-  const returnObj = [] as string[]
-  variant.variants.forEach(val => {
+  return variant.variants.flatMap(val => {
     const allele = val.allele_ids.values[0].replace(/"/g, '')
-    if (allele.split(',').length > 1) {
-      allele.split(',').forEach(val2 => {
-        returnObj.push(val2.replace(/\[|\]| /g, ''))
-      })
-    } else {
-      returnObj.push(allele)
-    }
+    return allele.split(',').map(val2 => val2.replace(/\[|\]| /g, ''))
   })
-  return returnObj
-}
-
-export function mergeConsequenceColors() {
-  return 'hotpink'
-  // return colors.map( d => {
-  //   return getColorForConsequence(d.consequence);
-  // })
 }
 
 export function getColorsForConsequences(
   descriptions: { consequence: string }[],
 ) {
-  return descriptions.map(d => {
-    return getColorForConsequence(d.consequence)
-  })
+  return descriptions.map(d => getColorForConsequence(d.consequence))
 }
 
 export function getConsequence(variant: VariantBin) {
@@ -515,7 +498,7 @@ export function getVariantSymbolDetail(
   return undefined
 }
 
-export function getVariantSymbol(variant: VariantBin): string | undefined {
+export function getVariantSymbol(variant: VariantBin): string {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant.variants) {
     return variant.variants.length !== 1
@@ -529,7 +512,7 @@ export function getVariantSymbol(variant: VariantBin): string | undefined {
       ? `${r.length}`
       : variant.allele_symbols_text.values[0].replace(/"/g, '')
   }
-  return undefined
+  return ''
 }
 
 export function getVariantTrackPositions(variantData: VariantFeature[]) {

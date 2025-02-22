@@ -170,5 +170,5 @@ export function getColorForConsequence(consequence: string) {
   } else {
     console.warn('Consequence', consequence, 'not found')
   }
-  return undefined
+  return '#f0f'
 }

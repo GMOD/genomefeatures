@@ -5,15 +5,16 @@ import {
   generateSnvPoints,
 } from './VariantService'
 
-function drawDeletion(color, label) {
+function drawDeletion(color: string, label: string) {
   return `<svg width="15" top="3" viewBox="0 -2 15 15" style="display: inline;" xmlns="http://www.w3.org/2000/svg"><rect fill="${color}" stroke="none" height="10" width="10"></svg>${label}</polygons></svg>`
 }
 
-function drawDeletionForConsequence(consequencesName) {
+function drawDeletionForConsequence(consequencesName: string) {
   return consequencesName == 'unknown'
     ? drawDeletion('grey', consequencesName.replace(/_/g, ' '))
     : drawDeletion(
-        CONSEQUENCES_ENUM[consequencesName].color,
+        CONSEQUENCES_ENUM[consequencesName as keyof typeof CONSEQUENCES_ENUM]
+          .color,
         consequencesName.replace(/_/g, ' '),
       )
 }

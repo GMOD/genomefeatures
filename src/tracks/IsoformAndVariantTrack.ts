@@ -23,6 +23,7 @@ import {
   getVariantSymbol,
   getVariantTrackPositions,
   renderVariantDescriptions,
+  VariantFeature,
 } from '../services/VariantService'
 import { SimpleFeatureSerialized } from '../services/types'
 
@@ -42,17 +43,6 @@ interface IsoformAndVariantTrackProps {
   service?: ApolloService
 }
 
-interface VariantData {
-  type: string
-  fmin: number
-  fmax: number
-  name?: string
-  allele_symbols?: { values: string[] }
-  symbol?: { values: string[] }
-  symbol_text?: { values: string[] }
-  allele_ids: { values: string[] }
-}
-
 interface DeletionSpace {
   fmin: number
   fmax: number
@@ -66,7 +56,7 @@ const apolloService = new ApolloService()
 
 export default class IsoformAndVariantTrack {
   private trackData: SimpleFeatureSerialized[]
-  private variantData: VariantData[]
+  private variantData: VariantFeature[]
   private viewer: Selection<SVGGElement, unknown, null, undefined>
   private width: number
   private variantFilter: string[]
@@ -107,9 +97,6 @@ export default class IsoformAndVariantTrack {
     this.service = service ?? apolloService
   }
 
-  // Draw our track on the viewer
-  // TODO: Potentially seperate this large section of code
-  // for both testing/extensibility
   DrawTrack() {
     const isoformFilter = this.isoformFilter
     let isoformData = this.trackData

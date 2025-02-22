@@ -1,4 +1,6 @@
-function renderStrand(strand) {
+import { SimpleFeatureSerialized } from './types'
+
+function renderStrand(strand: number) {
   if (strand === 1) {
     return '+'
   }
@@ -8,7 +10,7 @@ function renderStrand(strand) {
   return strand
 }
 
-export function renderTrackDescription(feature) {
+export function renderTrackDescription(feature: SimpleFeatureSerialized) {
   let returnString = ''
   returnString += `<table class="tooltip-table" style="margin-top: 30px;"><tbody>`
   returnString += !feature.id.includes('http')
@@ -22,7 +24,12 @@ export function renderTrackDescription(feature) {
   returnString += '</tbody></table>'
   return returnString
 }
-export function getJBrowseLink(source, chr, start, end) {
+export function getJBrowseLink(
+  source: string,
+  chr: string,
+  start: string,
+  end: string,
+) {
   let link = ''
   if (source === 'FlyBase') {
     link = `https://alliancegenome.org/jbrowse/?data=data%2FDrosophila%20melanogaster&tracks=Variants%2CAll%20Genes&highlight=&loc=${
