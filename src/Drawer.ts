@@ -125,7 +125,7 @@ export default class Drawer {
     let track_height = LABEL_OFFSET
 
     // TODO: refactor so that both come in and are re-ordered
-     
+
     Promise.all(
       this.gfc.tracks.map(async baseTrack => {
         const track = {

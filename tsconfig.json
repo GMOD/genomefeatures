@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "outDir": "dist",
     "skipLibCheck": true,
@@ -23,7 +19,5 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

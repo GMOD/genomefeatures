@@ -29,8 +29,8 @@
     "postdeploy": "git push --follow-tags"
   },
   "devDependencies": {
-    "@types/d3-tip": "^3.5.8",
     "@types/d3": "^7.4.3",
+    "@types/d3-tip": "^3.5.8",
     "@types/pako": "^2.0.3",
     "eslint": "^9.21.0",
     "eslint-plugin-import": "^2.14.0",
