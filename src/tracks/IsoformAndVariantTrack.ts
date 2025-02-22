@@ -680,13 +680,14 @@ export default class IsoformAndVariantTrack {
                   fmin: featureChild.fmin,
                 })
 
-              // Now that the label has been created we can calculate the space that
-              // this new element is taking up making sure to add in the width of
-              // the box.
+              // Now that the label has been created we can calculate the space
+              // that this new element is taking up making sure to add in the
+              // width of the box.
               // TODO: this is just an estimate of the length
               let text_width = text_string.length * 2
 
-              // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
+              // not some instances (as in reactjs?) the bounding box isn't
+              // available, so we have to guess
               try {
                 text_width = text_label.node()?.getBBox().width ?? 0
               } catch (e) {
@@ -954,8 +955,6 @@ export default class IsoformAndVariantTrack {
       )
       .filter(d => {
         let returnVal = false
-        // TODO: This needs to be standardized.  We sometimes get these returned in a comma sperated list
-        // and sometimes in an array.
         if (d.alleles) {
           const ids = d.alleles[0].replace(/"|\[|\]| /g, '').split(',')
           ids.forEach(val => {
@@ -1018,7 +1017,7 @@ export default class IsoformAndVariantTrack {
     end: number
     genome: string
     isoform_url: string[]
-  }): Promise<void> {
+  }) {
     return (
       this.trackData ??
       (await this.service.fetchDataFromUrl(track, 'isoform_url'))
@@ -1032,7 +1031,7 @@ export default class IsoformAndVariantTrack {
     end: number
     genome: string
     variant_url: string[]
-  }): Promise<void> {
+  }) {
     return (
       this.variantData ??
       (await this.service.fetchDataFromUrl(track, 'variant_url'))
