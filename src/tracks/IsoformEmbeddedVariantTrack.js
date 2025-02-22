@@ -18,16 +18,16 @@ import {
 let apolloService = new ApolloService()
 
 export default class IsoformEmbeddedVariantTrack {
-  constructor(
+  constructor({
     viewer,
-    _track,
     height,
     width,
     transcriptTypes,
     variantTypes,
     showVariantLabel,
     variantFilter,
-  ) {
+    service,
+  }) {
     this.trackData = {}
     this.variantData = {}
     this.viewer = viewer
@@ -38,6 +38,7 @@ export default class IsoformEmbeddedVariantTrack {
     this.variantTypes = variantTypes
     this.showVariantLabel =
       showVariantLabel !== undefined ? showVariantLabel : true
+    this.service = service || apolloService
   }
 
   // Draw our track on the viewer
@@ -668,27 +669,14 @@ export default class IsoformEmbeddedVariantTrack {
 
   /* Method for isoformTrack service call */
   async getTrackData(track) {
-    let externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
-    const isoformUrl = track.isoform_url
-    const dataUrl =
-      isoformUrl[0] +
-      encodeURI(track.genome) +
-      isoformUrl[1] +
-      encodeURI(externalLocationString) +
-      isoformUrl[2]
-    this.trackData = await apolloService.fetchDataFromUrl(dataUrl)
+    this.trackData = await apolloService.fetchDataFromUrl(track, 'isoform_url')
   }
 
   /* Method for isoformTrack service call */
   async getVariantData(track) {
-    const externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
-    const variantUrl = track.variant_url
-    const dataUrl =
-      variantUrl[0] +
-      encodeURI(track.genome) +
-      variantUrl[1] +
-      encodeURI(externalLocationString) +
-      variantUrl[2]
-    this.variantData = await apolloService.fetchDataFromUrl(dataUrl)
+    this.variantData = await apolloService.fetchDataFromUrl(
+      track,
+      'variant_url',
+    )
   }
 }

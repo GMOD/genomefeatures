@@ -1,4 +1,5 @@
 import GenomeFeatureViewer from './main'
+import { NCListService } from './services/NCListService'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 
 import './GenomeFeatureViewer.css'
@@ -13,8 +14,8 @@ ratExamples()
 mouseExamples()
 flyExamples()
 covidExamples()
+covidExamplesNCList()
 currentExamples()
-createHTPExample()
 
 function getTranscriptTypes() {
   return [
@@ -45,6 +46,16 @@ function covidExamples() {
     'NC_045512.2:17894..28259',
     'SARS-CoV-2',
     'covidExample1',
+    TRACK_TYPE.ISOFORM,
+    false,
+  )
+}
+
+function covidExamplesNCList() {
+  createCoVExampleNCList(
+    'NC_045512.2:17894..28259',
+    'SARS-CoV-2',
+    'nclistviewer',
     TRACK_TYPE.ISOFORM,
     false,
   )
@@ -82,14 +93,9 @@ function currentExamples() {
     TRACK_TYPE.ISOFORM_AND_VARIANT,
     false,
   )
-  // createCoVExample("NC_045512.2:17894..28259", "SARS-CoV-2", "covidExample1", TRACK_TYPE.ISOFORM, false);
-  // createHTPExample("X:2023822..2042311", "fly", "viewerActnHTPFly", TRACK_TYPE.ISOFORM, false,[],'Actn','X:2037135');
 }
 
 function flyExamples() {
-  // 2L:132412..230018
-  // http://localhost:8080/apollo/vcf/remotefly/Phenotypic%20Variants/2L:132412..230018.json?includeGenotypes=false&ignoreCache=true
-  // http://localhost:8080/apollo/track/remotefly/All%20Genes/2L:132412..230018.json?includeGenotypes=false&ignoreCache=true
   createExample(
     '2L:130639..135911',
     'fly',
@@ -182,8 +188,6 @@ function flyExamples() {
 }
 
 function ratExamples() {
-  // http://localhost:8080/apollo/vcf/remotemouse/Phenotypic%20Variants/6:113619452..113636198.json?includeGenotypes=false&ignoreCache=true
-  // http://localhost:8080/apollo/track/remotemouse/All%20Genes/6:113619452..113636198.json?includeGenotypes=false&ignoreCache=true  let configGlobal1 = {
   createExample(
     '10:94485648..94489071',
     'rat',
@@ -217,8 +221,6 @@ function ratExamples() {
 }
 
 function mouseExamples() {
-  // http://localhost:8080/apollo/vcf/remotemouse/Phenotypic%20Variants/6:113619452..113636198.json?includeGenotypes=false&ignoreCache=true
-  // http://localhost:8080/apollo/track/remotemouse/All%20Genes/6:113619452..113636198.json?includeGenotypes=false&ignoreCache=true  let configGlobal1 = {
   createExample(
     '18:11035719..11058885',
     'mouse',
@@ -394,32 +396,36 @@ function createExample(
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
   const ratio = 0.01
-  let configGlobal1 = {
-    locale: 'global',
-    chromosome: chromosome,
-    start: start,
-    end: end,
-    showVariantLabel: showLabel,
-    transcriptTypes: getTranscriptTypes(),
-    isoformFilter: isoformFilter || [],
-    variantFilter: variantFilter || [],
-    initialHighlight: initialHighlight || [],
-    binRatio: ratio,
-    tracks: [
-      {
-        id: 12,
-        genome: genome,
-        type: type,
-        isoform_url: [
-          `${BASE_URL}/track/`,
-          '/All%20Genes/',
-          '.json?ignoreCache=true',
-        ],
-        variant_url: [`${BASE_URL}/vcf/`, '/Variants/', '.json'],
-      },
-    ],
-  }
-  const gfc = new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
+  const gfc = new GenomeFeatureViewer(
+    {
+      locale: 'global',
+      chromosome: chromosome,
+      start: start,
+      end: end,
+      showVariantLabel: showLabel,
+      transcriptTypes: getTranscriptTypes(),
+      isoformFilter: isoformFilter || [],
+      variantFilter: variantFilter || [],
+      initialHighlight: initialHighlight || [],
+      binRatio: ratio,
+      tracks: [
+        {
+          id: 12,
+          genome: genome,
+          type: type,
+          isoform_url: [
+            `${BASE_URL}/track/`,
+            '/All%20Genes/',
+            '.json?ignoreCache=true',
+          ],
+          variant_url: [`${BASE_URL}/vcf/`, '/Variants/', '.json'],
+        },
+      ],
+    },
+    `#${divId}`,
+    900,
+    500,
+  )
 
   const closeButton = document.getElementById(`${divId}CloseButton`)
   if (closeButton) {
@@ -487,62 +493,108 @@ function createIsoformExample(
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
-  let configGlobal1 = {
-    locale: 'global',
-    chromosome: chromosome,
-    start: start,
-    end: end,
-    transcriptTypes: getTranscriptTypes(),
-    showVariantLabel: showLabel,
-    variantFilter: variantFilter || [],
-    tracks: [
-      {
-        id: 12,
-        genome: genome,
-        type: type,
-        url: [`${BASE_URL}/track/`, '/All%20Genes/', '.json'],
-      },
-    ],
-  }
-  new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
+  new GenomeFeatureViewer(
+    {
+      locale: 'global',
+      chromosome: chromosome,
+      start: start,
+      end: end,
+      transcriptTypes: getTranscriptTypes(),
+      showVariantLabel: showLabel,
+      variantFilter: variantFilter || [],
+      tracks: [
+        {
+          id: 12,
+          genome: genome,
+          type: type,
+          url: [`${BASE_URL}/track/`, '/All%20Genes/', '.json'],
+        },
+      ],
+    },
+    `#${divId}`,
+    900,
+    500,
+  )
 }
+//
+// function createHTPExample(
+//  range,
+//  genome,
+//  divId,
+//  type,
+//  showLabel,
+//  variantFilter,
+//  geneSymbol,
+//  htpVariant,
+// ) {
+//  const chromosome = range.split(':')[0]
+//  const [start, end] = range.split(':')[1].split('..')
+//  new GenomeFeatureViewer(
+//    {
+//      locale: 'global',
+//      chromosome: chromosome,
+//      start: start,
+//      end: end,
+//      transcriptTypes: getTranscriptTypes(),
+//      showVariantLabel: showLabel,
+//      geneSymbol: geneSymbol || '',
+//      variantFilter: variantFilter || [],
+//      htpVariant: htpVariant,
+//      tracks: [
+//        {
+//          id: 12,
+//          genome: genome,
+//          type: type,
+//          url: [
+//            `${BASE_URL}/track/`,
+//            '/All%20Genes/',
+//            '.json?name=Actn&ignoreCache=true',
+//          ],
+//        },
+//      ],
+//    },
+//    `#${divId}`,
+//    900,
+//    500,
+//  )
+// }
 
-function createHTPExample(
+function createCoVExampleNCList(
   range,
   genome,
   divId,
   type,
   showLabel,
   variantFilter,
-  geneSymbol,
-  htpVariant,
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
-  let configGlobal1 = {
-    locale: 'global',
-    chromosome: chromosome,
-    start: start,
-    end: end,
-    transcriptTypes: getTranscriptTypes(),
-    showVariantLabel: showLabel,
-    geneSymbol: geneSymbol || '',
-    variantFilter: variantFilter || [],
-    htpVariant: htpVariant,
-    tracks: [
-      {
-        id: 12,
-        genome: genome,
-        type: type,
-        url: [
-          `${BASE_URL}/track/`,
-          '/All%20Genes/',
-          '.json?name=Actn&ignoreCache=true',
-        ],
-      },
-    ],
-  }
-  new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
+  new GenomeFeatureViewer(
+    {
+      locale: 'global',
+      chromosome: chromosome,
+      start: start,
+      end: end,
+      transcriptTypes: getTranscriptTypes(),
+      showVariantLabel: showLabel,
+      variantFilter: variantFilter || [],
+      service: new NCListService(),
+      tracks: [
+        {
+          id: 12,
+          genome: genome,
+          type: type,
+          url: {
+            baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
+            urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
+          },
+        },
+      ],
+    },
+    `#${divId}`,
+    900,
+    500,
+  )
 }
 
 function createCoVExample(
@@ -555,114 +607,127 @@ function createCoVExample(
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
-  let configGlobal1 = {
-    locale: 'global',
-    chromosome: chromosome,
-    start: start,
-    end: end,
-    transcriptTypes: getTranscriptTypes(),
-    showVariantLabel: showLabel,
-    variantFilter: variantFilter || [],
-    tracks: [
-      {
-        id: 12,
-        genome: genome,
-        type: type,
-        url: [
-          `${BASE_URL}/track/`,
-          '/Mature%20peptides/',
-          '.json?ignoreCache=true&flatten=false',
-        ],
-      },
-    ],
-  }
-  new GenomeFeatureViewer(configGlobal1, `#${divId}`, 900, 500)
+  new GenomeFeatureViewer(
+    {
+      locale: 'global',
+      chromosome: chromosome,
+      start: start,
+      end: end,
+      transcriptTypes: getTranscriptTypes(),
+      showVariantLabel: showLabel,
+      variantFilter: variantFilter || [],
+      tracks: [
+        {
+          id: 12,
+          genome: genome,
+          type: type,
+          url: [
+            `${BASE_URL}/track/`,
+            '/Mature%20peptides/',
+            '.json?ignoreCache=true&flatten=false',
+          ],
+        },
+      ],
+    },
+    `#${divId}`,
+    900,
+    500,
+  )
 }
 
 function oldExamples() {
-  let configGlobal1 = {
-    locale: 'global',
-    chromosome: 5,
-    start: 75574916,
-    end: 75656722,
-    tracks: [
-      {
-        id: 2,
-        genome: 'Mus musculus',
-        type: TRACK_TYPE.VARIANT_GLOBAL,
-      },
-      {
-        id: 1,
-        genome: 'Mus musculus',
-        type: TRACK_TYPE.ISOFORM,
-        url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json'],
-      },
-    ],
-  }
+  new GenomeFeatureViewer(
+    {
+      locale: 'global',
+      chromosome: 5,
+      start: 75574916,
+      end: 75656722,
+      tracks: [
+        {
+          id: 2,
+          genome: 'Mus musculus',
+          type: TRACK_TYPE.VARIANT_GLOBAL,
+        },
+        {
+          id: 1,
+          genome: 'Mus musculus',
+          type: TRACK_TYPE.ISOFORM,
+          url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json'],
+        },
+      ],
+    },
+    '#viewer1',
+    700,
+    null,
+  )
 
-  new GenomeFeatureViewer(configGlobal1, '#viewer1', 700, null)
+  new GenomeFeatureViewer(
+    {
+      locale: 'global',
+      chromosome: '2L',
+      start: 19400752,
+      end: 19426596,
+      transcriptTypes: [
+        'mRNA',
+        'ncRNA',
+        'piRNA',
+        'lincRNA',
+        'miRNA',
+        'pre_miRNA',
+        'snoRNA',
+        'lnc_RNA',
+        'tRNA',
+        'snRNA',
+        'rRNA',
+        'ARS',
+        'antisense_RNA',
 
-  let configGlobal2 = {
-    locale: 'global',
-    chromosome: '2L',
-    start: 19400752,
-    end: 19426596,
-    transcriptTypes: [
-      'mRNA',
-      'ncRNA',
-      'piRNA',
-      'lincRNA',
-      'miRNA',
-      'pre_miRNA',
-      'snoRNA',
-      'lnc_RNA',
-      'tRNA',
-      'snRNA',
-      'rRNA',
-      'ARS',
-      'antisense_RNA',
-
-      'C_gene_segment',
-      'V_gene_segment',
-      'pseudogene_attribute',
-      'snoRNA_gene',
-    ],
-    tracks: [
-      {
-        id: 1,
-        genome: 'Drosophila melanogaster',
-        type: TRACK_TYPE.ISOFORM,
-        url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json?name=Pax'],
-      },
-    ],
-  }
-
-  new GenomeFeatureViewer(configGlobal2, '#viewer2', 700, null)
+        'C_gene_segment',
+        'V_gene_segment',
+        'pseudogene_attribute',
+        'snoRNA_gene',
+      ],
+      tracks: [
+        {
+          id: 1,
+          genome: 'Drosophila melanogaster',
+          type: TRACK_TYPE.ISOFORM,
+          url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json?name=Pax'],
+        },
+      ],
+    },
+    '#viewer2',
+    700,
+    null,
+  )
 
   // Local View Example
   // Right now we enter in with a specific location, center it in the viewer.
   // TODO: Enable a range and start the left most value on the viewer.
-  let configLocal3 = {
-    locale: 'local',
-    chromosome: 5,
-    start: 48515461,
-    end: 48515461,
-    centerVariant: true,
-    tracks: [
-      {
-        id: 1,
-        label: 'Case Variants',
-        type: TRACK_TYPE.VARIANT,
-        chromosome: 5,
-      },
-      {
-        id: 2,
-        label: 'ClinVar Cases',
-        type: TRACK_TYPE.VARIANT,
-        chromosome: 5,
-      },
-    ],
-  }
-
-  new GenomeFeatureViewer(configLocal3, '#viewer3', 900, 400)
+  new GenomeFeatureViewer(
+    {
+      locale: 'local',
+      chromosome: 5,
+      start: 48515461,
+      end: 48515461,
+      centerVariant: true,
+      tracks: [
+        {
+          id: 1,
+          label: 'Case Variants',
+          type: TRACK_TYPE.VARIANT,
+          chromosome: 5,
+        },
+        {
+          id: 2,
+          label: 'ClinVar Cases',
+          type: TRACK_TYPE.VARIANT,
+          chromosome: 5,
+        },
+      ],
+    },
+    '#viewer3',
+    900,
+    400,
+  )
 }

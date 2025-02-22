@@ -8,8 +8,18 @@ import {
 } from '../services/TrackService'
 import { generateSnvPoints } from '../services/VariantService'
 
+let apolloService = new ApolloService()
+
 export default class IsoformTrack {
-  constructor(viewer, track, height, width, transcriptTypes, htpVariant) {
+  constructor({
+    viewer,
+    track,
+    height,
+    width,
+    transcriptTypes,
+    htpVariant,
+    service,
+  }) {
     this.trackData = {}
     this.viewer = viewer
     this.width = width
@@ -19,6 +29,7 @@ export default class IsoformTrack {
     this.start = track.start
     this.end = track.end
     this.genome = track.genome
+    this.service = service || apolloService
   }
 
   renderTooltipDescription(tooltipDiv, descriptionHtml, closeFunction) {
@@ -488,18 +499,6 @@ export default class IsoformTrack {
 
   /* Method for isoformTrack service call */
   async getTrackData(track) {
-    let externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
-    var dataUrl =
-      track.url[0] +
-      encodeURI(track.genome) +
-      track.url[1] +
-      encodeURI(externalLocationString) +
-      track.url[2]
-    let apolloService = new ApolloService()
-    this.trackData = await apolloService
-      .fetchDataFromUrl(dataUrl)
-      .then(data => {
-        return data
-      })
+    this.trackData = await this.service.fetchDataFromUrl(track, 'url')
   }
 }

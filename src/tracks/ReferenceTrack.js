@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 
 export default class ReferenceTrack {
-  constructor(viewer, track, height, width) {
+  constructor({ viewer, track, height, width }) {
     this.refSeq = ''
     this.viewer = viewer
     this.width = width

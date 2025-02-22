@@ -26,27 +26,20 @@ export default class Drawer {
   }
 
   draw() {
-    // Viewer Information
-    let locale = this.gfc.locale
-    let height = this.gfc.height
     let width = this.gfc.width
-    let viewer = this.gfc.viewer
-    let tracks = this.gfc.tracks
-    let showVariantLabel = this.gfc.config.showVariantLabel
     let transcriptTypes = this.gfc.config.transcriptTypes
       ? this.gfc.config.transcriptTypes
       : ['mRNA']
     let variantTypes = this.gfc.config.variantTypes
       ? this.gfc.config.variantTypes
       : ['point_mutation', 'MNV', 'Deletion', 'Insertion', 'Delins']
-    let svg_target = this.gfc.svg_target
     let binRatio = this.gfc.config.binRatio ? this.gfc.config.binRatio : 0.01
     let draggingViewer = null
     let draggingStart = null
 
     // TODO: Try to eliminate this if statement.
     // Potentially refactor the style for this.
-    if (locale === 'local') {
+    if (this.gfc.locale === 'local') {
       width = document.body.clientWidth
       // Other setup
       draggingViewer = () => {
@@ -56,7 +49,7 @@ export default class Drawer {
         this.drag_start(this)
       }
       // Setting our clip path view to enable the scrolling effect
-      d3.select(svg_target)
+      d3.select(this.gfc.svg_target)
         .append('defs')
         .append('svg:clipPath')
         .attr('id', 'clip')
@@ -64,10 +57,10 @@ export default class Drawer {
         .attr('id', 'clip-rect')
         .attr('x', '0')
         .attr('y', '0')
-        .attr('height', height)
+        .attr('height', this.gfc.height)
         .attr('width', this.gfc.width - LABEL_OFFSET)
         .attr('transform', `translate(${LABEL_OFFSET},0)`)
-      viewer.attr('clip-path', 'url(#clip)')
+      this.gfc.viewer.attr('clip-path', 'url(#clip)')
     }
 
     let options = this.gfc.config
@@ -89,22 +82,23 @@ export default class Drawer {
     let end = sequenceOptions.end
 
     // Draw our reference if it's local for now.
-    const referenceTrack = new ReferenceTrack(
-      viewer,
-      {
+    const referenceTrack = new ReferenceTrack({
+      viewer: this.gfc.viewer,
+      track: {
         chromosome: chromosome,
         start: start,
         end: end,
         range: sequenceOptions.range,
       },
-      height,
+      height: this.gfc.height,
       width,
-    )
-    if (locale === 'local') {
+      service: this.gfc.service,
+    })
+    if (this.gfc.locale === 'local') {
       // Scrollable View
       // await referenceTrack.getTrackData()
       referenceTrack.DrawScrollableTrack()
-      viewer.call(
+      this.gfc.viewer.call(
         d3.drag().on('start', draggingStart).on('drag', draggingViewer),
       )
     } else {
@@ -112,11 +106,11 @@ export default class Drawer {
       referenceTrack.DrawOverviewTrack()
     }
 
-    // Always take the start end of our view.
     // TODO: Lock view to always have some number of sequence (50, 100)?
     let track_height = LABEL_OFFSET
+
     // TODO: refactor so that both come in and are re-ordered
-    tracks.forEach(async track => {
+    this.gfc.tracks.forEach(async track => {
       track.start = start
       track.end = end
       track.chromosome = chromosome
@@ -124,19 +118,20 @@ export default class Drawer {
       track.isoform_filter = isoformFilter
       track.initialHighlight = initialHighlight
       if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
-        const isoformVariantTrack = new IsoformAndVariantTrack(
-          viewer,
+        const isoformVariantTrack = new IsoformAndVariantTrack({
+          viewer: this.gfc.viewer,
           track,
-          height,
+          height: this.gfc.height,
           width,
           transcriptTypes,
           variantTypes,
-          showVariantLabel,
+          showVariantLabel: this.gfc.config.showVariantLabel,
           variantFilter,
           binRatio,
           isoformFilter,
           initialHighlight,
-        )
+          service: this.gfc.service,
+        })
         await isoformVariantTrack.populateTrack(
           track,
           () => track.isoformFunction,
@@ -144,17 +139,18 @@ export default class Drawer {
         )
         track_height += isoformVariantTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
-        const isoformVariantTrack = new IsoformEmbeddedVariantTrack(
-          viewer,
+        const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
+          viewer: this.gfc.viewer,
           track,
-          height,
+          height: this.gfc.height,
           width,
           transcriptTypes,
           variantTypes,
-          showVariantLabel,
+          showVariantLabel: this.gfc.config.showVariantLabel,
           variantFilter,
           binRatio,
-        )
+          service: this.gfc.service,
+        })
         await isoformVariantTrack.populateTrack(
           track,
           () => track.isoformFunction,
@@ -162,35 +158,43 @@ export default class Drawer {
         )
         track_height += isoformVariantTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.ISOFORM) {
-        const isoformTrack = new IsoformTrack(
-          viewer,
+        const isoformTrack = new IsoformTrack({
+          viewer: this.gfc.viewer,
           track,
-          height,
+          height: this.gfc.height,
           width,
           transcriptTypes,
           htpVariant,
-        )
+          service: this.gfc.service,
+        })
         await isoformTrack.getTrackData(track)
         track_height += isoformTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.VARIANT) {
         track.range = sequenceOptions.range
-        const variantTrack = new VariantTrack(viewer, track, height, width)
+        const variantTrack = new VariantTrack({
+          viewer: this.gfc.viewer,
+          track,
+          height: this.gfc.height,
+          width,
+          service: this.gfc.service,
+        })
         await variantTrack.getTrackData()
         variantTrack.DrawTrack()
       } else if (track.type === TRACK_TYPE.VARIANT_GLOBAL) {
         track.range = sequenceOptions.range
-        const variantTrack = new VariantTrackGlobal(
-          viewer,
+        const variantTrack = new VariantTrackGlobal({
+          viewer: this.gfc.viewer,
           track,
-          height,
+          height: this.gfc.height,
           width,
-        )
+          service: this.gfc.service,
+        })
         await variantTrack.getTrackData()
         variantTrack.DrawTrack()
       } else {
         console.error(`TrackType not found for ${track.id}...`, track.type)
       }
-      d3.select(svg_target).attr('height', track_height)
+      d3.select(this.gfc.svg_target).attr('height', track_height)
     })
   }
 

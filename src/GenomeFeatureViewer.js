@@ -1,6 +1,5 @@
 'use strict'
 
-import 'babel-polyfill'
 import * as d3 from 'd3'
 
 import Drawer from './Drawer'
@@ -57,7 +56,7 @@ export default class GenomeFeatureViewer {
         return d.selected
       })
       .style('stroke', null)
-      .datum(function (d) {
+      .datum(d => {
         d.selected = 'false'
         return d
       })
@@ -102,7 +101,6 @@ export default class GenomeFeatureViewer {
 
   // Creating our drawing space.
   _initViewer(svg_target) {
-    // console.log("[GFCLog] Initializing for " + svg_target);
     d3.select(svg_target).selectAll('*').remove()
     let viewer = d3.select(svg_target)
     let svgClass = svg_target.replace('#', '')
@@ -136,8 +134,7 @@ export default class GenomeFeatureViewer {
      Methods to interact with viewer.
     */
   getTracks(defaultTrack) {
-    // Return all tracks if a default track
-    // is not requested
+    // Return all tracks if a default track is not requested
     if (!defaultTrack) {
       return this.tracks
     } else {

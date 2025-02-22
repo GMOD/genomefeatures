@@ -2,8 +2,8 @@ import * as d3 from 'd3'
 
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
-export default class VariantTrack {
-  constructor(viewer, track, height, width) {
+export default class VariantTrackGlobal {
+  constructor({ viewer, track, height, width }) {
     this.variants = []
     this.viewer = viewer
     this.width = width

@@ -30,9 +30,8 @@ let apolloService = new ApolloService()
 // let MAX_ROWS = 9;
 
 export default class IsoformAndVariantTrack {
-  constructor(
+  constructor({
     viewer,
-    _track,
     height,
     width,
     transcriptTypes,
@@ -42,7 +41,8 @@ export default class IsoformAndVariantTrack {
     binRatio,
     isoformFilter,
     initialHiglight,
-  ) {
+    service,
+  }) {
     this.trackData = {}
     this.variantData = {}
     this.viewer = viewer
@@ -56,6 +56,7 @@ export default class IsoformAndVariantTrack {
     this.binRatio = binRatio
     this.showVariantLabel =
       showVariantLabel !== undefined ? showVariantLabel : true
+    this.service = service || apolloService
   }
 
   // Draw our track on the viewer
@@ -808,7 +809,9 @@ export default class IsoformAndVariantTrack {
         })
       }
     }
-    setHighlights(initialHighlight, viewer)
+    if (initialHighlight) {
+      setHighlights(initialHighlight, viewer)
+    }
 
     if (row_count === 0) {
       track
@@ -850,7 +853,7 @@ export default class IsoformAndVariantTrack {
             returnVal = true
           }
           let ids = v.allele_ids.values[0].replace(/"|\[|\]| /g, '').split(',')
-          ids.forEach(function (id) {
+          ids.forEach(id => {
             if (variantFilter.indexOf(id) >= 0) {
               returnVal = true
             }
@@ -910,7 +913,7 @@ export default class IsoformAndVariantTrack {
       .selectAll(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
       )
-      .filter(function (d) {
+      .filter(d => {
         let returnVal = false
         // TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
         // and sometimes in an array.
@@ -929,7 +932,7 @@ export default class IsoformAndVariantTrack {
         }
         return returnVal
       })
-      .datum(function (d) {
+      .datum(d => {
         d.selected = 'true'
         return d
       })
@@ -961,27 +964,11 @@ export default class IsoformAndVariantTrack {
 
   /* Method for isoformTrack service call */
   async getTrackData(track) {
-    let externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
-    const isoformUrl = track.isoform_url
-    const dataUrl =
-      isoformUrl[0] +
-      encodeURI(track.genome) +
-      isoformUrl[1] +
-      encodeURI(externalLocationString) +
-      isoformUrl[2]
-    this.trackData = await apolloService.fetchDataFromUrl(dataUrl)
+    this.trackData = await this.service.fetchDataFromUrl(track, 'isoform_url')
   }
 
   /* Method for isoformTrack service call */
   async getVariantData(track) {
-    const externalLocationString = `${track.chromosome}:${track.start}..${track.end}`
-    const variantUrl = track.variant_url
-    const dataUrl =
-      variantUrl[0] +
-      encodeURI(track.genome) +
-      variantUrl[1] +
-      encodeURI(externalLocationString) +
-      variantUrl[2]
-    this.variantData = await apolloService.fetchDataFromUrl(dataUrl)
+    this.variantData = await this.service.fetchDataFromUrl(track, 'variant_url')
   }
 }

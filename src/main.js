@@ -11,8 +11,6 @@ import { createLegendBox } from './services/LegenedService'
  * @Param svg_target: The id of an svg element
  * @Param height: height of svg
  * @Param width: width of svg
- *
- *
  */
 export default class GenomeFeatureViewer {
   constructor(config, svg_target, width, height) {
@@ -27,6 +25,7 @@ export default class GenomeFeatureViewer {
 
     this.viewer = this._initViewer(svg_target)
     this.drawer = new Drawer(this)
+    this.service = config.service
 
     this.drawer.draw()
   }
@@ -50,11 +49,9 @@ export default class GenomeFeatureViewer {
       .selectAll(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
       )
-      .filter(function (d) {
-        return d.selected
-      })
+      .filter(d => d.selected)
       .style('stroke', null)
-      .datum(function (d) {
+      .datum(d => {
         d.selected = 'false'
         return d
       })

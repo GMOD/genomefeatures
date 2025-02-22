@@ -4,7 +4,7 @@ import d3Tip from 'd3-tip'
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
 export default class VariantTrack {
-  constructor(viewer, track, height, width) {
+  constructor({ viewer, track, height, width }) {
     this.variants = []
     this.viewer = viewer
     this.width = width
