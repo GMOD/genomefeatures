@@ -10,12 +10,7 @@ import VariantTrack from './tracks/VariantTrack'
 import VariantTrackGlobal from './tracks/VariantTrackGlobal'
 
 const LABEL_OFFSET = 100
-/*
- *   Main Drawing class
- *   @Param viewer: the entire viewer
- *
- *  Maybe this should just handle data and thats it.
- */
+
 export default class Drawer {
   constructor(gfc) {
     this.gfc = gfc

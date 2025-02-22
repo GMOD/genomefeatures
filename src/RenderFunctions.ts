@@ -1,26 +1,24 @@
-/*
-  Utility functions for tracks. This file is temporary and will be moved to the corresponding
-  track util.
-*/
 import * as d3 from 'd3-selection'
+import { SimpleFeatureSerialized } from './services/types'
+
 // Takes in the current entry start/end and the array of used space and assigns a row
-function checkSpace(used_space, start, end) {
-  var row
-  var assigned
-  var fits
+export function checkSpace(used_space: string[][], start: number, end: number) {
+  let row
+  let assigned
+  let fits
   // if empty... this is the first entry... on the first row.
 
   if (used_space.length == 0) {
     row = 1
   } else {
     // for each row
-    for (var i = 1; i < used_space.length; i++) {
+    for (let i = 1; i < used_space.length; i++) {
       // for each entry in that row
       for (const elt of used_space[i]) {
-        var [used_start, used_end] = elt.split(':')
+        const [used_start, used_end] = elt.split(':')
 
         // check for overlap
-        if (end < used_start || start > used_end) {
+        if (end < +used_start || start > +used_end) {
           fits = 1
         } else {
           fits = 0
@@ -42,53 +40,21 @@ function checkSpace(used_space, start, end) {
   return row
 }
 
-function doResize(_fmin_display, _fmax_display, viewer, _width, newx) {
-  viewer
-    .selectAll('rect.transcriptBackbone')
-    .attr('x', function (d) {
-      return newx(d.fmin)
-    })
-    .attr('width', function (d) {
-      return newx(d.fmax) - newx(d.fmin)
-    })
-
-  viewer
-    .selectAll('rect.exon')
-    .attr('x', d => newx(d.fmin))
-    .attr('width', d => newx(d.fmax) - newx(d.fmin))
-
-  viewer
-    .selectAll('rect.CDS')
-    .attr('x', d => newx(d.fmin))
-    .attr('width', d => newx(d.fmax) - newx(d.fmin))
-
-  viewer
-    .selectAll('rect.UTR')
-    .attr('x', d => newx(d.fmin))
-    .attr('width', d => newx(d.fmax) - newx(d.fmin))
-
-  viewer.selectAll('polygon.transArrow').attr('transform', d => {
-    return d.strand > 0
-      ? `translate(${Number(newx(d.fmax))},${d.y_val})`
-      : `translate(${Number(newx(d.fmin))},${d.y_val}) rotate(180)`
-  })
-
-  viewer.selectAll('text.REMOVE').remove()
-}
-
 // Function to find range
 // Now with checkSpace function embedded.
 // Will only check rows that make it into the final viz.
 // Needs to assign the row as well
 // Added check for type.... all types were getting included even if
 // we had no intention to display them
-function findRange(data, display_feats) {
+export function findRange(
+  data: SimpleFeatureSerialized[],
+  display_feats: unknown[],
+) {
   let fmin = -1
   let fmax = -1
 
-  for (let d in data) {
-    let feature = data[d]
-    let featureChildren = feature.children
+  for (const feature of data) {
+    const featureChildren = feature.children
     if (featureChildren) {
       featureChildren.forEach(featureChild => {
         if (display_feats.includes(featureChild.type)) {
@@ -109,11 +75,10 @@ function findRange(data, display_feats) {
   }
 }
 
-function countIsoforms(data) {
+export function countIsoforms(data: SimpleFeatureSerialized[]) {
   let isoform_count = 0
   // gene level
-  for (let i in data) {
-    let feature = data[i]
+  for (const feature of data) {
     if (feature.children) {
       feature.children.forEach(geneChild => {
         // isoform level
@@ -126,23 +91,31 @@ function countIsoforms(data) {
   return isoform_count
 }
 
-function calculateNewTrackPosition(viewer) {
-  let viewerClass = viewer.attr('class')
-  let classNames = viewerClass.split(' ')
-  let viewTrackSelector = `.${classNames[0]}.${classNames[1]} .track`
-  let nodes = d3.selectAll(viewTrackSelector).nodes()
+export function calculateNewTrackPosition(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  viewer: d3.Selection<SVGElement, unknown, HTMLElement, any>,
+): number {
+  const viewerClass = viewer.attr('class')
+  const classNames = viewerClass.split(' ')
+  const viewTrackSelector = `.${classNames[0]}.${classNames[1]} .track`
+  const nodes = d3.selectAll<SVGElement, unknown>(viewTrackSelector).nodes()
   let usedHeight = 0
-  nodes.forEach(node => {
+
+  nodes.forEach((node: SVGElement) => {
     usedHeight += node.getBoundingClientRect().height + 1
   })
+
   return usedHeight
 }
-// Nasty function to get translate values since d3 deprecated.
-function getTranslate(transform) {
+
+export function getTranslate(transform: string): [number, number] {
   // Create a dummy g for calculation purposes only. This will never
   // be appended to the DOM and will be discarded once this function
   // returns.
-  var g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+  const g: SVGGElement = document.createElementNS(
+    'http://www.w3.org/2000/svg',
+    'g',
+  )
 
   // Set the transform attribute to the provided string value.
   g.setAttributeNS(null, 'transform', transform)
@@ -150,29 +123,39 @@ function getTranslate(transform) {
   // consolidate the SVGTransformList containing all transformations
   // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
   // its SVGMatrix.
-  var matrix = g.transform.baseVal.consolidate().matrix
-
-  // As per definition values e and f are the ones for the translation.
-  return [matrix.e, matrix.f]
+  const matrix = g.transform.baseVal.consolidate()?.matrix
+  return matrix ? [matrix.e, matrix.f] : [0, 0]
 }
-function setHighlights(selectedAlleles, svgTarget) {
-  let viewer_height = svgTarget.node().getBBox().height
-  let highlights = svgTarget
-    .selectAll(
+
+interface VariantData {
+  alleles?: string[]
+  selected?: string
+}
+
+export function setHighlights(
+  selectedAlleles: string[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  svgTarget: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>,
+) {
+  const viewer_height = svgTarget.node()?.getBBox().height ?? 0
+  const highlights = svgTarget
+    .selectAll<SVGElement, VariantData>(
       '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
     )
-    .filter(d => {
+    .filter((d: VariantData) => {
       let returnVal = false
-      // TODO This needs to be standardized.  We sometimes get these returned in a comma sperated list
-      // and sometimes in an array.
-      if (d.alleles) {
-        let ids = d.alleles[0].replace(/"|\[|\]| /g, '').split(',')
-        ids.forEach(val => {
+
+      if (d.alleles?.length) {
+        // Handle comma-separated string case
+        const ids = d.alleles[0].replace(/"|\[|\]| /g, '').split(',')
+        ids.forEach((val: string) => {
           if (selectedAlleles.includes(val)) {
             returnVal = true
           }
         })
-        d.alleles.forEach(val => {
+
+        // Handle array case
+        d.alleles.forEach((val: string) => {
           if (selectedAlleles.includes(val)) {
             returnVal = true
           }
@@ -180,19 +163,21 @@ function setHighlights(selectedAlleles, svgTarget) {
       }
       return returnVal
     })
-    .datum(d => {
+    .datum((d: VariantData) => {
       d.selected = 'true'
       return d
     })
     .style('stroke', 'black')
 
-  highlights.each(function () {
-    let x_val = d3.select(this).attr('x')
-    let width_val = d3.select(this).attr('width')
-    if (width_val == null) {
+  highlights.each(function (this: SVGElement) {
+    let x_val = d3.select<SVGElement, unknown>(this).attr('x')
+    let width_val = +d3.select<SVGElement, unknown>(this).attr('width')
+
+    if (width_val === 0 || Number.isNaN(width_val)) {
       width_val = 3
-      x_val = x_val - width_val / 2
+      x_val = String(+x_val - width_val / 2)
     }
+
     svgTarget
       .select('.deletions.track')
       .append('rect')
@@ -204,14 +189,4 @@ function setHighlights(selectedAlleles, svgTarget) {
       .attr('opacity', 0.8)
       .lower()
   })
-}
-
-export {
-  calculateNewTrackPosition,
-  checkSpace,
-  countIsoforms,
-  doResize,
-  findRange,
-  getTranslate,
-  setHighlights,
 }

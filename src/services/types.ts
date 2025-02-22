@@ -37,15 +37,14 @@ export interface Feature {
 export interface SimpleFeatureSerializedNoId {
   [key: string]: unknown
   parentId?: string
-  start: number
-  end: number
-  refName: string
+  fmin: number
+  fmax: number
+  seqId: string
   type?: string
-  subfeatures?: SimpleFeatureSerializedNoId[]
+  children?: SimpleFeatureSerializedNoId[]
 }
 
 // base serialized feature has to have a uniqueId
 export interface SimpleFeatureSerialized extends SimpleFeatureSerializedNoId {
-  subfeatures?: SimpleFeatureSerializedNoId[]
   uniqueId: string
 }

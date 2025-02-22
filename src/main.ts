@@ -4,6 +4,17 @@ import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
 
+type Track = Record<string, unknown>
+
+interface ViewerConfig {
+  locale: 'global' | 'local'
+  tracks?: Track[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  service?: any
+  start?: number
+  end?: number
+}
+
 /*
  * Main viewer.
  *
@@ -13,16 +24,33 @@ import { createLegendBox } from './services/LegenedService'
  * @Param width: width of svg
  */
 export default class GenomeFeatureViewer {
-  constructor(config, svg_target, width, height) {
+  private tracks: Track[]
+  private locale: string
+  private config: ViewerConfig
+  private height: number
+  private width: number
+  private drawer: Drawer
+  public svg_target: string
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private viewer: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private service: any
+
+  constructor(
+    config: ViewerConfig,
+    svg_target: string,
+    width: number,
+    height: number,
+  ) {
     this.tracks = []
-    this.locale = ''
-    this.config = {}
-    this.svg_target = svg_target
-    this._checkConfig(config)
     this._extendD3()
     this.height = height
     this.width = width
-
+    this.config = config
+    this.tracks = config.tracks ?? []
+    this.locale = config.locale
+    this.svg_target = svg_target
     this.viewer = this._initViewer(svg_target)
     this.drawer = new Drawer(this)
     this.service = config.service
@@ -36,48 +64,34 @@ export default class GenomeFeatureViewer {
 
   closeModal() {
     const elements = document.getElementsByClassName('gfc-tooltip')
-    for (let tooltipDiv of elements) {
-      tooltipDiv.style.visibility = 'hidden'
+    for (const tooltipDiv of elements) {
+      ;(tooltipDiv as HTMLElement).style.visibility = 'hidden'
     }
   }
 
-  setSelectedAlleles(selectedAlleles, target) {
+  setSelectedAlleles(selectedAlleles: string[], target: string): void {
     // remove highlights first
-    let svgTarget = d3.select(target)
+    const svgTarget = d3.select(target)
     svgTarget.selectAll('.highlight').remove()
     svgTarget
       .selectAll(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
       )
-      .filter(d => d.selected)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .filter((d: any) => d.selected)
       .style('stroke', null)
-      .datum(d => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .datum((d: any) => {
         d.selected = 'false'
         return d
       })
 
+    // @ts-expect-error
     setHighlights(selectedAlleles, svgTarget)
   }
 
-  // Check configuration files
-  _checkConfig(config) {
-    // Ensure we have config type
-    // TODO: Make sure we have top label information
-    let locale = config.locale
-    if (locale !== 'global' && locale !== 'local') {
-      throw new Error("No locale found in config. Must be 'global' or 'local'")
-    }
-    // Ensure we have tracks
-    let tracks = config.tracks
-    if (!tracks || tracks.length === 0) {
-      throw new Error('No tracks found. Must be an array of tracks.')
-    }
-
-    this._setProperties(config)
-  }
-
   // Create an extension on our d3
-  _extendD3() {
+  private _extendD3(): void {
     d3.selection.prototype.first = function () {
       return d3.select(this.nodes()[0])
     }
@@ -86,22 +100,15 @@ export default class GenomeFeatureViewer {
     }
   }
 
-  // Set our properties since we know config is valid
-  _setProperties(config) {
-    this.config = config
-    this.tracks = config.tracks
-    this.locale = config.locale
-  }
-
   // Creating our drawing space.
-  _initViewer(svg_target) {
+  private _initViewer(svg_target: string) {
     d3.select(svg_target).selectAll('*').remove()
-    let viewer = d3.select(svg_target)
-    let svgClass = svg_target.replace('#', '')
-    let mainViewClass = `${svgClass} main-view`
+    const viewer = d3.select(svg_target)
+    const svgClass = svg_target.replace('#', '')
+    const mainViewClass = `${svgClass} main-view`
 
     if (this.locale === 'global') {
-      let margin = { top: 8, right: 30, bottom: 30, left: 40 }
+      const margin = { top: 8, right: 30, bottom: 30, left: 40 }
       viewer
         .attr('width', this.width)
         .attr('height', this.height)
@@ -111,8 +118,9 @@ export default class GenomeFeatureViewer {
       this.width = this.width - margin.left - margin.right
       this.height = this.height - margin.top - margin.bottom
     } else {
-      // Different margins for a local view. (Maybe we can make these match at some point)
-      let margin = { top: 10, bottom: 10 }
+      // Different margins for a local view. (Maybe we can make these match at
+      // some point)
+      const margin = { top: 10, bottom: 10 }
       viewer
         .attr('width', this.width)
         .attr('height', this.height)
@@ -120,21 +128,20 @@ export default class GenomeFeatureViewer {
         .attr('class', mainViewClass)
       this.height = this.height - margin.top - margin.bottom
     }
-    let mainViewTarget = `${svg_target} .main-view`
-    return d3.select(mainViewTarget)
+    return d3.select(`${svg_target} .main-view`)
   }
 
   /*
      Methods to interact with viewer.
     */
-  getTracks(defaultTrack) {
+  getTracks(defaultTrack?: boolean): Track | Track[] {
     // Return all tracks if a default track
     // is not requested
     return !defaultTrack ? this.tracks : this.tracks[0]
   }
 
   // Set our sequence start and sequence end
-  setSequence(start, end) {
+  setSequence(start: number, end: number): void {
     this.config.start = start
     this.config.end = end
   }
