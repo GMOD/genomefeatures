@@ -339,7 +339,7 @@ export default class IsoformTrack {
                   ? x(featureChild.fmin) + text_width
                   : x(featureChild.fmax)
 
-              // This is probably not the most efficent way to do this.
+              // This is probably not the most efficient way to do this.
               // Making an 2d array... each row is the first array (no zer0)
               // next level is each element taking up space.
               // Also using colons as spacers seems very perl... maybe change that?

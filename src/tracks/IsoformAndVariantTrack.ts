@@ -39,18 +39,17 @@ interface IsoformAndVariantTrackProps {
   variantFilter: string[]
   binRatio: number
   isoformFilter: string[]
-  initialHiglight?: string[]
+  initialHighlight?: string[]
   service?: ApolloService
+  trackData?: SimpleFeatureSerialized[]
+  variantData?: VariantFeature[]
 }
 
 const apolloService = new ApolloService()
 
-// TODO: make configurable and a const / default
-// let MAX_ROWS = 9;
-
 export default class IsoformAndVariantTrack {
-  private trackData: SimpleFeatureSerialized[]
-  private variantData: VariantFeature[]
+  private trackData?: SimpleFeatureSerialized[]
+  private variantData?: VariantFeature[]
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   private width: number
   private variantFilter: string[]
@@ -73,16 +72,18 @@ export default class IsoformAndVariantTrack {
     variantFilter,
     binRatio,
     isoformFilter,
-    initialHiglight,
+    initialHighlight,
     service,
+    trackData,
+    variantData,
   }: IsoformAndVariantTrackProps) {
-    this.trackData = []
-    this.variantData = []
+    this.trackData = trackData
+    this.variantData = variantData
     this.viewer = viewer
     this.width = width
     this.variantFilter = variantFilter
     this.isoformFilter = isoformFilter
-    this.initialHighlight = initialHiglight
+    this.initialHighlight = initialHighlight
     this.height = height
     this.transcriptTypes = transcriptTypes
     this.variantTypes = variantTypes
@@ -91,12 +92,21 @@ export default class IsoformAndVariantTrack {
     this.service = service ?? apolloService
   }
 
-  DrawTrack() {
+  async DrawTrack(t: {
+    chromosome: string
+    start: number
+    end: number
+    genome: string
+    isoform_url: string[]
+    variant_url: string[]
+  }) {
+    const { variantData: variantDataPre, trackData } =
+      await this.populateTrack(t)
     const isoformFilter = this.isoformFilter
-    let isoformData = this.trackData
+    let isoformData = trackData
     const initialHighlight = this.initialHighlight
     const variantData = this.filterVariantData(
-      this.variantData,
+      variantDataPre,
       this.variantFilter,
     )
     const viewer = this.viewer
@@ -104,8 +114,8 @@ export default class IsoformAndVariantTrack {
     const binRatio = this.binRatio
     const distinctVariants = getVariantTrackPositions(variantData)
     const numVariantTracks = distinctVariants.length
-    const source = this.trackData[0].source
-    const chr = this.trackData[0].seqId
+    const source = trackData[0].source
+    const chr = trackData[0].seqId
     const MAX_ROWS = isoformFilter.length === 0 ? 9 : 30
 
     const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
@@ -187,7 +197,7 @@ export default class IsoformAndVariantTrack {
         .style('opacity', 10)
         .style('visibility', 'hidden')
     }
-    // Seperate isoform and variant render
+    // Separate isoform and variant render
     const variantBins = generateVariantDataBinsAndDataSets(
       variantData,
       (viewEnd - viewStart) * binRatio,
@@ -264,7 +274,7 @@ export default class IsoformAndVariantTrack {
           alleles: variant_alleles,
         })
 
-      // drawnVariant = false;//disable lables for now;
+      // drawnVariant = false;//disable labels for now;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (drawnVariant) {
         let label_offset = 0
@@ -504,7 +514,7 @@ export default class IsoformAndVariantTrack {
     const labelTrackPosition = variantTrackAdjust
     labelTrack.attr('transform', `translate(0,${labelTrackPosition})`)
 
-    // Calculate where this track should go and translate it, must be after the variant lables are added
+    // Calculate where this track should go and translate it, must be after the variant labels are added
     const newTrackPosition =
       calculateNewTrackPosition(this.viewer) + LABEL_PADDING
     const track = viewer
@@ -691,7 +701,7 @@ export default class IsoformAndVariantTrack {
                   ? x(featureChild.fmin) + text_width
                   : x(featureChild.fmax)
 
-              // This is probably not the most efficent way to do this.
+              // This is probably not the most efficient way to do this.
               // Making an 2d array... each row is the first array (no zer0)
               // next level is each element taking up space.
               // Also using colons as spacers seems very perl... maybe change that?
@@ -990,8 +1000,15 @@ export default class IsoformAndVariantTrack {
     genome: string
     isoform_url: string[]
     variant_url: string[]
-  }): Promise<void> {
-    await Promise.all([this.getTrackData(track), this.getVariantData(track)])
+  }) {
+    const [trackData, variantData] = await Promise.all([
+      this.getTrackData(track),
+      this.getVariantData(track),
+    ])
+    return {
+      trackData,
+      variantData,
+    }
   }
 
   /* Method for isoformTrack service call */
@@ -1002,7 +1019,10 @@ export default class IsoformAndVariantTrack {
     genome: string
     isoform_url: string[]
   }): Promise<void> {
-    this.trackData = await this.service.fetchDataFromUrl(track, 'isoform_url')
+    return (
+      this.trackData ??
+      (await this.service.fetchDataFromUrl(track, 'isoform_url'))
+    )
   }
 
   /* Method for isoformTrack service call */
@@ -1013,6 +1033,9 @@ export default class IsoformAndVariantTrack {
     genome: string
     variant_url: string[]
   }): Promise<void> {
-    this.variantData = await this.service.fetchDataFromUrl(track, 'variant_url')
+    return (
+      this.variantData ??
+      (await this.service.fetchDataFromUrl(track, 'variant_url'))
+    )
   }
 }

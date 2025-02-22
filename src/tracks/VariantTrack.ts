@@ -17,7 +17,7 @@ interface VariantTrackProps {
   variantFilter: string[]
   binRatio: number
   isoformFilter: string[]
-  initialHiglight?: string[]
+  initialHighlight?: string[]
   service?: ApolloService
   track: Track
 }

@@ -110,21 +110,17 @@ export default class Drawer {
       // await referenceTrack.getTrackData()
       referenceTrack.DrawScrollableTrack()
 
-      // NOTE: not sure what does
+      // Colin NOTE: not sure what does
       // @ts-expect-error
       this.gfc.viewer.call(
         // @ts-expect-error
         d3.drag().on('start', draggingStart).on('drag', draggingViewer),
       )
     } else {
-      // Overview Mode
       referenceTrack.DrawOverviewTrack()
     }
 
-    // TODO: Lock view to always have some number of sequence (50, 100)?
     let track_height = LABEL_OFFSET
-
-    // TODO: refactor so that both come in and are re-ordered
 
     Promise.all(
       this.gfc.tracks.map(async baseTrack => {
@@ -150,8 +146,7 @@ export default class Drawer {
             isoformFilter,
             service: this.gfc.service,
           })
-          await isoformVariantTrack.populateTrack(track)
-          track_height += isoformVariantTrack.DrawTrack()
+          track_height += await isoformVariantTrack.DrawTrack(track)
         } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
           const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
             viewer: this.gfc.viewer,
@@ -209,7 +204,7 @@ export default class Drawer {
     })
   }
 
-  // Trigger for when we start dragging. Save the intial point.
+  // Trigger for when we start dragging. Save the initial point.
   drag_start(ref: Drawer) {
     // @ts-expect-error
     ref.drag_cx = window.event.x

@@ -70,7 +70,7 @@ export default class IsoformEmbeddedVariantTrack {
   }
 
   // Draw our track on the viewer
-  // TODO: Potentially seperate this large section of code
+  // TODO: Potentially separate this large section of code
   // for both testing/extensibility
   DrawTrack() {
     let isoformData = this.trackData
@@ -334,7 +334,7 @@ export default class IsoformEmbeddedVariantTrack {
                   ? x(featureChild.fmin) + text_width
                   : x(featureChild.fmax)
 
-              // This is probably not the most efficent way to do this.
+              // This is probably not the most efficient way to do this.
               // Making an 2d array... each row is the first array (no zer0)
               // next level is each element taking up space.
               // Also using colons as spacers seems very perl... maybe change that?
