@@ -11,6 +11,9 @@
     "genes",
     "transcripts"
   ],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/genomefeatures.umd.cjs",
   "module": "./dist/genomefeatures.js",
   "exports": {
