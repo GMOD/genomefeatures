@@ -28,7 +28,7 @@
     "build": "vite build",
     "prebuild": "yarn run clean",
     "preview": "vite preview",
-    "predeploy": "yarn build",
+    "predeploy": "yarn build -c vite-gh-pages.config.ts",
     "deploy": "gh-pages -d dist",
     "postdeploy": "git push --follow-tags",
     "storybook": "storybook dev -p 6006",

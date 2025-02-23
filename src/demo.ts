@@ -1,8 +1,8 @@
+import { fetchApolloAPIFeatures } from './ApolloAPIFetcher'
 import { fetchNCListData } from './NCListFetcher'
 import GenomeFeatureViewer from './main'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 import { parseLocString } from './util'
-import { fetchApolloAPIFeatures } from './ApolloAPIFetcher'
 
 import './GenomeFeatureViewer.css'
 
@@ -383,7 +383,7 @@ function isoformExamples() {
   )
 }
 
-async function createExample(
+function createExample(
   locString: string,
   genome: string,
   divId: string,
@@ -392,107 +392,110 @@ async function createExample(
   variantFilter?: string[],
   isoformFilter?: string[],
 ) {
-  try {
-    const region = parseLocString(locString)
-    const trackData = await fetchApolloAPIFeatures({
-      ...region,
-      genome,
-      track: 'All Genes',
-      baseUrl: `${BASE_URL}/track/`,
-    })
-    const variantData = await fetchApolloAPIFeatures({
-      ...region,
-      genome,
-      track: 'Variants',
-      baseUrl: `${BASE_URL}/vcf`,
-    })
-    const gfc = new GenomeFeatureViewer(
-      {
-        locale: 'global',
-        region,
-        showVariantLabel: showLabel,
-        transcriptTypes: getTranscriptTypes(),
-        isoformFilter: isoformFilter ?? [],
-        variantFilter: variantFilter ?? [],
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  ;(async () => {
+    try {
+      const region = parseLocString(locString)
+      const trackData = await fetchApolloAPIFeatures({
+        ...region,
         genome,
-        tracks: [
-          {
-            id: '12',
-            type,
-            trackData,
-            variantData,
-          },
-        ],
-      },
-      `#${divId}`,
-      900,
-      500,
-    )
-
-    const closeButton = document.getElementById(`${divId}CloseButton`)
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        gfc.closeModal()
+        track: 'All Genes',
+        baseUrl: `${BASE_URL}/track/`,
       })
-    }
+      const variantData = await fetchApolloAPIFeatures({
+        ...region,
+        genome,
+        track: 'Variants',
+        baseUrl: `${BASE_URL}/vcf`,
+      })
+      const gfc = new GenomeFeatureViewer(
+        {
+          locale: 'global',
+          region,
+          showVariantLabel: showLabel,
+          transcriptTypes: getTranscriptTypes(),
+          isoformFilter: isoformFilter ?? [],
+          variantFilter: variantFilter ?? [],
+          genome,
+          tracks: [
+            {
+              id: '12',
+              type,
+              trackData,
+              variantData,
+            },
+          ],
+        },
+        `#${divId}`,
+        900,
+        500,
+      )
 
-    // const legendButton = document.getElementById(divId+'LegendButton');
-    const legendTarget = document.getElementById(`${divId}LegendTarget`)
-    if (legendTarget) {
-      legendTarget.innerHTML = gfc.generateLegend()
-    }
+      const closeButton = document.getElementById(`${divId}CloseButton`)
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          gfc.closeModal()
+        })
+      }
 
-    if (divId === 'networkExampleWorm1And') {
-      document
-        .getElementById('wormbutton')!
-        .addEventListener('click', function () {
-          gfc.setSelectedAlleles(
-            ['WB:WBVar00089535', 'WB:WBVar02125540', 'WB:WBVar00242477'],
-            '#networkExampleWorm1And',
-          )
-        })
-      document
-        .getElementById('clrbutton')!
-        .addEventListener('click', function () {
-          gfc.setSelectedAlleles([], '#networkExampleWorm1And')
-        })
+      // const legendButton = document.getElementById(divId+'LegendButton');
+      const legendTarget = document.getElementById(`${divId}LegendTarget`)
+      if (legendTarget) {
+        legendTarget.innerHTML = gfc.generateLegend()
+      }
+
+      if (divId === 'networkExampleWorm1And') {
+        document
+          .getElementById('wormbutton')!
+          .addEventListener('click', function () {
+            gfc.setSelectedAlleles(
+              ['WB:WBVar00089535', 'WB:WBVar02125540', 'WB:WBVar00242477'],
+              '#networkExampleWorm1And',
+            )
+          })
+        document
+          .getElementById('clrbutton')!
+          .addEventListener('click', function () {
+            gfc.setSelectedAlleles([], '#networkExampleWorm1And')
+          })
+      }
+      if (divId === 'viewerFlyExample2NoLabelAnd') {
+        document
+          .getElementById('flybutton')!
+          .addEventListener('click', function () {
+            gfc.setSelectedAlleles(
+              ['FB:FBal0242675', 'FB:FBal0302371', 'FB:FBal0012433'],
+              '#viewerFlyExample2NoLabelAnd',
+            )
+          })
+        document
+          .getElementById('clrbuttonfly')!
+          .addEventListener('click', function () {
+            gfc.setSelectedAlleles([], '#viewerFlyExample2NoLabelAnd')
+          })
+      }
+      if (divId === 'viewerHighlightExample') {
+        document
+          .getElementById('mausbutton')!
+          .addEventListener('click', function () {
+            gfc.setSelectedAlleles(
+              ['ZFIN:ZDB-ALT-130411-164'],
+              '#viewerHighlightExample',
+            )
+          })
+        document
+          .getElementById('clrbuttonmaus')!
+          .addEventListener('click', function () {
+            gfc.setSelectedAlleles([], '#viewerHighlightExample')
+          })
+      }
+    } catch (e) {
+      console.error(e)
     }
-    if (divId === 'viewerFlyExample2NoLabelAnd') {
-      document
-        .getElementById('flybutton')!
-        .addEventListener('click', function () {
-          gfc.setSelectedAlleles(
-            ['FB:FBal0242675', 'FB:FBal0302371', 'FB:FBal0012433'],
-            '#viewerFlyExample2NoLabelAnd',
-          )
-        })
-      document
-        .getElementById('clrbuttonfly')!
-        .addEventListener('click', function () {
-          gfc.setSelectedAlleles([], '#viewerFlyExample2NoLabelAnd')
-        })
-    }
-    if (divId === 'viewerHighlightExample') {
-      document
-        .getElementById('mausbutton')!
-        .addEventListener('click', function () {
-          gfc.setSelectedAlleles(
-            ['ZFIN:ZDB-ALT-130411-164'],
-            '#viewerHighlightExample',
-          )
-        })
-      document
-        .getElementById('clrbuttonmaus')!
-        .addEventListener('click', function () {
-          gfc.setSelectedAlleles([], '#viewerHighlightExample')
-        })
-    }
-  } catch (e) {
-    console.error(e)
-  }
+  })()
 }
 
-async function createIsoformExample(
+function createIsoformExample(
   range: string,
   genome: string,
   divId: string,
@@ -500,37 +503,40 @@ async function createIsoformExample(
   showLabel: boolean,
   variantFilter?: string[],
 ) {
-  try {
-    const region = parseLocString(range)
-    const trackData = await fetchApolloAPIFeatures({
-      ...region,
-      genome,
-      track: 'All Genes',
-      baseUrl: `${BASE_URL}/track/`,
-    })
-    new GenomeFeatureViewer(
-      {
-        locale: 'global',
-        region,
-        transcriptTypes: getTranscriptTypes(),
-        showVariantLabel: showLabel,
-        variantFilter: variantFilter ?? [],
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  ;(async () => {
+    try {
+      const region = parseLocString(range)
+      const trackData = await fetchApolloAPIFeatures({
+        ...region,
         genome,
-        tracks: [
-          {
-            id: '12',
-            type,
-            trackData,
-          },
-        ],
-      },
-      `#${divId}`,
-      900,
-      500,
-    )
-  } catch (e) {
-    console.error(e)
-  }
+        track: 'All Genes',
+        baseUrl: `${BASE_URL}/track/`,
+      })
+      new GenomeFeatureViewer(
+        {
+          locale: 'global',
+          region,
+          transcriptTypes: getTranscriptTypes(),
+          showVariantLabel: showLabel,
+          variantFilter: variantFilter ?? [],
+          genome,
+          tracks: [
+            {
+              id: '12',
+              type,
+              trackData,
+            },
+          ],
+        },
+        `#${divId}`,
+        900,
+        500,
+      )
+    } catch (e) {
+      console.error(e)
+    }
+  })()
 }
 //
 // function createHTPExample(

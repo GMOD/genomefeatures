@@ -11,6 +11,7 @@ export default tseslint.config(
       'webpack.config.js',
       'eslint.config.mjs',
       'vite.config.ts',
+      'vite-gh-pages.config.ts',
       '.storybook/*',
     ],
   },
