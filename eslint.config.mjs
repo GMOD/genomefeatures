@@ -13,6 +13,7 @@ export default tseslint.config(
       'vite.config.ts',
       'vite-gh-pages.config.ts',
       '.storybook/*',
+      'out/*',
     ],
   },
   {

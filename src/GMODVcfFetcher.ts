@@ -37,27 +37,26 @@ export async function fetchTabixVcfData({
         parser,
         id: `${i++}`,
       })
+      const info = f.get('INFO') as Record<string, string[]>
+      // @ts-expect-error
       feats.push({
         id: f.get('ID'),
         reference_allele: f.get('REF'),
-        // @ts-expect-error
-        alt_allele: f.get('ALT'),
+        alternative_alleles: { values: f.get('ALT') },
         name: f.get('name'),
         seqId: f.get('refName'),
         fmin: f.get('start'),
         fmax: f.get('end'),
         strand: 1,
         source: '',
-        type: stripQuotes(f.get('INFO').soTerm[0]) ?? f.get('type'),
+        type: stripQuotes(info.soTerm[0]) ?? f.get('type'),
         ...Object.fromEntries(
-          Object.entries(f.get('INFO') as Record<string, string[]>).map(
-            ([key, val]) => [
-              key,
-              {
-                values: val.map(v => stripQuotes(v)),
-              },
-            ],
-          ),
+          Object.entries(info).map(([key, val]) => [
+            key,
+            {
+              values: [JSON.stringify(val.map(v => stripQuotes(v)))],
+            },
+          ]),
         ),
       })
     },

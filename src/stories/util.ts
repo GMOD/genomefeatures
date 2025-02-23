@@ -111,7 +111,7 @@ export function createExampleApollo({
   showVariantLabel,
   variantFilter,
   isoformFilter,
-  showVariants,
+  showVariants = true,
 }: {
   locString: string
   genome: string

@@ -26,7 +26,6 @@ import {
 
 import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
-import type { Region } from '../types'
 import type { Selection } from 'd3'
 
 export default class IsoformAndVariantTrack {
@@ -41,7 +40,6 @@ export default class IsoformAndVariantTrack {
   private transcriptTypes: string[]
   private variantTypes: string[]
   private binRatio: number
-  private region: Region
   private showVariantLabel: boolean
 
   constructor({
@@ -57,7 +55,6 @@ export default class IsoformAndVariantTrack {
     initialHighlight,
     trackData,
     variantData,
-    region,
   }: {
     viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
     height: number
@@ -71,9 +68,7 @@ export default class IsoformAndVariantTrack {
     initialHighlight?: string[]
     trackData?: SimpleFeatureSerialized[]
     variantData?: VariantFeature[]
-    region: Region
   }) {
-    this.region = region
     this.trackData = trackData ?? []
     this.variantData = variantData ?? []
     this.viewer = viewer
@@ -89,13 +84,11 @@ export default class IsoformAndVariantTrack {
   }
 
   DrawTrack() {
-    const variantDataPre = this.variantData
-    const trackData = this.trackData
     const isoformFilter = this.isoformFilter
-    let isoformData = trackData
+    let isoformData = this.trackData
     const initialHighlight = this.initialHighlight
     const variantData = this.filterVariantData(
-      variantDataPre,
+      this.variantData,
       this.variantFilter,
     )
     const viewer = this.viewer
@@ -103,8 +96,8 @@ export default class IsoformAndVariantTrack {
     const binRatio = this.binRatio
     const distinctVariants = getVariantTrackPositions(variantData)
     const numVariantTracks = distinctVariants.length
-    const source = trackData[0].source
-    const chr = trackData[0].seqId
+    const source = this.trackData[0].source
+    const chr = this.trackData[0].seqId
     const MAX_ROWS = isoformFilter.length === 0 ? 9 : 30
 
     const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
@@ -188,7 +181,7 @@ export default class IsoformAndVariantTrack {
     )
 
     // We need to do all of the deletions first...
-    const deletionBins = variantBins.filter(v => v.type == 'deletion')
+    const deletionBins = variantBins.filter(v => v.type === 'deletion')
     const otherBins = variantBins.filter(v => v.type !== 'deletion')
 
     const deletionSpace = [] as { fmin: number; fmax: number; row: number }[] // Array of array of objects for deletion layout.

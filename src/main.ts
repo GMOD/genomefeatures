@@ -190,7 +190,6 @@ export class GenomeFeatureViewer {
 
       if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
         const isoformVariantTrack = new IsoformAndVariantTrack({
-          region,
           viewer,
           height,
           width,

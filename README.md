@@ -12,24 +12,27 @@
 ```bash
 git clone git@github.com:GMOD/genomefeatures
 yarn
-yarn dev
+yarn dev # vite demo
+yarn storybook # storybook examples
 ```
 
 # Screenshot
 
 ![Example 1](images/ExampleIsoform1.png)
 
-## Live demo
+## Demo
 
-https://gmod.org/genomefeatures/
+Demo https://gmod.org/genomefeatures/
+
+Storybook https://gmod.org/genomefeatures/storybook
 
 ## Loading data
 
-### Apollo REST API
+### Legacy access pattern - Apollo REST API
 
-The original component accessed data via an Apollo REST API
-
-This is still supported, though it is a overkill for most usages
+The original implementation of this component required fetching data from an
+Apollo REST API endpoint. This is still supported, though it is a overkill for
+most usages
 
 ```typescript
 import {
@@ -61,7 +64,7 @@ const gfc = new GenomeFeatureViewer(
     genome,
     tracks: [
       {
-        type,
+        type: 'ISOFORM_EMBEDDED_VARIANT',
         trackData,
         variantData,
       },
@@ -79,24 +82,37 @@ And then in your HTML
 <svg id="svgelement"></svg>
 ```
 
-### Accessing JBrowse NCList files via @gmod/nclist
+### Static access pattern - Accessing JBrowse NCList files and VCF tabix files
 
-Uses a "baseUrl" and "urlTemplate" similar to JBrowse 1 configs
+After the refactor, we can now fetch files from static files like JBrowse 1
+NCList and VCF tabix files. This means you do not need a complex apollo
+deployment to use this component: just some static files
 
 ```typescript
 import {
   fetchNCListData,
+  fetchTabixVcfData,
   parseLocString,
   GenomeFeatureViewer,
 } from 'genomefeatures'
 
-const locString = 'NC_045512.2:17894..28259'
-const genome = 'SARS-CoV-2'
+const locString = '2L:130639..135911'
+const genome = 'fly'
+
+const vcfTabixUrl =
+  'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz'
+const ncListUrlTemplate =
+  'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz'
+
 const region = parseLocString(locString)
 const trackData = await fetchNCListData({
   region,
-  baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
-  urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
+  urlTemplate: ncListUrlTemplate,
+})
+
+const variantData = await fetchTabixVcfData({
+  url: vcfTabixUrl,
+  region,
 })
 
 const gfc = new GenomeFeatureViewer(
@@ -105,8 +121,9 @@ const gfc = new GenomeFeatureViewer(
     genome,
     tracks: [
       {
-        type,
+        type: 'ISOFORM_EMBEDDED_VARIANT',
         trackData,
+        variantData,
       },
     ],
   },
@@ -124,5 +141,4 @@ And then in your HTML
 
 ## Notes
 
-Can be run in ReactJS, VueJS, VanillaJS. Height is calculated on the fly for
-'global' isoform tracks.
+Can be run in ReactJS, VueJS, VanillaJS
