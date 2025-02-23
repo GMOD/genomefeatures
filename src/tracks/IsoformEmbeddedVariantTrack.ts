@@ -28,13 +28,15 @@ interface IsoformEmbeddedVariantTrackProps {
   showVariantLabel?: boolean
   variantFilter: string[]
   service?: ApolloService
+  variantData?: VariantFeature[]
+  trackData?: SimpleFeatureSerialized[]
 }
 
 const apolloService = new ApolloService()
 
 export default class IsoformEmbeddedVariantTrack {
-  private trackData: SimpleFeatureSerialized[] = []
-  private variantData: VariantFeature[] = []
+  private trackData?: SimpleFeatureSerialized[]
+  private variantData?: VariantFeature[]
   private viewer: d3.Selection<
     SVGGElement,
     unknown,
@@ -58,7 +60,11 @@ export default class IsoformEmbeddedVariantTrack {
     showVariantLabel,
     variantFilter,
     service,
+    trackData,
+    variantData,
   }: IsoformEmbeddedVariantTrackProps) {
+    this.trackData = trackData
+    this.variantData = variantData
     this.viewer = viewer
     this.width = width
     this.variantFilter = variantFilter
@@ -69,21 +75,18 @@ export default class IsoformEmbeddedVariantTrack {
     this.service = service ?? apolloService
   }
 
-  // Draw our track on the viewer
-  // TODO: Potentially separate this large section of code
-  // for both testing/extensibility
-  DrawTrack() {
-    let isoformData = this.trackData
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async DrawTrack(t: any) {
+    const { variantData: variantDataPre, trackData } =
+      await this.populateTrack(t)
+    let isoformData = trackData
     const variantData = this.filterVariantData(
-      this.variantData,
+      variantDataPre,
       this.variantFilter,
     )
     const viewer = this.viewer
     const width = this.width
     const showVariantLabel = this.showVariantLabel
-
-    // TODO: make configurable and a const / default
-    const MAX_ROWS = 10
 
     const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
     const CDS_feats = ['CDS']
@@ -95,6 +98,7 @@ export default class IsoformEmbeddedVariantTrack {
     const view_end = dataRange.fmax
 
     // constants
+    const MAX_ROWS = 10
     const EXON_HEIGHT = 10 // will be white / transparent
     const CDS_HEIGHT = 10 // will be colored in
     const ISOFORM_HEIGHT = 40 // height for each isoform
@@ -703,19 +707,47 @@ export default class IsoformEmbeddedVariantTrack {
       })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async populateTrack(track: any) {
-    await this.getTrackData(track)
-    await this.getVariantData(track)
+  async populateTrack(track: {
+    chromosome: string
+    start: number
+    end: number
+    genome: string
+    isoform_url: string[]
+    variant_url: string[]
+  }) {
+    const [trackData, variantData] = await Promise.all([
+      this.getTrackData(track),
+      this.getVariantData(track),
+    ])
+    return {
+      trackData,
+      variantData,
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async getTrackData(track: any) {
-    this.trackData = await this.service.fetchDataFromUrl(track, 'isoform_url')
+  async getTrackData(track: {
+    chromosome: string
+    start: number
+    end: number
+    genome: string
+    isoform_url: string[]
+  }): Promise<SimpleFeatureSerialized[]> {
+    return (
+      this.trackData ??
+      (await this.service.fetchDataFromUrl(track, 'isoform_url'))
+    )
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async getVariantData(track: any) {
-    this.variantData = await this.service.fetchDataFromUrl(track, 'variant_url')
+  async getVariantData(track: {
+    chromosome: string
+    start: number
+    end: number
+    genome: string
+    variant_url: string[]
+  }): Promise<VariantFeature[]> {
+    return (
+      this.variantData ??
+      (await this.service.fetchDataFromUrl(track, 'variant_url'))
+    )
   }
 }

@@ -26,12 +26,13 @@ interface IsoformTrackProps {
   transcriptTypes: string[]
   htpVariant?: string
   service?: ApolloService
+  trackData?: SimpleFeatureSerialized[]
 }
 
 const apolloService = new ApolloService()
 
 export default class IsoformTrack {
-  private trackData: SimpleFeatureSerialized[]
+  private trackData?: SimpleFeatureSerialized[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
   private width: number
@@ -51,8 +52,9 @@ export default class IsoformTrack {
     transcriptTypes,
     htpVariant,
     service,
+    trackData,
   }: IsoformTrackProps) {
-    this.trackData = []
+    this.trackData = trackData
     this.viewer = viewer
     this.width = width
     this.height = height
@@ -102,15 +104,15 @@ export default class IsoformTrack {
   }
 
   // Draw our track on the viewer
-  DrawTrack() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async DrawTrack(t: any) {
+    let data = await this.getTrackData(t)
     const htpVariant = this.htpVariant
-    let data = this.trackData
     const viewer = this.viewer
     const width = this.width
     const source = this.genome
-    const chr = this.trackData[0].seqId
+    const chr = data[0].seqId
 
-    // TODO: make configurable and a const / default
     const MAX_ROWS = 10
 
     const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
@@ -524,7 +526,7 @@ export default class IsoformTrack {
 
   /* Method for isoformTrack service call */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async getTrackData(track: any) {
-    this.trackData = await this.service.fetchDataFromUrl(track, 'url')
+  private async getTrackData(track: any): Promise<SimpleFeatureSerialized[]> {
+    return this.trackData ?? (await this.service.fetchDataFromUrl(track, 'url'))
   }
 }

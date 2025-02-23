@@ -158,8 +158,7 @@ export default class Drawer {
             variantFilter,
             service: this.gfc.service,
           })
-          await isoformVariantTrack.populateTrack(track)
-          track_height += isoformVariantTrack.DrawTrack()
+          track_height += await isoformVariantTrack.DrawTrack(track)
         } else if (track.type === TRACK_TYPE.ISOFORM) {
           const isoformTrack = new IsoformTrack({
             viewer: this.gfc.viewer,
@@ -170,8 +169,7 @@ export default class Drawer {
             htpVariant,
             service: this.gfc.service,
           })
-          await isoformTrack.getTrackData(track)
-          track_height += isoformTrack.DrawTrack()
+          track_height += await isoformTrack.DrawTrack(track)
         } else if (track.type === TRACK_TYPE.VARIANT) {
           track.range = sequenceOptions.range
           // @ts-expect-error
