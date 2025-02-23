@@ -7,15 +7,6 @@
 [npm-badge]: https://img.shields.io/npm/v/genomefeatures.png?style=flat-square
 [npm]: https://www.npmjs.com/package/genomefeatures
 
-# Instructions
-
-```bash
-git clone git@github.com:GMOD/genomefeatures
-yarn
-yarn dev # vite demo
-yarn storybook # storybook examples
-```
-
 # Screenshot
 
 ![Example 1](images/ExampleIsoform1.png)
@@ -25,6 +16,17 @@ yarn storybook # storybook examples
 Demo https://gmod.org/genomefeatures/
 
 Storybook https://gmod.org/genomefeatures/storybook
+
+# Instructions
+
+Install from NPM
+
+```bash
+yarn add genomefeatures
+```
+
+Or see see [example/index.html](example/index.html) for CDN import style usage,
+e.g.
 
 ## Loading data
 
@@ -141,6 +143,19 @@ And then in your HTML
 <svg id="svgelement"></svg>
 ```
 
+## Developers
+
+```bash
+git clone git@github.com:GMOD/genomefeatures
+yarn dev # vite demo
+yarn storybook # storybook examples
+```
+
 ## Notes
 
-Can be run in ReactJS, VueJS, VanillaJS
+Originally called https://github.com/GMOD/GenomeFeatureComponent
+
+Created by Nathan Dunn (@nathandunn), used by Alliance of Genome Resources
+
+Updated in 2025 by Colin Diesh (@cmdcolin) to add ability to fetch from static
+files

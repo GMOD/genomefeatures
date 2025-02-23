@@ -4,20 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Genome Feature Component Example</title>
-    <!-- Import the UMD bundle from unpkg -->
-    <script src="https://unpkg.com/genomefeatures/dist/genomefeatures.umd.cjs"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/genomefeatures/dist/genomefeatures.css"
+    />
   </head>
   <body>
     <svg id="svgelement"></svg>
 
     <script>
       async function initializeViewer() {
+        // note the CSS import in the header as well
+
+        // we use esm import here. alternatively, you can import as script tag with
+        // https://unpkg.com/genomefeatures/dist/genomefeatures.umd.cjs and access window.GenomeFeatureViewer
         const {
           parseLocString,
           fetchNCListData,
           fetchTabixVcfData,
           GenomeFeatureViewer,
-        } = window.GenomeFeatureViewer
+        } = await import(
+          'https://unpkg.com/genomefeatures/dist/genomefeatures.js'
+        )
 
         const locString = '2L:130639..135911'
         const genome = 'fly'
@@ -56,7 +64,6 @@
         )
       }
 
-      // Initialize when the page loads
       window.addEventListener('load', initializeViewer)
     </script>
   </body>
