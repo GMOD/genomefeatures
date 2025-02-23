@@ -2,8 +2,11 @@ import { fetchNCListData } from './NCListFetcher'
 import GenomeFeatureViewer from './main'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 import { parseLocString } from './util'
+import { fetchApolloAPIFeatures } from './ApolloAPIFetcher'
 
 import './GenomeFeatureViewer.css'
+
+const BASE_URL = 'https://www.alliancegenome.org/apollo'
 
 oldExamples()
 isoformExamples()
@@ -380,8 +383,8 @@ function isoformExamples() {
   )
 }
 
-function createExample(
-  range: string,
+async function createExample(
+  locString: string,
   genome: string,
   divId: string,
   type: TrackType,
@@ -389,90 +392,107 @@ function createExample(
   variantFilter?: string[],
   isoformFilter?: string[],
 ) {
-  const ratio = 0.01
-  const gfc = new GenomeFeatureViewer(
-    {
-      locale: 'global',
-      region: parseLocString(range),
-      showVariantLabel: showLabel,
-      transcriptTypes: getTranscriptTypes(),
-      isoformFilter: isoformFilter ?? [],
-      variantFilter: variantFilter ?? [],
-      binRatio: ratio,
+  try {
+    const region = parseLocString(locString)
+    const trackData = await fetchApolloAPIFeatures({
+      ...region,
       genome,
-      tracks: [
-        {
-          id: '12',
-          type,
-        },
-      ],
-    },
-    `#${divId}`,
-    900,
-    500,
-  )
-
-  const closeButton = document.getElementById(`${divId}CloseButton`)
-  if (closeButton) {
-    closeButton.addEventListener('click', () => {
-      gfc.closeModal()
+      track: 'All Genes',
+      baseUrl: `${BASE_URL}/track/`,
     })
-  }
+    const variantData = await fetchApolloAPIFeatures({
+      ...region,
+      genome,
+      track: 'Variants',
+      baseUrl: `${BASE_URL}/vcf`,
+    })
+    const gfc = new GenomeFeatureViewer(
+      {
+        locale: 'global',
+        region,
+        showVariantLabel: showLabel,
+        transcriptTypes: getTranscriptTypes(),
+        isoformFilter: isoformFilter ?? [],
+        variantFilter: variantFilter ?? [],
+        genome,
+        tracks: [
+          {
+            id: '12',
+            type,
+            trackData,
+            variantData,
+          },
+        ],
+      },
+      `#${divId}`,
+      900,
+      500,
+    )
 
-  // const legendButton = document.getElementById(divId+'LegendButton');
-  const legendTarget = document.getElementById(`${divId}LegendTarget`)
-  if (legendTarget) {
-    legendTarget.innerHTML = gfc.generateLegend()
-  }
+    const closeButton = document.getElementById(`${divId}CloseButton`)
+    if (closeButton) {
+      closeButton.addEventListener('click', () => {
+        gfc.closeModal()
+      })
+    }
 
-  if (divId === 'networkExampleWorm1And') {
-    document
-      .getElementById('wormbutton')!
-      .addEventListener('click', function () {
-        gfc.setSelectedAlleles(
-          ['WB:WBVar00089535', 'WB:WBVar02125540', 'WB:WBVar00242477'],
-          '#networkExampleWorm1And',
-        )
-      })
-    document
-      .getElementById('clrbutton')!
-      .addEventListener('click', function () {
-        gfc.setSelectedAlleles([], '#networkExampleWorm1And')
-      })
-  }
-  if (divId === 'viewerFlyExample2NoLabelAnd') {
-    document
-      .getElementById('flybutton')!
-      .addEventListener('click', function () {
-        gfc.setSelectedAlleles(
-          ['FB:FBal0242675', 'FB:FBal0302371', 'FB:FBal0012433'],
-          '#viewerFlyExample2NoLabelAnd',
-        )
-      })
-    document
-      .getElementById('clrbuttonfly')!
-      .addEventListener('click', function () {
-        gfc.setSelectedAlleles([], '#viewerFlyExample2NoLabelAnd')
-      })
-  }
-  if (divId === 'viewerHighlightExample') {
-    document
-      .getElementById('mausbutton')!
-      .addEventListener('click', function () {
-        gfc.setSelectedAlleles(
-          ['ZFIN:ZDB-ALT-130411-164'],
-          '#viewerHighlightExample',
-        )
-      })
-    document
-      .getElementById('clrbuttonmaus')!
-      .addEventListener('click', function () {
-        gfc.setSelectedAlleles([], '#viewerHighlightExample')
-      })
+    // const legendButton = document.getElementById(divId+'LegendButton');
+    const legendTarget = document.getElementById(`${divId}LegendTarget`)
+    if (legendTarget) {
+      legendTarget.innerHTML = gfc.generateLegend()
+    }
+
+    if (divId === 'networkExampleWorm1And') {
+      document
+        .getElementById('wormbutton')!
+        .addEventListener('click', function () {
+          gfc.setSelectedAlleles(
+            ['WB:WBVar00089535', 'WB:WBVar02125540', 'WB:WBVar00242477'],
+            '#networkExampleWorm1And',
+          )
+        })
+      document
+        .getElementById('clrbutton')!
+        .addEventListener('click', function () {
+          gfc.setSelectedAlleles([], '#networkExampleWorm1And')
+        })
+    }
+    if (divId === 'viewerFlyExample2NoLabelAnd') {
+      document
+        .getElementById('flybutton')!
+        .addEventListener('click', function () {
+          gfc.setSelectedAlleles(
+            ['FB:FBal0242675', 'FB:FBal0302371', 'FB:FBal0012433'],
+            '#viewerFlyExample2NoLabelAnd',
+          )
+        })
+      document
+        .getElementById('clrbuttonfly')!
+        .addEventListener('click', function () {
+          gfc.setSelectedAlleles([], '#viewerFlyExample2NoLabelAnd')
+        })
+    }
+    if (divId === 'viewerHighlightExample') {
+      document
+        .getElementById('mausbutton')!
+        .addEventListener('click', function () {
+          gfc.setSelectedAlleles(
+            ['ZFIN:ZDB-ALT-130411-164'],
+            '#viewerHighlightExample',
+          )
+        })
+      document
+        .getElementById('clrbuttonmaus')!
+        .addEventListener('click', function () {
+          gfc.setSelectedAlleles([], '#viewerHighlightExample')
+        })
+    }
+  } catch (e) {
+    console.error(e)
   }
 }
 
-function createIsoformExample(
+async function createIsoformExample(
   range: string,
   genome: string,
   divId: string,
@@ -480,25 +500,37 @@ function createIsoformExample(
   showLabel: boolean,
   variantFilter?: string[],
 ) {
-  new GenomeFeatureViewer(
-    {
-      locale: 'global',
-      region: parseLocString(range),
-      transcriptTypes: getTranscriptTypes(),
-      showVariantLabel: showLabel,
-      variantFilter: variantFilter ?? [],
+  try {
+    const region = parseLocString(range)
+    const trackData = await fetchApolloAPIFeatures({
+      ...region,
       genome,
-      tracks: [
-        {
-          id: '12',
-          type,
-        },
-      ],
-    },
-    `#${divId}`,
-    900,
-    500,
-  )
+      track: 'All Genes',
+      baseUrl: `${BASE_URL}/track/`,
+    })
+    new GenomeFeatureViewer(
+      {
+        locale: 'global',
+        region,
+        transcriptTypes: getTranscriptTypes(),
+        showVariantLabel: showLabel,
+        variantFilter: variantFilter ?? [],
+        genome,
+        tracks: [
+          {
+            id: '12',
+            type,
+            trackData,
+          },
+        ],
+      },
+      `#${divId}`,
+      900,
+      500,
+    )
+  } catch (e) {
+    console.error(e)
+  }
 }
 //
 // function createHTPExample(
@@ -647,32 +679,5 @@ function oldExamples() {
     700,
     // @ts-expect-error
     null,
-  )
-
-  // Local View Example
-  // Right now we enter in with a specific location, center it in the viewer.
-  // TODO: Enable a range and start the left most value on the viewer.
-  new GenomeFeatureViewer(
-    {
-      locale: 'local',
-      region: { chromosome: '5', start: 48515461, end: 48515461 },
-      genome: '',
-      // centerVariant: true,
-      tracks: [
-        {
-          id: '1',
-          label: 'Case Variants',
-          type: TRACK_TYPE.VARIANT,
-        },
-        {
-          id: '2',
-          label: 'ClinVar Cases',
-          type: TRACK_TYPE.VARIANT,
-        },
-      ],
-    },
-    '#viewer3',
-    900,
-    400,
   )
 }
