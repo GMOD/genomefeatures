@@ -1,20 +1,21 @@
-import { createCovidExampleAndSvgElement } from './util'
+import { createExampleApollo } from './util'
 import { TRACK_TYPE } from '../tracks/TrackTypeEnum'
 
+import type { ApolloArgs } from './util'
 import type { Meta, StoryObj } from '@storybook/html'
 
 export default {
-  title: 'COVID example',
+  title: 'COVID example (Apollo API)',
   // @ts-expect-error
-  render: args => createCovidExampleAndSvgElement(args),
+  render: args => createExampleApollo(args),
 } satisfies Meta
 
-export const Simple: StoryObj = {
+export const Simple: StoryObj<ApolloArgs> = {
   args: {
     locString: 'NC_045512.2:17894..28259',
     genome: 'SARS-CoV-2',
     divId: 'mysvg',
-    trackName: '/Mature%20peptides/',
+    trackName: 'Mature peptides',
     type: TRACK_TYPE.ISOFORM,
   },
 }

@@ -23,9 +23,8 @@ export function createElement(id: string) {
   return div
 }
 
-interface Props {
+export interface StaticArgs {
   locString: string
-  trackName: string
   genome: string
   divId: string
   type: TrackType
@@ -33,9 +32,11 @@ interface Props {
   variantFilter?: string[]
   isoformFilter?: string[]
   initialHighlight?: string[]
+  showVariants?: boolean
+  vcfTabixUrl: string
+  ncListUrlTemplate: string
 }
-
-export async function createExampleStatic({
+export function createExampleStatic({
   locString,
   genome,
   divId,
@@ -43,153 +44,126 @@ export async function createExampleStatic({
   showVariantLabel,
   variantFilter,
   isoformFilter,
-}: Props) {
-  const region = parseLocString(locString)
-  const trackData = await fetchNCListData({
-    region,
-    urlTemplate:
-      'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz',
-  })
-  const variantData = await fetchTabixVcfData({
-    url: 'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz',
-    region,
-  })
-
-  new GenomeFeatureViewer(
-    {
+  showVariants,
+  ncListUrlTemplate,
+  vcfTabixUrl,
+}: StaticArgs) {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  ;(async () => {
+    const region = parseLocString(locString)
+    const trackData = await fetchNCListData({
       region,
-      showVariantLabel,
-      variantFilter,
-      genome,
-      isoformFilter,
-      tracks: [
+      urlTemplate: ncListUrlTemplate,
+    })
+    const variantData = showVariants
+      ? await fetchTabixVcfData({
+          url: vcfTabixUrl,
+          region,
+        })
+      : undefined
+
+    setTimeout(() => {
+      new GenomeFeatureViewer(
         {
-          type,
-          trackData,
-          variantData,
+          region,
+          showVariantLabel,
+          variantFilter,
+          genome,
+          isoformFilter,
+          tracks: [
+            {
+              type,
+              trackData,
+              variantData,
+            },
+          ],
         },
-      ],
-    },
-    `#${divId}`,
-    900,
-    500,
-  )
+        `#${divId}`,
+        900,
+        500,
+      )
+    }, 1)
+  })()
+
+  // on your page, this is a existing svg node with given id
+  // e.g. <svg id="mysvg"/>
+  return createElement(divId)
 }
 
-export async function createExample({
+export interface ApolloArgs {
+  locString: string
+  genome: string
+  divId: string
+  type: TrackType
+  trackName?: string
+  showVariantLabel?: boolean
+  variantFilter?: string[]
+  isoformFilter?: string[]
+  initialHighlight?: string[]
+  showVariants?: boolean
+}
+
+export function createExampleApollo({
   locString,
   genome,
   divId,
   type,
+  trackName = 'All Genes',
   showVariantLabel,
   variantFilter,
   isoformFilter,
-}: Props) {
-  const region = parseLocString(locString)
-  const trackData = await fetchApolloAPIData({
-    region,
-    genome,
-    track: 'All Genes',
-    baseUrl: `${BASE_URL}/track/`,
-  })
-  const variantData = await fetchApolloAPIData({
-    region,
-    genome,
-    track: 'Variants',
-    baseUrl: `${BASE_URL}/vcf/`,
-  })
-
-  new GenomeFeatureViewer(
-    {
-      region,
-      showVariantLabel,
-      variantFilter,
-      genome,
-      isoformFilter,
-      tracks: [
-        {
-          type,
-          trackData,
-          variantData,
-        },
-      ],
-    },
-    `#${divId}`,
-    900,
-    500,
-  )
-}
-
-export async function createCovidExample({
-  locString,
-  genome,
-  divId,
-  type,
+  showVariants,
 }: {
   locString: string
   genome: string
   divId: string
   type: TrackType
+  trackName?: string
+  showVariantLabel?: boolean
+  variantFilter?: string[]
+  isoformFilter?: string[]
+  initialHighlight?: string[]
+  showVariants?: boolean
 }) {
-  const region = parseLocString(locString)
-  const trackData = await fetchApolloAPIData({
-    region,
-    genome,
-    track: 'Mature peptides',
-    baseUrl: `${BASE_URL}/track/`,
-  })
-  new GenomeFeatureViewer(
-    {
-      genome,
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  ;(async () => {
+    const region = parseLocString(locString)
+    const trackData = await fetchApolloAPIData({
       region,
-      tracks: [
+      genome,
+      track: trackName,
+      baseUrl: `${BASE_URL}/track/`,
+    })
+    const variantData = showVariants
+      ? await fetchApolloAPIData({
+          region,
+          genome,
+          track: 'Variants',
+          baseUrl: `${BASE_URL}/vcf/`,
+        })
+      : undefined
+
+    setTimeout(() => {
+      new GenomeFeatureViewer(
         {
-          type,
-          trackData,
+          region,
+          showVariantLabel,
+          variantFilter,
+          genome,
+          isoformFilter,
+          tracks: [
+            {
+              type,
+              trackData,
+              variantData,
+            },
+          ],
         },
-      ],
-    },
-    `#${divId}`,
-    900,
-    500,
-  )
-}
-
-export function createExampleAndSvgElementStatic(args: Props) {
-  // add to the page in a setTimeout so it runs after the domNode appears if
-  // you know your divid already exists in the dom, you can skip the timeout
-  setTimeout(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    createExampleStatic(args)
-  }, 1)
-
-  // on your page, this is a existing svg node with given id
-  // e.g. <svg id="mysvg"/>
-  return createElement(args.divId)
-}
-
-export function createExampleAndSvgElement(args: Props) {
-  // add to the page in a setTimeout so it runs after the domNode appears if
-  // you know your divid already exists in the dom, you can skip the timeout
-  setTimeout(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    createExample(args)
-  }, 1)
-
-  // on your page, this is a existing svg node with given id
-  // e.g. <svg id="mysvg"/>
-  return createElement(args.divId)
-}
-
-export function createCovidExampleAndSvgElement(args: Props) {
-  // add to the page in a setTimeout so it runs after the domNode appears if
-  // you know your divid already exists in the dom, you can skip the timeout
-  setTimeout(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    createCovidExample(args)
-  }, 1)
-
-  // on your page, this is a existing svg node with given id
-  // e.g. <svg id="mysvg"/>
-  return createElement(args.divId)
+        `#${divId}`,
+        900,
+        500,
+      )
+    }, 1)
+  })()
+  return createElement(divId)
 }
