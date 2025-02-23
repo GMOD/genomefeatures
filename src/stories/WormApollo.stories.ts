@@ -14,34 +14,30 @@ export const Worm1: StoryObj<ApolloArgs> = {
   args: {
     locString: 'V:7106..57424',
     genome: 'worm',
-    divId: 'viewerWormExample1',
     type: TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT,
-  },
+  } satisfies ApolloArgs,
 }
 
 export const Worm2: StoryObj<ApolloArgs> = {
   args: {
     locString: 'V:7106..57424',
     genome: 'worm',
-    divId: 'viewerWormEgl8NoLabel',
     type: TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT,
-  },
+  } satisfies ApolloArgs,
 }
 
 export const Worm3: StoryObj<ApolloArgs> = {
   args: {
     locString: 'V:7114..57432',
     genome: 'worm',
-    divId: 'networkExampleWorm1',
     type: TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT,
-  },
+  } satisfies ApolloArgs,
 }
 
 export const Worm4: StoryObj<ApolloArgs> = {
   args: {
     locString: 'V:7114..57432',
     genome: 'worm',
-    divId: 'networkExampleWorm1And',
     type: TRACK_TYPE.ISOFORM_AND_VARIANT,
-  },
+  } satisfies ApolloArgs,
 }

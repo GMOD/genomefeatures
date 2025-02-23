@@ -26,25 +26,24 @@ export function createElement(id: string) {
 export interface StaticArgs {
   locString: string
   genome: string
-  divId: string
+  divId?: string
   type: TrackType
   showVariantLabel?: boolean
   variantFilter?: string[]
   isoformFilter?: string[]
   initialHighlight?: string[]
   showVariants?: boolean
-  vcfTabixUrl: string
+  vcfTabixUrl?: string
   ncListUrlTemplate: string
 }
 export function createExampleStatic({
   locString,
   genome,
-  divId,
+  divId = 'mysvg',
   type,
   showVariantLabel,
   variantFilter,
   isoformFilter,
-  showVariants,
   ncListUrlTemplate,
   vcfTabixUrl,
 }: StaticArgs) {
@@ -55,7 +54,7 @@ export function createExampleStatic({
       region,
       urlTemplate: ncListUrlTemplate,
     })
-    const variantData = showVariants
+    const variantData = vcfTabixUrl
       ? await fetchTabixVcfData({
           url: vcfTabixUrl,
           region,
@@ -93,7 +92,7 @@ export function createExampleStatic({
 export interface ApolloArgs {
   locString: string
   genome: string
-  divId: string
+  divId?: string
   type: TrackType
   trackName?: string
   showVariantLabel?: boolean
@@ -106,7 +105,7 @@ export interface ApolloArgs {
 export function createExampleApollo({
   locString,
   genome,
-  divId,
+  divId = 'mysvg',
   type,
   trackName = 'All Genes',
   showVariantLabel,

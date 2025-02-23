@@ -14,8 +14,7 @@ export const Simple: StoryObj<ApolloArgs> = {
   args: {
     locString: 'NC_045512.2:17894..28259',
     genome: 'SARS-CoV-2',
-    divId: 'mysvg',
     trackName: 'Mature peptides',
     type: TRACK_TYPE.ISOFORM,
-  },
+  } satisfies ApolloArgs,
 }
