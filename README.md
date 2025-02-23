@@ -159,3 +159,5 @@ Created by Nathan Dunn (@nathandunn), used by Alliance of Genome Resources
 
 Updated in 2025 by Colin Diesh (@cmdcolin) to add ability to fetch from static
 files
+
+See also https://github.com/GMOD/react-genomefeatures
