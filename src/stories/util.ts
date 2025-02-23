@@ -13,9 +13,6 @@ export function createElement(id: string) {
   const div = document.createElement('div')
   div.className = 'viewer-border'
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-  svg.setAttribute('style', 'border: 1px solid black')
-  svg.setAttribute('width', '600')
-  svg.setAttribute('height', '250')
   svg.setAttributeNS(
     'http://www.w3.org/2000/xmlns/',
     'xmlns:xlink',

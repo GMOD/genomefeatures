@@ -102,14 +102,12 @@ export class GenomeFeatureViewer {
     const svgTarget = d3.select(target)
     svgTarget.selectAll('.highlight').remove()
     svgTarget
-      .selectAll(
+      .selectAll<SVGGElement, { selected: string }>(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
       )
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .filter((d: any) => d.selected)
+      .filter(d => d.selected === 'true')
       .style('stroke', null)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .datum((d: any) => {
+      .datum(d => {
         d.selected = 'false'
         return d
       })

@@ -73,6 +73,8 @@ const gfc = new GenomeFeatureViewer(
 )
 ```
 
+And then in your HTML
+
 ```html
 <svg id="svgelement"></svg>
 ```
@@ -114,6 +116,8 @@ const gfc = new GenomeFeatureViewer(
 )
 ```
 
+And then in your HTML
+
 ```html
 <svg id="svgelement"></svg>
 ```
@@ -122,7 +126,3 @@ const gfc = new GenomeFeatureViewer(
 
 Can be run in ReactJS, VueJS, VanillaJS. Height is calculated on the fly for
 'global' isoform tracks.
-
-```
-
-```
