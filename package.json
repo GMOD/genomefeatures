@@ -28,8 +28,10 @@
     "build": "vite build",
     "prebuild": "yarn run clean",
     "preview": "vite preview",
-    "predeploy": "yarn build -c vite-gh-pages.config.ts",
-    "deploy": "gh-pages -d dist",
+    "build-demo": "yarn build -c vite-gh-pages.config.ts",
+    "build-site": "yarn build-demo && yarn build-storybook && mv storybook-static out/",
+    "predeploy": "yarn build-site && yarn build-storybook",
+    "deploy": "gh-pages -d out",
     "postdeploy": "git push --follow-tags",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
