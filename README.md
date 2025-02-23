@@ -2,7 +2,7 @@
 
 [![npm package][npm-badge]][npm]
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/GMOD/genomefeatures/push.yml?branch=development)](https://github.com/GMOD/genomefeatures/actions?query=branch%3Adevelopment+workflow%3APush+)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/GMOD/genomefeatures/push.yml?branch=main)](https://github.com/GMOD/genomefeatures/actions?query=branch%3Amain+workflow%3APush+)
 
 [npm-badge]: https://img.shields.io/npm/v/genomefeatures.png?style=flat-square
 [npm]: https://www.npmjs.com/package/genomefeatures
@@ -115,7 +115,7 @@ const gfc = new GenomeFeatureViewer(
 ```
 
 ```html
-<div id="genome-feature"></div>
+<svg id="svgelement"></svg>
 ```
 
 ## Notes
