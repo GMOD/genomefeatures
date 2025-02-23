@@ -16,8 +16,10 @@
   ],
   "main": "./dist/genomefeatures.umd.cjs",
   "module": "./dist/genomefeatures.js",
+  "types": "./dist/genomefeatures.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/genomefeatures.d.ts",
       "import": "./dist/genomefeatures.js",
       "require": "./dist/genomefeatures.umd.cjs"
     },
