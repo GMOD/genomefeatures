@@ -7,6 +7,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 // this is a 'library mode' vite config
 export default defineConfig({
   build: {
+    outDir: './dist',
+    emptyOutDir: true,
     lib: {
       entry: resolve(__dirname, 'src/main.ts'),
       name: 'GenomeFeatureComponent',
