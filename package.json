@@ -30,18 +30,29 @@
     "preview": "vite preview",
     "predeploy": "yarn build",
     "deploy": "gh-pages -d dist",
-    "postdeploy": "git push --follow-tags"
+    "postdeploy": "git push --follow-tags",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.4",
+    "@storybook/addon-essentials": "^8.5.8",
+    "@storybook/addon-interactions": "^8.5.8",
+    "@storybook/blocks": "^8.5.8",
+    "@storybook/html": "^8.5.8",
+    "@storybook/html-vite": "^8.5.8",
+    "@storybook/test": "^8.5.8",
     "@types/d3": "^7.4.3",
     "@types/d3-tip": "^3.5.8",
     "@types/pako": "^2.0.3",
     "eslint": "^9.21.0",
     "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-storybook": "^0.11.3",
     "eslint-plugin-unicorn": "^57.0.0",
     "gh-pages": "^6.3.0",
     "prettier": "^3.5.1",
     "rimraf": "^6.0.1",
+    "storybook": "^8.5.8",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.1.0"
@@ -51,5 +62,10 @@
     "d3": "^7.9.0",
     "d3-tip": "^0.9.1",
     "pako": "^2.1.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
   }
 }
