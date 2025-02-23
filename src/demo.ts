@@ -1,6 +1,8 @@
-import { fetchApolloAPIFeatures } from './ApolloAPIFetcher'
-import { fetchNCListData } from './NCListFetcher'
-import GenomeFeatureViewer from './main'
+import {
+  GenomeFeatureViewer,
+  fetchApolloAPIData,
+  fetchNCListData,
+} from './main'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 import { parseLocString } from './util'
 
@@ -8,7 +10,6 @@ import './GenomeFeatureViewer.css'
 
 const BASE_URL = 'https://www.alliancegenome.org/apollo'
 
-oldExamples()
 isoformExamples()
 wormExamples()
 fishExamples()
@@ -21,31 +22,8 @@ currentExamples()
 
 type TrackType = keyof typeof TRACK_TYPE
 
-function getTranscriptTypes() {
-  return [
-    'mRNA',
-    'ncRNA',
-    'piRNA',
-    'lincRNA',
-    'miRNA',
-    'pre_miRNA',
-    'snoRNA',
-    'lnc_RNA',
-    'tRNA',
-    'snRNA',
-    'rRNA',
-    'ARS',
-    'antisense_RNA',
-    'C_gene_segment',
-    'V_gene_segment',
-    'pseudogene_attribute',
-    'snoRNA_gene',
-    'polypeptide_region',
-    'mature_protein_region',
-  ]
-}
-
 function covidExamples() {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   createCoVExample(
     'NC_045512.2:17894..28259',
     'SARS-CoV-2',
@@ -396,30 +374,27 @@ function createExample(
   ;(async () => {
     try {
       const region = parseLocString(locString)
-      const trackData = await fetchApolloAPIFeatures({
-        ...region,
+      const trackData = await fetchApolloAPIData({
+        region,
         genome,
         track: 'All Genes',
         baseUrl: `${BASE_URL}/track/`,
       })
-      const variantData = await fetchApolloAPIFeatures({
-        ...region,
+      const variantData = await fetchApolloAPIData({
+        region,
         genome,
         track: 'Variants',
         baseUrl: `${BASE_URL}/vcf`,
       })
       const gfc = new GenomeFeatureViewer(
         {
-          locale: 'global',
           region,
           showVariantLabel: showLabel,
-          transcriptTypes: getTranscriptTypes(),
           isoformFilter: isoformFilter ?? [],
           variantFilter: variantFilter ?? [],
           genome,
           tracks: [
             {
-              id: '12',
               type,
               trackData,
               variantData,
@@ -507,23 +482,20 @@ function createIsoformExample(
   ;(async () => {
     try {
       const region = parseLocString(range)
-      const trackData = await fetchApolloAPIFeatures({
-        ...region,
+      const trackData = await fetchApolloAPIData({
+        region,
         genome,
         track: 'All Genes',
         baseUrl: `${BASE_URL}/track/`,
       })
       new GenomeFeatureViewer(
         {
-          locale: 'global',
           region,
-          transcriptTypes: getTranscriptTypes(),
           showVariantLabel: showLabel,
           variantFilter: variantFilter ?? [],
           genome,
           tracks: [
             {
-              id: '12',
               type,
               trackData,
             },
@@ -538,48 +510,6 @@ function createIsoformExample(
     }
   })()
 }
-//
-// function createHTPExample(
-//  range,
-//  genome,
-//  divId,
-//  type,
-//  showLabel,
-//  variantFilter,
-//  geneSymbol,
-//  htpVariant,
-// ) {
-//  const chromosome = range.split(':')[0]
-//  const [start, end] = range.split(':')[1].split('..')
-//  new GenomeFeatureViewer(
-//    {
-//      locale: 'global',
-//      chromosome,
-//      start: start,
-//      end: end,
-//      transcriptTypes: getTranscriptTypes(),
-//      showVariantLabel: showLabel,
-//      geneSymbol: geneSymbol || '',
-//      variantFilter: variantFilter || [],
-//      htpVariant: htpVariant,
-//      tracks: [
-//        {
-//          id: 12,
-//          genome: genome,
-//          type: type,
-//          url: [
-//            `${BASE_URL}/track/`,
-//            '/All%20Genes/',
-//            '.json?name=Actn&ignoreCache=true',
-//          ],
-//        },
-//      ],
-//    },
-//    `#${divId}`,
-//    900,
-//    500,
-//  )
-// }
 
 async function createCoVExampleNCList(
   range: string,
@@ -591,21 +521,18 @@ async function createCoVExampleNCList(
 ) {
   const region = parseLocString(range)
   const trackData = await fetchNCListData({
-    ...region,
+    region,
     baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
     urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
   })
   new GenomeFeatureViewer(
     {
-      locale: 'global',
       region,
       genome,
-      transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
       variantFilter: variantFilter ?? [],
       tracks: [
         {
-          id: '12',
           type,
           trackData,
         },
@@ -617,7 +544,7 @@ async function createCoVExampleNCList(
   )
 }
 
-function createCoVExample(
+async function createCoVExample(
   range: string,
   genome: string,
   divId: string,
@@ -625,65 +552,29 @@ function createCoVExample(
   showLabel: boolean,
   variantFilter?: string[],
 ) {
+  const region = parseLocString(range)
+
+  const trackData = await fetchApolloAPIData({
+    region,
+    genome,
+    track: 'Mature peptides',
+    baseUrl: `${BASE_URL}/track`,
+  })
   new GenomeFeatureViewer(
     {
-      locale: 'global',
       region: parseLocString(range),
       genome,
-      transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
       variantFilter: variantFilter ?? [],
       tracks: [
         {
-          id: '12',
           type,
+          trackData,
         },
       ],
     },
     `#${divId}`,
     900,
     500,
-  )
-}
-
-function oldExamples() {
-  new GenomeFeatureViewer(
-    {
-      locale: 'global',
-      genome: '',
-      region: { chromosome: '5', start: 75574916, end: 75656722 },
-      tracks: [
-        {
-          id: '2',
-          type: TRACK_TYPE.VARIANT_GLOBAL,
-        },
-        {
-          id: '1',
-          type: TRACK_TYPE.ISOFORM,
-        },
-      ],
-    },
-    '#viewer1',
-    700,
-    // @ts-expect-error
-    null,
-  )
-
-  new GenomeFeatureViewer(
-    {
-      locale: 'global',
-      region: { chromosome: '2L', start: 19400752, end: 19426596 },
-      genome: 'fly',
-      tracks: [
-        {
-          id: '1',
-          type: TRACK_TYPE.ISOFORM,
-        },
-      ],
-    },
-    '#viewer2',
-    700,
-    // @ts-expect-error
-    null,
   )
 }

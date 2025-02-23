@@ -1,5 +1,4 @@
-import { fetchApolloAPIFeatures } from '../ApolloAPIFetcher'
-import GenomeFeatureViewer from '../main'
+import { GenomeFeatureViewer, fetchApolloAPIData } from '../main'
 import { TrackType } from '../tracks/TrackTypeEnum'
 import { parseLocString } from '../util'
 
@@ -44,14 +43,14 @@ export async function createExample({
   isoformFilter,
 }: Props) {
   const region = parseLocString(locString)
-  const trackData = await fetchApolloAPIFeatures({
-    ...region,
+  const trackData = await fetchApolloAPIData({
+    region,
     genome,
     track: 'All Genes',
     baseUrl: `${BASE_URL}/track/`,
   })
-  const variantData = await fetchApolloAPIFeatures({
-    ...region,
+  const variantData = await fetchApolloAPIData({
+    region,
     genome,
     track: 'Variants',
     baseUrl: `${BASE_URL}/vcf/`,
@@ -59,16 +58,13 @@ export async function createExample({
 
   new GenomeFeatureViewer(
     {
-      region: parseLocString(locString),
-      locale: 'global',
+      region,
       showVariantLabel,
       variantFilter,
       genome,
       isoformFilter,
-      binRatio: 0.01,
       tracks: [
         {
-          id: '12',
           type,
           trackData,
           variantData,
@@ -93,20 +89,18 @@ export async function createCovidExample({
   type: TrackType
 }) {
   const region = parseLocString(locString)
-  const trackData = await fetchApolloAPIFeatures({
-    ...region,
+  const trackData = await fetchApolloAPIData({
+    region,
     genome,
     track: 'Mature peptides',
     baseUrl: `${BASE_URL}/track/`,
   })
   new GenomeFeatureViewer(
     {
-      locale: 'global',
       genome,
       region,
       tracks: [
         {
-          id: '12',
           type,
           trackData,
         },

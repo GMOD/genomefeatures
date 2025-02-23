@@ -2,6 +2,7 @@ import NCList from '@gmod/nclist'
 import { inflate } from 'pako'
 
 import NCListFeature from './NCListFeature'
+import { Region } from './types'
 
 export function isGzip(buf: Uint8Array) {
   return buf[0] === 31 && buf[1] === 139 && buf[2] === 8
@@ -19,15 +20,11 @@ async function readFile(url: string) {
 export async function fetchNCListData({
   urlTemplate,
   baseUrl,
-  chromosome,
-  start,
-  end,
+  region,
 }: {
   urlTemplate: string
   baseUrl: string
-  chromosome: string
-  start: number
-  end: number
+  region: Region
 }) {
   const store = new NCList({
     urlTemplate,
@@ -36,9 +33,9 @@ export async function fetchNCListData({
   })
   const feats = []
   for await (const feature of store.getFeatures({
-    refName: chromosome,
-    start,
-    end,
+    refName: region.chromosome,
+    start: region.start,
+    end: region.end,
   })) {
     feats.push(new NCListFeature(feature).toJSON())
   }
