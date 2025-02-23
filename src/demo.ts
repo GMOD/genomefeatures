@@ -54,6 +54,7 @@ function covidExamples() {
 }
 
 function covidExamplesNCList() {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   createCoVExampleNCList(
     'NC_045512.2:17894..28259',
     'SARS-CoV-2',
@@ -397,7 +398,7 @@ function createExample(
   const gfc = new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome: chromosome,
+      chromosome,
       start: +start,
       end: +end,
       showVariantLabel: showLabel,
@@ -536,7 +537,7 @@ function createIsoformExample(
 //  new GenomeFeatureViewer(
 //    {
 //      locale: 'global',
-//      chromosome: chromosome,
+//      chromosome,
 //      start: start,
 //      end: end,
 //      transcriptTypes: getTranscriptTypes(),
@@ -573,7 +574,7 @@ async function createCoVExampleNCList(
 ) {
   const chromosome = range.split(':')[0]
   const [start, end] = range.split(':')[1].split('..')
-  const features = await fetchNCListData({
+  const trackData = await fetchNCListData({
     chromosome,
     start,
     end,
@@ -583,7 +584,7 @@ async function createCoVExampleNCList(
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome: chromosome,
+      chromosome,
       start: +start,
       end: +end,
       transcriptTypes: getTranscriptTypes(),
@@ -593,9 +594,9 @@ async function createCoVExampleNCList(
         // @ts-expect-error
         {
           id: '12',
-          genome: genome,
-          type: type,
-          features,
+          genome,
+          type,
+          trackData,
         },
       ],
     },
@@ -618,7 +619,7 @@ function createCoVExample(
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome: chromosome,
+      chromosome,
       start: +start,
       end: +end,
       transcriptTypes: getTranscriptTypes(),
