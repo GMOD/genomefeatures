@@ -32,27 +32,49 @@ The original component accessed data via an Apollo REST API
 This is still supported, though it is a overkill for most usages
 
 ```typescript
-let transcriptTypes = getTranscriptTypes()
-const configGlobal = {
-  locale: 'global',
-  chromosome: chromosome,
-  start: fmin,
-  end: fmax,
-  transcriptTypes: transcriptTypes,
-  tracks: [
-    {
-      id: 1,
-      genome: this.props.species,
-      type: 'ISOFORM',
-      url: [this.trackDataUrl, '/All%20Genes/', `.json${nameSuffixString}`],
-    },
-  ],
-}
-new GenomeFeatureViewer(configGlobal, 'genome-feature', 900, undefined)
+import {
+  fetchApolloAPIData,
+  parseLocString,
+  GenomeFeatureViewer,
+} from 'genomefeatures'
+
+const locString = '2L:130639..135911'
+const genome = 'fly'
+const region = parseLocString(locString)
+const trackData = await fetchApolloAPIFeatures({
+  region,
+  genome,
+  track: 'All Genes',
+  baseUrl: `${BASE_URL}/track/`,
+})
+
+const variantData = await fetchApolloAPIFeatures({
+  region,
+  genome,
+  track: 'Variants',
+  baseUrl: `${BASE_URL}/vcf/`,
+})
+
+const gfc = new GenomeFeatureViewer(
+  {
+    region,
+    genome,
+    tracks: [
+      {
+        type,
+        trackData,
+        variantData,
+      },
+    ],
+  },
+  `#svgelement`,
+  900,
+  500,
+)
 ```
 
 ```html
-<div id="genome-feature"></div>
+<svg id="svgelement"></svg>
 ```
 
 ### Accessing JBrowse NCList files via @gmod/nclist
@@ -60,29 +82,33 @@ new GenomeFeatureViewer(configGlobal, 'genome-feature', 900, undefined)
 Uses a "baseUrl" and "urlTemplate" similar to JBrowse 1 configs
 
 ```typescript
-new GenomeFeatureViewer(
+import {
+  fetchNCListData,
+  parseLocString,
+  GenomeFeatureViewer,
+} from 'genomefeatures'
+
+const locString = 'NC_045512.2:17894..28259'
+const genome = 'SARS-CoV-2'
+const region = parseLocString(locString)
+const trackData = await fetchNCListData({
+  region,
+  baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
+  urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
+})
+
+const gfc = new GenomeFeatureViewer(
   {
-    locale: 'global',
-    chromosome: chromosome,
-    start: start,
-    end: end,
-    transcriptTypes: getTranscriptTypes(),
-    showVariantLabel: showLabel,
-    variantFilter: variantFilter || [],
-    service: new NCListService(),
+    region,
+    genome,
     tracks: [
       {
-        id: 12,
-        genome: genome,
-        type: type,
-        url: {
-          baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
-          urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
-        },
+        type,
+        trackData,
       },
     ],
   },
-  `#genome-feature`,
+  `#svgelement`,
   900,
   500,
 )

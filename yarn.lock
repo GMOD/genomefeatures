@@ -355,6 +355,14 @@
   resolved "https://registry.yarnpkg.com/@gmod/abortable-promise-cache/-/abortable-promise-cache-2.0.1.tgz#d01cbcb2d9ad23cf0f421824b7e759a441815ebc"
   integrity sha512-6PQTJv+uxAb8XE/oL2Uh4EmFJpn65YOTSqGn8HLNXrWRlW1Clp1Oze6biHeRCMonLwEx4oH4bPeyjdcMnNP8pw==
 
+"@gmod/bgzf-filehandle@^2.0.1":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@gmod/bgzf-filehandle/-/bgzf-filehandle-2.0.4.tgz#64f88ff6ad48efaf69641e796db87f24bf5da9ab"
+  integrity sha512-MV1V3X2uF0vqN93dkEhL8TUiJMTHyaJQFuLZttKAl8vH5utN2gKJf/3PTW8f7r5X+GgyftuTcfIpHHD5+3mJiQ==
+  dependencies:
+    generic-filehandle2 "^1.0.0"
+    pako "^1.0.11"
+
 "@gmod/nclist@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@gmod/nclist/-/nclist-2.0.0.tgz#5ff1ee8b7d5eadeb8870d218d3bfda1a45e2652e"
@@ -363,6 +371,21 @@
     "@gmod/abortable-promise-cache" "^2.0.0"
     "@jridgewell/resolve-uri" "^3.1.2"
     quick-lru "^4.0.0"
+
+"@gmod/tabix@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@gmod/tabix/-/tabix-2.0.4.tgz#02ebf78ed1dc7b891aa315358ea746c967155951"
+  integrity sha512-7ibuWMDmbtljiWAA1NfjhtZyv6ctONct2qvuNoIOOW/fZS6qg4+eREF4sOWwS0ZnH+/vBCSaojXMPyZepLHXlQ==
+  dependencies:
+    "@gmod/abortable-promise-cache" "^2.0.0"
+    "@gmod/bgzf-filehandle" "^2.0.1"
+    generic-filehandle2 "^1.0.0"
+    quick-lru "^4.0.0"
+
+"@gmod/vcf@^6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@gmod/vcf/-/vcf-6.0.8.tgz#540f14e14f88f8997fc7bee25c993acd4871f756"
+  integrity sha512-hUMXeeduB7Fby2TiG+3rtnaiD+K2aPy65JqTOGv6wXk1TN6eq8PCciucC6zQDz8DaTHcfkvLDuZlhrHZOPS50A==
 
 "@humanfs/core@^0.19.1":
   version "0.19.1"
@@ -2490,6 +2513,11 @@ functions-have-names@^1.2.3:
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
+generic-filehandle2@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/generic-filehandle2/-/generic-filehandle2-1.0.0.tgz#d7a216072467793e1e48c925f97162eab1b82efc"
+  integrity sha512-jXfyNk1zhsR0Xf2sLm4vgeYSP1q1XbeSVG0TRSnOCKLb2CojPNJyy57nKi6QWmt83yGSHZGay8qIn7YWyl2V5w==
+
 get-intrinsic@^1.2.4, get-intrinsic@^1.2.5, get-intrinsic@^1.2.6, get-intrinsic@^1.2.7:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/get-intrinsic/-/get-intrinsic-1.2.7.tgz#dcfcb33d3272e15f445d15124bc0a216189b9044"
@@ -3286,6 +3314,11 @@ package-json-from-dist@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/package-json-from-dist/-/package-json-from-dist-1.0.1.tgz#4f1471a010827a86f94cfd9b0727e36d267de505"
   integrity sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==
+
+pako@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
+  integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
 pako@^2.1.0:
   version "2.1.0"

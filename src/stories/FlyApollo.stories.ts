@@ -4,7 +4,7 @@ import { TRACK_TYPE } from '../tracks/TrackTypeEnum'
 import type { Meta, StoryObj } from '@storybook/html'
 
 export default {
-  title: 'Fly1 example',
+  title: 'Fly example (apollo API fetching)',
   // @ts-expect-error
   render: args => createExampleAndSvgElement(args),
 } satisfies Meta

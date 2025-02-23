@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 
 import { setHighlights } from './RenderFunctions'
+import { defaultTranscriptTypes, defaultVariantTypes } from './data'
 import { createLegendBox } from './services/LegenedService'
 import IsoformAndVariantTrack from './tracks/IsoformAndVariantTrack'
 import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack'
@@ -12,25 +13,18 @@ import VariantTrackGlobal from './tracks/VariantTrackGlobal'
 
 import type { VariantFeature } from './services/VariantService'
 import type { SimpleFeatureSerialized } from './services/types'
+import type { Region } from './types'
 
 import './GenomeFeatureViewer.css'
 
 interface Track {
   type: string
   label?: string
-  id: string
   variantData?: VariantFeature[]
   trackData?: SimpleFeatureSerialized[]
 }
 
-interface Region {
-  start: number
-  end: number
-  chromosome: string
-}
-
 interface ViewerConfig {
-  locale: 'global' | 'local'
   tracks?: Track[]
   region: Region
   genome: string
@@ -62,7 +56,7 @@ declare module 'd3' {
   }
 }
 
-export default class GenomeFeatureViewer {
+export class GenomeFeatureViewer {
   public config: ViewerConfig
   public height: number
   public width: number
@@ -130,35 +124,21 @@ export default class GenomeFeatureViewer {
     const svgClass = svg_target.replace('#', '')
     const mainViewClass = `${svgClass} main-view`
 
-    if (this.config.locale === 'global') {
-      const margin = {
-        top: 8,
-        right: 30,
-        bottom: 30,
-        left: 40,
-      }
-      viewer
-        .attr('width', this.width)
-        .attr('height', this.height)
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`)
-        .attr('class', mainViewClass)
-      this.width = this.width - margin.left - margin.right
-      this.height = this.height - margin.top - margin.bottom
-    } else {
-      // Different margins for a local view. (Maybe we can make these match at
-      // some point)
-      const margin = {
-        top: 10,
-        bottom: 10,
-      }
-      viewer
-        .attr('width', this.width)
-        .attr('height', this.height)
-        .append('g')
-        .attr('class', mainViewClass)
-      this.height = this.height - margin.top - margin.bottom
+    const margin = {
+      top: 8,
+      right: 30,
+      bottom: 30,
+      left: 40,
     }
+    viewer
+      .attr('width', this.width)
+      .attr('height', this.height)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`)
+      .attr('class', mainViewClass)
+    this.width = this.width - margin.left - margin.right
+    this.height = this.height - margin.top - margin.bottom
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return d3.select<SVGGElement, any>(`${svg_target} .main-view`)
   }
@@ -169,48 +149,22 @@ export default class GenomeFeatureViewer {
 
   draw() {
     const width = this.width
-    const transcriptTypes = this.config.transcriptTypes ?? [
-      'mRNA',
-      'ncRNA',
-      'piRNA',
-      'lincRNA',
-      'miRNA',
-      'pre_miRNA',
-      'snoRNA',
-      'lnc_RNA',
-      'tRNA',
-      'snRNA',
-      'rRNA',
-      'ARS',
-      'antisense_RNA',
-      'C_gene_segment',
-      'V_gene_segment',
-      'pseudogene_attribute',
-      'snoRNA_gene',
-      'polypeptide_region',
-      'mature_protein_region',
-    ]
-    const variantTypes = this.config.variantTypes ?? [
-      'point_mutation',
-      'MNV',
-      'Deletion',
-      'Insertion',
-      'Delins',
-    ]
+    const transcriptTypes =
+      this.config.transcriptTypes ?? defaultTranscriptTypes
+    const variantTypes = this.config.variantTypes ?? defaultVariantTypes
     const binRatio = this.config.binRatio ?? 0.01
 
-    const options = this.config
-    // Sequence information
+    const region = this.config.region
     const sequenceOptions = this._configureRange(
-      options.region.start,
-      options.region.end,
+      region.start,
+      region.end,
       width,
     )
     const range = sequenceOptions.range
-    const chromosome = options.region.chromosome
-    const variantFilter = options.variantFilter ?? []
-    const isoformFilter = options.isoformFilter ?? []
-    const htpVariant = options.htpVariant ?? ''
+    const chromosome = region.chromosome
+    const variantFilter = this.config.variantFilter ?? []
+    const isoformFilter = this.config.isoformFilter ?? []
+    const htpVariant = this.config.htpVariant ?? ''
     const start = sequenceOptions.start
     const end = sequenceOptions.end
 
@@ -233,82 +187,75 @@ export default class GenomeFeatureViewer {
 
     const showVariantLabel = true
     const { viewer, genome, height, tracks } = this
-    const region = { start, end, chromosome }
-    Promise.all(
-      tracks.map(async track => {
-        const { variantData, trackData } = track
+    tracks.map(track => {
+      const { variantData, trackData } = track
 
-        if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
-          const isoformVariantTrack = new IsoformAndVariantTrack({
-            region,
-            viewer,
-            height,
-            width,
-            transcriptTypes,
-            variantTypes,
-            showVariantLabel,
-            trackData,
-            variantData,
-            variantFilter,
-            binRatio,
-            isoformFilter,
-          })
-          trackHeight += isoformVariantTrack.DrawTrack()
-        } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
-          const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
-            viewer,
-            height,
-            width,
-            transcriptTypes,
-            variantData,
-            trackData,
-            variantTypes,
-            showVariantLabel,
-            variantFilter,
-          })
-          trackHeight += isoformVariantTrack.DrawTrack()
-        } else if (track.type === TRACK_TYPE.ISOFORM) {
-          const isoformTrack = new IsoformTrack({
-            region,
-            viewer,
-            height,
-            width,
-            genome,
-            trackData,
-            transcriptTypes,
-            htpVariant,
-          })
-          trackHeight += isoformTrack.DrawTrack()
-        } else if (track.type === TRACK_TYPE.VARIANT) {
-          const variantTrack = new VariantTrack({
-            region,
-            viewer,
+      if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
+        const isoformVariantTrack = new IsoformAndVariantTrack({
+          region,
+          viewer,
+          height,
+          width,
+          transcriptTypes,
+          variantTypes,
+          showVariantLabel,
+          trackData,
+          variantData,
+          variantFilter,
+          binRatio,
+          isoformFilter,
+        })
+        trackHeight += isoformVariantTrack.DrawTrack()
+      } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
+        const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
+          viewer,
+          height,
+          width,
+          transcriptTypes,
+          variantData,
+          trackData,
+          variantTypes,
+          showVariantLabel,
+          variantFilter,
+        })
+        trackHeight += isoformVariantTrack.DrawTrack()
+      } else if (track.type === TRACK_TYPE.ISOFORM) {
+        const isoformTrack = new IsoformTrack({
+          region,
+          viewer,
+          height,
+          width,
+          genome,
+          trackData,
+          transcriptTypes,
+          htpVariant,
+        })
+        trackHeight += isoformTrack.DrawTrack()
+      } else if (track.type === TRACK_TYPE.VARIANT) {
+        const variantTrack = new VariantTrack({
+          region,
+          viewer,
+          range,
+          height,
+          width,
+        })
+        variantTrack.DrawTrack()
+      } else if (track.type === TRACK_TYPE.VARIANT_GLOBAL) {
+        const variantTrack = new VariantTrackGlobal({
+          region,
+          viewer,
+          track: {
+            ...track,
             range,
-            height,
-            width,
-          })
-          await variantTrack.getTrackData()
-          variantTrack.DrawTrack()
-        } else if (track.type === TRACK_TYPE.VARIANT_GLOBAL) {
-          const variantTrack = new VariantTrackGlobal({
-            region,
-            viewer,
-            track: {
-              ...track,
-              range,
-            },
-            height,
-            width,
-          })
-          await variantTrack.getTrackData()
-          variantTrack.DrawTrack()
-        } else {
-          console.error(`TrackType not found for ${track.id}...`, track.type)
-        }
-        d3.select(this.svg_target).attr('height', trackHeight)
-      }),
-    ).catch((e: unknown) => {
-      console.error(e)
+          },
+          height,
+          width,
+        })
+        variantTrack.DrawTrack()
+      } else {
+        console.error(`TrackType not found ${track.type}`)
+      }
+      d3.select(this.svg_target).attr('height', trackHeight)
     })
   }
 
@@ -365,3 +312,6 @@ export default class GenomeFeatureViewer {
 }
 
 export { fetchNCListData } from './NCListFetcher'
+export { fetchApolloAPIData } from './ApolloAPIFetcher'
+export { fetchTabixVcfData } from './GMODVcfFetcher'
+export { parseLocString } from './util'

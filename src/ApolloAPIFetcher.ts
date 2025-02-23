@@ -1,21 +1,17 @@
-export async function fetchApolloAPIFeatures({
-  chromosome,
-  start,
-  end,
-  genome,
+export async function fetchApolloAPIData({
+  region,
   baseUrl,
+  genome,
   track,
   extra = '.json?ignoreCache=true&flatten=false',
 }: {
-  chromosome: string
-  start: number
-  end: number
+  region: { chromosome: string; start: number; end: number }
   genome: string
   baseUrl: string
   track: string
   extra?: string
 }) {
-  const externalLocationString = `${chromosome}:${start}..${end}`
+  const externalLocationString = `${region.chromosome}:${region.start}..${region.end}`
   const url = `${baseUrl}/${encodeURI(genome)}/${encodeURI(track)}/${encodeURIComponent(externalLocationString)}${extra}`
   const response = await fetch(url)
   if (!response.ok) {
