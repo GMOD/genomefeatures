@@ -28,9 +28,9 @@ interface Track {
 interface ViewerConfig {
   locale: 'global' | 'local'
   tracks?: Track[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  service?: any
   start: number
+  trackData?: SimpleFeatureSerialized[]
+  variantData?: VariantFeature[]
   end: number
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
@@ -54,8 +54,6 @@ export default class GenomeFeatureViewer {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, any>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public service: any
 
   constructor(
     config: ViewerConfig,
@@ -71,7 +69,6 @@ export default class GenomeFeatureViewer {
     this.svg_target = svg_target
     this.viewer = this._initViewer(svg_target)
     this.drawer = new Drawer(this)
-    this.service = config.service
 
     this.drawer.draw()
   }
@@ -150,7 +147,6 @@ export default class GenomeFeatureViewer {
     return !defaultTrack ? this.tracks : this.tracks[0]
   }
 
-  // Set our sequence start and sequence end
   setSequence(start: number, end: number): void {
     this.config.start = start
     this.config.end = end

@@ -3,7 +3,6 @@ import d3Tip from 'd3-tip'
 
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
-import type { ApolloService } from '../services/ApolloService'
 import type { VariantFeature } from '../services/VariantService'
 import type { Selection } from 'd3'
 
@@ -18,7 +17,6 @@ interface VariantTrackProps {
   binRatio: number
   isoformFilter: string[]
   initialHighlight?: string[]
-  service?: ApolloService
   track: Track
 }
 

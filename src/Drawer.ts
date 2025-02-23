@@ -142,72 +142,69 @@ export default class Drawer {
 
     let track_height = LABEL_OFFSET
 
+    const showVariantLabel = true
+
+    const { viewer, height, tracks } = this.gfc
     Promise.all(
-      this.gfc.tracks.map(async baseTrack => {
-        const track = {
-          ...baseTrack,
-          start,
-          end,
-          chromosome,
-          variant_filter: variantFilter,
-          isoform_filter: isoformFilter,
-          initialHighlight,
-        }
+      tracks.map(async track => {
+        const { variantData, trackData } = track
+
         if (track.type === TRACK_TYPE.ISOFORM_AND_VARIANT) {
           const isoformVariantTrack = new IsoformAndVariantTrack({
-            viewer: this.gfc.viewer,
-            height: this.gfc.height,
+            viewer,
+            height,
             width,
             transcriptTypes,
             variantTypes,
-            showVariantLabel: this.gfc.config.showVariantLabel,
+            showVariantLabel,
+            trackData,
+            variantData,
             variantFilter,
             binRatio,
             isoformFilter,
-            service: this.gfc.service,
           })
-          track_height += await isoformVariantTrack.DrawTrack(track)
+          track_height += isoformVariantTrack.DrawTrack()
         } else if (track.type === TRACK_TYPE.ISOFORM_EMBEDDED_VARIANT) {
           const isoformVariantTrack = new IsoformEmbeddedVariantTrack({
-            viewer: this.gfc.viewer,
-            height: this.gfc.height,
+            viewer,
+            height,
             width,
             transcriptTypes,
+            variantData,
+            trackData,
             variantTypes,
-            showVariantLabel: this.gfc.config.showVariantLabel,
+            showVariantLabel,
             variantFilter,
-            service: this.gfc.service,
           })
-          track_height += await isoformVariantTrack.DrawTrack(track)
+          track_height += isoformVariantTrack.DrawTrack()
         } else if (track.type === TRACK_TYPE.ISOFORM) {
           const isoformTrack = new IsoformTrack({
-            viewer: this.gfc.viewer,
+            viewer,
             track,
-            height: this.gfc.height,
+            height,
             width,
+            trackData,
             transcriptTypes,
             htpVariant,
-            service: this.gfc.service,
           })
-          track_height += await isoformTrack.DrawTrack(track)
+          track_height += isoformTrack.DrawTrack()
         } else if (track.type === TRACK_TYPE.VARIANT) {
           track.range = sequenceOptions.range
           // @ts-expect-error
           const variantTrack = new VariantTrack({
-            viewer: this.gfc.viewer,
+            viewer,
             track,
-            height: this.gfc.height,
+            height,
             width,
-            service: this.gfc.service,
           })
           await variantTrack.getTrackData()
           variantTrack.DrawTrack()
         } else if (track.type === TRACK_TYPE.VARIANT_GLOBAL) {
           track.range = sequenceOptions.range
           const variantTrack = new VariantTrackGlobal({
-            viewer: this.gfc.viewer,
+            viewer,
             track,
-            height: this.gfc.height,
+            height,
             width,
           })
           await variantTrack.getTrackData()

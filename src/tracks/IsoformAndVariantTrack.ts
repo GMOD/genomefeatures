@@ -6,7 +6,6 @@ import {
   findRange,
   setHighlights,
 } from '../RenderFunctions'
-import { ApolloService } from '../services/ApolloService'
 import {
   getJBrowseLink,
   renderTrackDescription,
@@ -29,27 +28,9 @@ import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Selection } from 'd3'
 
-interface IsoformAndVariantTrackProps {
-  viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
-  height: number
-  width: number
-  transcriptTypes: string[]
-  variantTypes: string[]
-  showVariantLabel?: boolean
-  variantFilter: string[]
-  binRatio: number
-  isoformFilter: string[]
-  initialHighlight?: string[]
-  service?: ApolloService
-  trackData?: SimpleFeatureSerialized[]
-  variantData?: VariantFeature[]
-}
-
-const apolloService = new ApolloService()
-
 export default class IsoformAndVariantTrack {
-  private trackData?: SimpleFeatureSerialized[]
-  private variantData?: VariantFeature[]
+  private trackData: SimpleFeatureSerialized[]
+  private variantData: VariantFeature[]
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   private width: number
   private variantFilter: string[]
@@ -60,7 +41,6 @@ export default class IsoformAndVariantTrack {
   private variantTypes: string[]
   private binRatio: number
   private showVariantLabel: boolean
-  private service: ApolloService
 
   constructor({
     viewer,
@@ -73,12 +53,25 @@ export default class IsoformAndVariantTrack {
     binRatio,
     isoformFilter,
     initialHighlight,
-    service,
     trackData,
     variantData,
-  }: IsoformAndVariantTrackProps) {
-    this.trackData = trackData
-    this.variantData = variantData
+  }: {
+    viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
+    height: number
+    width: number
+    transcriptTypes: string[]
+    variantTypes: string[]
+    showVariantLabel?: boolean
+    variantFilter: string[]
+    binRatio: number
+    isoformFilter: string[]
+    initialHighlight?: string[]
+    trackData?: SimpleFeatureSerialized[]
+    variantData?: VariantFeature[]
+  }) {
+    console.log({ trackData })
+    this.trackData = trackData ?? []
+    this.variantData = variantData ?? []
     this.viewer = viewer
     this.width = width
     this.variantFilter = variantFilter
@@ -89,19 +82,11 @@ export default class IsoformAndVariantTrack {
     this.variantTypes = variantTypes
     this.binRatio = binRatio
     this.showVariantLabel = showVariantLabel ?? true
-    this.service = service ?? apolloService
   }
 
-  async DrawTrack(t: {
-    chromosome: string
-    start: number
-    end: number
-    genome: string
-    isoform_url: string[]
-    variant_url: string[]
-  }) {
-    const { variantData: variantDataPre, trackData } =
-      await this.populateTrack(t)
+  DrawTrack() {
+    const variantDataPre = this.variantData
+    const trackData = this.trackData
     const isoformFilter = this.isoformFilter
     let isoformData = trackData
     const initialHighlight = this.initialHighlight
@@ -151,13 +136,8 @@ export default class IsoformAndVariantTrack {
       .append('g')
       .attr('class', 'deletions track')
       .attr('transform', 'translate(0,22.5)')
-    // We need a new container for labels now.
     const labelTrack = viewer.append('g').attr('class', 'label')
 
-    // Append Invisible Rect to give space properly if only one track exists.
-    // variantContainer.append('rect').style("opacity", 0).attr("height", VARIANT_HEIGHT*numVariantTracks).attr("width",width);
-
-    // need to build a new sortWeight since these can be dynamic
     const sortWeight = {} as Record<string, number>
     for (let i = 0, len = UTR_feats.length; i < len; i++) {
       sortWeight[UTR_feats[i]] = 200
@@ -986,51 +966,5 @@ export default class IsoformAndVariantTrack {
         .attr('opacity', 0.8)
         .lower()
     })
-  }
-
-  async populateTrack(track: {
-    chromosome: string
-    start: number
-    end: number
-    genome: string
-    isoform_url: string[]
-    variant_url: string[]
-  }) {
-    const [trackData, variantData] = await Promise.all([
-      this.getTrackData(track),
-      this.getVariantData(track),
-    ])
-    return {
-      trackData,
-      variantData,
-    }
-  }
-
-  /* Method for isoformTrack service call */
-  async getTrackData(track: {
-    chromosome: string
-    start: number
-    end: number
-    genome: string
-    isoform_url: string[]
-  }): Promise<SimpleFeatureSerialized[]> {
-    return (
-      this.trackData ??
-      (await this.service.fetchDataFromUrl(track, 'isoform_url'))
-    )
-  }
-
-  /* Method for isoformTrack service call */
-  async getVariantData(track: {
-    chromosome: string
-    start: number
-    end: number
-    genome: string
-    variant_url: string[]
-  }): Promise<VariantFeature[]> {
-    return (
-      this.variantData ??
-      (await this.service.fetchDataFromUrl(track, 'variant_url'))
-    )
   }
 }

@@ -5,7 +5,6 @@ import {
   checkSpace,
   findRange,
 } from '../RenderFunctions'
-import { ApolloService } from '../services/ApolloService'
 import { renderTrackDescription } from '../services/TrackService'
 import {
   generateVariantBins,
@@ -19,24 +18,9 @@ import {
 import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
 
-interface IsoformEmbeddedVariantTrackProps {
-  viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, undefined>
-  height: number
-  width: number
-  transcriptTypes: string[]
-  variantTypes: string[]
-  showVariantLabel?: boolean
-  variantFilter: string[]
-  service?: ApolloService
-  variantData?: VariantFeature[]
-  trackData?: SimpleFeatureSerialized[]
-}
-
-const apolloService = new ApolloService()
-
 export default class IsoformEmbeddedVariantTrack {
-  private trackData?: SimpleFeatureSerialized[]
-  private variantData?: VariantFeature[]
+  private trackData: SimpleFeatureSerialized[]
+  private variantData: VariantFeature[]
   private viewer: d3.Selection<
     SVGGElement,
     unknown,
@@ -49,7 +33,6 @@ export default class IsoformEmbeddedVariantTrack {
   private transcriptTypes: string[]
   private variantTypes: string[]
   private showVariantLabel: boolean
-  private service: ApolloService
 
   constructor({
     viewer,
@@ -59,12 +42,21 @@ export default class IsoformEmbeddedVariantTrack {
     variantTypes,
     showVariantLabel,
     variantFilter,
-    service,
     trackData,
     variantData,
-  }: IsoformEmbeddedVariantTrackProps) {
-    this.trackData = trackData
-    this.variantData = variantData
+  }: {
+    viewer: d3.Selection<SVGGElement, unknown, HTMLElement | null, undefined>
+    height: number
+    width: number
+    transcriptTypes: string[]
+    variantTypes: string[]
+    showVariantLabel?: boolean
+    variantFilter: string[]
+    variantData?: VariantFeature[]
+    trackData?: SimpleFeatureSerialized[]
+  }) {
+    this.trackData = trackData ?? []
+    this.variantData = variantData ?? []
     this.viewer = viewer
     this.width = width
     this.variantFilter = variantFilter
@@ -72,13 +64,11 @@ export default class IsoformEmbeddedVariantTrack {
     this.transcriptTypes = transcriptTypes
     this.variantTypes = variantTypes
     this.showVariantLabel = showVariantLabel ?? true
-    this.service = service ?? apolloService
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async DrawTrack(t: any) {
-    const { variantData: variantDataPre, trackData } =
-      await this.populateTrack(t)
+  DrawTrack() {
+    const variantDataPre = this.variantData
+    const trackData = this.trackData
     let isoformData = trackData
     const variantData = this.filterVariantData(
       variantDataPre,
@@ -705,49 +695,5 @@ export default class IsoformEmbeddedVariantTrack {
       .on('click', () => {
         closeFunction()
       })
-  }
-
-  async populateTrack(track: {
-    chromosome: string
-    start: number
-    end: number
-    genome: string
-    isoform_url: string[]
-    variant_url: string[]
-  }) {
-    const [trackData, variantData] = await Promise.all([
-      this.getTrackData(track),
-      this.getVariantData(track),
-    ])
-    return {
-      trackData,
-      variantData,
-    }
-  }
-
-  async getTrackData(track: {
-    chromosome: string
-    start: number
-    end: number
-    genome: string
-    isoform_url: string[]
-  }): Promise<SimpleFeatureSerialized[]> {
-    return (
-      this.trackData ??
-      (await this.service.fetchDataFromUrl(track, 'isoform_url'))
-    )
-  }
-
-  async getVariantData(track: {
-    chromosome: string
-    start: number
-    end: number
-    genome: string
-    variant_url: string[]
-  }): Promise<VariantFeature[]> {
-    return (
-      this.variantData ??
-      (await this.service.fetchDataFromUrl(track, 'variant_url'))
-    )
   }
 }

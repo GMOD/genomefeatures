@@ -1,7 +1,6 @@
 import * as d3 from 'd3'
 
 import { calculateNewTrackPosition, checkSpace } from '../RenderFunctions'
-import { ApolloService } from '../services/ApolloService'
 import {
   getJBrowseLink,
   renderTrackDescription,
@@ -17,22 +16,8 @@ interface Track {
   genome: string
 }
 
-interface IsoformTrackProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
-  track: Track
-  height: number
-  width: number
-  transcriptTypes: string[]
-  htpVariant?: string
-  service?: ApolloService
-  trackData?: SimpleFeatureSerialized[]
-}
-
-const apolloService = new ApolloService()
-
 export default class IsoformTrack {
-  private trackData?: SimpleFeatureSerialized[]
+  private trackData: SimpleFeatureSerialized[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
   private width: number
@@ -42,7 +27,6 @@ export default class IsoformTrack {
   private start: number
   private end: number
   private genome: string
-  private service: ApolloService
 
   constructor({
     viewer,
@@ -51,10 +35,18 @@ export default class IsoformTrack {
     width,
     transcriptTypes,
     htpVariant,
-    service,
     trackData,
-  }: IsoformTrackProps) {
-    this.trackData = trackData
+  }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
+    track: Track
+    height: number
+    width: number
+    transcriptTypes: string[]
+    htpVariant?: string
+    trackData?: SimpleFeatureSerialized[]
+  }) {
+    this.trackData = trackData ?? []
     this.viewer = viewer
     this.width = width
     this.height = height
@@ -63,7 +55,6 @@ export default class IsoformTrack {
     this.start = track.start
     this.end = track.end
     this.genome = track.genome
-    this.service = service ?? apolloService
   }
 
   private renderTooltipDescription(
@@ -103,15 +94,13 @@ export default class IsoformTrack {
       })
   }
 
-  // Draw our track on the viewer
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async DrawTrack(t: any) {
-    let data = await this.getTrackData(t)
+  DrawTrack() {
+    let data = this.trackData
     const htpVariant = this.htpVariant
     const viewer = this.viewer
     const width = this.width
     const source = this.genome
-    const chr = data[0].seqId
+    const chr = data[0]?.seqId
 
     const MAX_ROWS = 10
 
@@ -203,10 +192,7 @@ export default class IsoformTrack {
     let fmin_display = -1
     let fmax_display = -1
     const alreadyRendered = [] as string[] // hack fix for multiple transcript returns.
-    // **************************************
-    // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
-    // **************************************
-    // let feature = data[0];
+
     for (let i = 0; i < data.length && row_count < MAX_ROWS; i++) {
       const feature = data[i]
       let featureChildren = feature.children
@@ -254,16 +240,16 @@ export default class IsoformTrack {
               const transcript_end = Math.min(x(featureChild.fmax), viewerWidth)
               isoform
                 .append('polygon')
-                .datum(function () {
-                  return { strand: feature.strand }
-                })
+                .datum(() => ({
+                  strand: feature.strand,
+                }))
                 .attr('class', 'transArrow')
                 .attr('points', arrow_points)
-                .attr('transform', () => {
-                  return feature.strand > 0
+                .attr('transform', () =>
+                  feature.strand > 0
                     ? `translate(${transcript_end},0)`
-                    : `translate(${transcript_start},${arrow_height}) rotate(180)`
-                })
+                    : `translate(${transcript_start},${arrow_height}) rotate(180)`,
+                )
                 .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
@@ -279,7 +265,10 @@ export default class IsoformTrack {
                 .attr('height', transcript_backbone_height)
                 .attr('transform', `translate(${transcript_start},0)`)
                 .attr('width', transcript_end - transcript_start)
-                .datum({ fmin: featureChild.fmin, fmax: featureChild.fmax })
+                .datum({
+                  fmin: featureChild.fmin,
+                  fmax: featureChild.fmax,
+                })
                 .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
@@ -525,11 +514,5 @@ export default class IsoformTrack {
     }
     // we return the appropriate height function
     return row_count * isoform_height
-  }
-
-  /* Method for isoformTrack service call */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async getTrackData(track: any): Promise<SimpleFeatureSerialized[]> {
-    return this.trackData ?? (await this.service.fetchDataFromUrl(track, 'url'))
   }
 }

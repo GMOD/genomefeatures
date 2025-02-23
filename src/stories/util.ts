@@ -1,3 +1,4 @@
+import { fetchApolloAPIFeatures } from '../ApolloAPIFetcher'
 import GenomeFeatureViewer from '../main'
 import { TrackType } from '../tracks/TrackTypeEnum'
 
@@ -42,7 +43,7 @@ export function parseLocString(locString: string) {
   }
 }
 
-export function createExample({
+export async function createExample({
   locString,
   genome,
   divId,
@@ -51,9 +52,25 @@ export function createExample({
   variantFilter,
   isoformFilter,
   initialHighlight,
-  trackName = '/All%20Genes/',
 }: Props) {
-  const ratio = 0.01
+  const { chromosome, start, end } = parseLocString(locString)
+  const trackData = await fetchApolloAPIFeatures({
+    chromosome,
+    start,
+    end,
+    genome,
+    track: 'All Genes',
+    baseUrl: `${BASE_URL}/track/`,
+  })
+  const variantData = await fetchApolloAPIFeatures({
+    chromosome,
+    start,
+    end,
+    genome,
+    track: 'Variants',
+    baseUrl: `${BASE_URL}/vcf/`,
+  })
+
   new GenomeFeatureViewer(
     {
       ...parseLocString(locString),
@@ -62,19 +79,15 @@ export function createExample({
       variantFilter,
       initialHighlight,
       isoformFilter,
-      binRatio: ratio,
+      binRatio: 0.01,
       tracks: [
         // @ts-expect-error
         {
           id: '12',
           genome,
           type,
-          isoform_url: [
-            `${BASE_URL}/track/`,
-            trackName,
-            '.json?ignoreCache=true',
-          ],
-          variant_url: [`${BASE_URL}/vcf/`, '/Variants/', '.json'],
+          trackData,
+          variantData,
         },
       ],
     },
@@ -84,7 +97,7 @@ export function createExample({
   )
 }
 
-export function createCovidExample({
+export async function createCovidExample({
   locString,
   genome,
   divId,
@@ -95,21 +108,29 @@ export function createCovidExample({
   divId: string
   type: TrackType
 }) {
+  const { chromosome, start, end } = parseLocString(locString)
+  const trackData = await fetchApolloAPIFeatures({
+    chromosome,
+    start,
+    end,
+    genome,
+    track: 'Mature peptides',
+    baseUrl: `${BASE_URL}/track/`,
+  })
   new GenomeFeatureViewer(
     {
-      ...parseLocString(locString),
+      chromosome,
+      start,
+      end,
       locale: 'global',
+      trackData,
       tracks: [
         // @ts-expect-error
         {
           id: '12',
           genome,
           type,
-          url: [
-            `${BASE_URL}/track/`,
-            '/Mature%20peptides/',
-            '.json?ignoreCache=true&flatten=false',
-          ],
+          trackData,
         },
       ],
     },
@@ -123,6 +144,7 @@ export function createExampleAndSvgElement(args: Props) {
   // add to the page in a setTimeout so it runs after the domNode appears if
   // you know your divid already exists in the dom, you can skip the timeout
   setTimeout(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     createExample(args)
   }, 1)
 
@@ -135,6 +157,7 @@ export function createCovidExampleAndSvgElement(args: Props) {
   // add to the page in a setTimeout so it runs after the domNode appears if
   // you know your divid already exists in the dom, you can skip the timeout
   setTimeout(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     createCovidExample(args)
   }, 1)
 
