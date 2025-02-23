@@ -5,3 +5,5 @@ export const TRACK_TYPE = {
   VARIANT: 'VARIANT',
   VARIANT_GLOBAL: 'VARIANT_GLOBAL',
 } as const
+
+export type TrackType = keyof typeof TRACK_TYPE

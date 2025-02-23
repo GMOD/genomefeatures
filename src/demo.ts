@@ -6,16 +6,16 @@ import './GenomeFeatureViewer.css'
 
 const BASE_URL = 'https://www.alliancegenome.org/apollo'
 
-oldExamples()
-isoformExamples()
-wormExamples()
-fishExamples()
-ratExamples()
-mouseExamples()
+//oldExamples()
+//isoformExamples()
+//wormExamples()
+//fishExamples()
+//ratExamples()
+//mouseExamples()
 flyExamples()
 covidExamples()
-covidExamplesNCList()
-currentExamples()
+//covidExamplesNCList()
+//currentExamples()
 
 type TrackType = keyof typeof TRACK_TYPE
 

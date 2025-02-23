@@ -531,10 +531,6 @@ export default class IsoformAndVariantTrack {
     const renderTooltipDescription = this.renderTooltipDescription
 
     const alreadyRendered = [] as string[] // hack fix for multiple transcript returns.
-    // **************************************
-    // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
-    // **************************************
-    // let feature = data[0];
     for (let i = 0; i < isoformData.length && row_count < MAX_ROWS; i++) {
       const feature = isoformData[i]
       let featureChildren = feature.children
@@ -702,10 +698,10 @@ export default class IsoformAndVariantTrack {
                   ? x(featureChild.fmin) + text_width
                   : x(featureChild.fmax)
 
-              // This is probably not the most efficient way to do this.
-              // Making an 2d array... each row is the first array (no zer0)
-              // next level is each element taking up space.
-              // Also using colons as spacers seems very perl... maybe change that?
+              // This is probably not the most efficient way to do this. Making
+              // an 2d array... each row is the first array (no zer0) next
+              // level is each element taking up space. Also using colons
+              // as spacers seems very perl... maybe change that?
               // *** DANGER EDGE CASE ***/
               if (used_space[current_row]) {
                 const temp = used_space[current_row]
@@ -1017,7 +1013,7 @@ export default class IsoformAndVariantTrack {
     end: number
     genome: string
     isoform_url: string[]
-  }) {
+  }): Promise<SimpleFeatureSerialized[]> {
     return (
       this.trackData ??
       (await this.service.fetchDataFromUrl(track, 'isoform_url'))
@@ -1031,7 +1027,7 @@ export default class IsoformAndVariantTrack {
     end: number
     genome: string
     variant_url: string[]
-  }) {
+  }): Promise<VariantFeature[]> {
     return (
       this.variantData ??
       (await this.service.fetchDataFromUrl(track, 'variant_url'))

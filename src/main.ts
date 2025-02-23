@@ -114,7 +114,12 @@ export default class GenomeFeatureViewer {
     const mainViewClass = `${svgClass} main-view`
 
     if (this.locale === 'global') {
-      const margin = { top: 8, right: 30, bottom: 30, left: 40 }
+      const margin = {
+        top: 8,
+        right: 30,
+        bottom: 30,
+        left: 40,
+      }
       viewer
         .attr('width', this.width)
         .attr('height', this.height)
@@ -126,7 +131,10 @@ export default class GenomeFeatureViewer {
     } else {
       // Different margins for a local view. (Maybe we can make these match at
       // some point)
-      const margin = { top: 10, bottom: 10 }
+      const margin = {
+        top: 10,
+        bottom: 10,
+      }
       viewer
         .attr('width', this.width)
         .attr('height', this.height)
@@ -139,7 +147,6 @@ export default class GenomeFeatureViewer {
   }
 
   getTracks(defaultTrack?: boolean): Track | Track[] {
-    // Return all tracks if a default track is not requested
     return !defaultTrack ? this.tracks : this.tracks[0]
   }
 

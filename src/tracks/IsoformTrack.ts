@@ -225,7 +225,6 @@ export default class IsoformTrack {
           return 0
         })
 
-        // For each isoform..
         featureChildren.forEach(function (featureChild) {
           const featureType = featureChild.type
 
@@ -236,8 +235,6 @@ export default class IsoformTrack {
           }
 
           if (display_feats.includes(featureType)) {
-            // function to assign row based on available space.
-            // *** DANGER EDGE CASE ***/
             let current_row = checkSpace(
               used_space,
               x(featureChild.fmin),
@@ -296,14 +293,16 @@ export default class IsoformTrack {
               }
               let label_offset = Math.max(x(featureChild.fmin), 0)
               const text_label = isoform
-                .append('text')
+                .append('svg:text')
                 .attr('class', 'transcriptLabel')
                 .attr('fill', selected ? 'sandybrown' : 'gray')
                 .attr('opacity', selected ? 1 : 0.5)
                 .attr('height', isoform_title_height)
                 .attr('transform', `translate(${label_offset},0)`)
                 .text(text_string)
-                .datum({ fmin: featureChild.fmin })
+                .datum({
+                  fmin: featureChild.fmin,
+                })
                 .on('click', () => {
                   renderTooltipDescription(
                     tooltipDiv,
@@ -312,8 +311,11 @@ export default class IsoformTrack {
                   )
                 })
 
-              const symbol_string_width =
-                text_label.node()?.getBBox().width ?? 0
+              let symbol_string_width = 100
+              try {
+                // @ts-expect-error
+                symbol_string_width = text_label.node()?.getBBox().width ?? 0
+              } catch (e) {}
               if (symbol_string_width + label_offset > viewerWidth) {
                 const diff = symbol_string_width + label_offset - viewerWidth
                 label_offset -= diff
@@ -328,6 +330,7 @@ export default class IsoformTrack {
 
               // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
               try {
+                // @ts-expect-error
                 text_width = text_label.node()?.getBBox().width ?? 0
               } catch (e) {
                 // console.error('Not yet rendered',e)
