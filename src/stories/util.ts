@@ -3,7 +3,7 @@ import {
   fetchApolloAPIData,
   fetchNCListData,
   fetchTabixVcfData,
-} from '../main'
+} from '../genomefeatures'
 import { TrackType } from '../tracks/TrackTypeEnum'
 import { parseLocString } from '../util'
 

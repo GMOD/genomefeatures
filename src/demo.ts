@@ -2,7 +2,7 @@ import {
   GenomeFeatureViewer,
   fetchApolloAPIData,
   fetchNCListData,
-} from './main'
+} from './genomefeatures'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
 import { parseLocString } from './util'
 
