@@ -2,7 +2,6 @@ import * as d3 from 'd3'
 
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
-
 import IsoformAndVariantTrack from './tracks/IsoformAndVariantTrack'
 import IsoformEmbeddedVariantTrack from './tracks/IsoformEmbeddedVariantTrack'
 import IsoformTrack from './tracks/IsoformTrack'
@@ -38,7 +37,6 @@ interface ViewerConfig {
   showVariantLabel?: boolean
   transcriptTypes?: string[]
   variantTypes?: string[]
-  initialHighlight?: string[]
   isoformFilter?: string[]
   variantFilter?: string[]
   htpVariant?: string // Colin note: unsure??
@@ -212,7 +210,6 @@ export default class GenomeFeatureViewer {
     const chromosome = options.region.chromosome
     const variantFilter = options.variantFilter ?? []
     const isoformFilter = options.isoformFilter ?? []
-    const initialHighlight = options.initialHighlight ?? []
     const htpVariant = options.htpVariant ?? ''
     const start = sequenceOptions.start
     const end = sequenceOptions.end

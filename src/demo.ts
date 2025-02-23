@@ -5,8 +5,6 @@ import { parseLocString } from './util'
 
 import './GenomeFeatureViewer.css'
 
-const BASE_URL = 'https://www.alliancegenome.org/apollo'
-
 oldExamples()
 isoformExamples()
 wormExamples()
@@ -72,7 +70,6 @@ function currentExamples() {
     'viewerActnFly',
     TRACK_TYPE.ISOFORM_AND_VARIANT,
     false,
-    [],
     [],
     [],
   )
@@ -391,7 +388,6 @@ function createExample(
   showLabel: boolean,
   variantFilter?: string[],
   isoformFilter?: string[],
-  initialHighlight?: string[],
 ) {
   const ratio = 0.01
   const gfc = new GenomeFeatureViewer(
@@ -402,7 +398,6 @@ function createExample(
       transcriptTypes: getTranscriptTypes(),
       isoformFilter: isoformFilter ?? [],
       variantFilter: variantFilter ?? [],
-      initialHighlight: initialHighlight ?? [],
       binRatio: ratio,
       genome,
       tracks: [
@@ -662,7 +657,7 @@ function oldExamples() {
       locale: 'local',
       region: { chromosome: '5', start: 48515461, end: 48515461 },
       genome: '',
-      //centerVariant: true,
+      // centerVariant: true,
       tracks: [
         {
           id: '1',

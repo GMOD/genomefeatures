@@ -1,9 +1,9 @@
 import * as d3 from 'd3'
 
 import { calculateNewTrackPosition } from '../RenderFunctions'
+import { Region } from '../types'
 
 import type { Selection } from 'd3'
-import { Region } from '../types'
 
 interface Track {
   range: [number, number]

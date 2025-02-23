@@ -42,7 +42,6 @@ export async function createExample({
   showVariantLabel,
   variantFilter,
   isoformFilter,
-  initialHighlight,
 }: Props) {
   const region = parseLocString(locString)
   const trackData = await fetchApolloAPIFeatures({
@@ -64,7 +63,6 @@ export async function createExample({
       locale: 'global',
       showVariantLabel,
       variantFilter,
-      initialHighlight,
       genome,
       isoformFilter,
       binRatio: 0.01,
