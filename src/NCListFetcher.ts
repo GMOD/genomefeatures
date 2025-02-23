@@ -26,8 +26,8 @@ export async function fetchNCListData({
   urlTemplate: string
   baseUrl: string
   chromosome: string
-  start: string
-  end: string
+  start: number
+  end: number
 }) {
   const store = new NCList({
     urlTemplate,
@@ -37,8 +37,8 @@ export async function fetchNCListData({
   const feats = []
   for await (const feature of store.getFeatures({
     refName: chromosome,
-    start: +start,
-    end: +end,
+    start,
+    end,
   })) {
     feats.push(new NCListFeature(feature).toJSON())
   }

@@ -8,13 +8,8 @@ import {
 import { generateSnvPoints } from '../services/VariantService'
 
 import type { SimpleFeatureSerialized } from '../services/types'
+import type { Region } from '../types'
 import type { Selection } from 'd3'
-
-interface Track {
-  start: number
-  end: number
-  genome: string
-}
 
 export default class IsoformTrack {
   private trackData: SimpleFeatureSerialized[]
@@ -24,27 +19,28 @@ export default class IsoformTrack {
   private height: number
   private transcriptTypes: string[]
   private htpVariant?: string
-  private start: number
-  private end: number
+  private region: Region
   private genome: string
 
   constructor({
     viewer,
-    track,
     height,
     width,
     transcriptTypes,
     htpVariant,
     trackData,
+    region,
+    genome,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
-    track: Track
     height: number
     width: number
     transcriptTypes: string[]
     htpVariant?: string
     trackData?: SimpleFeatureSerialized[]
+    region: Region
+    genome: string
   }) {
     this.trackData = trackData ?? []
     this.viewer = viewer
@@ -52,9 +48,8 @@ export default class IsoformTrack {
     this.height = height
     this.transcriptTypes = transcriptTypes
     this.htpVariant = htpVariant
-    this.start = track.start
-    this.end = track.end
-    this.genome = track.genome
+    this.region = region
+    this.genome = genome
   }
 
   private renderTooltipDescription(
@@ -107,11 +102,8 @@ export default class IsoformTrack {
     const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
     const CDS_feats = ['CDS']
     const exon_feats = ['exon']
-    const display_feats = this.transcriptTypes
+    const displayFeats = this.transcriptTypes
 
-    const view_start = this.start
-    const view_end = this.end
-    const viewerWidth = this.width
     const exon_height = 10 // will be white / transparent
     const cds_height = 10 // will be colored in
     const isoform_height = 40 // height for each isoform
@@ -125,7 +117,10 @@ export default class IsoformTrack {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     const renderTooltipDescription = this.renderTooltipDescription
 
-    const x = d3.scaleLinear().domain([view_start, view_end]).range([0, width])
+    const x = d3
+      .scaleLinear()
+      .domain([this.region.start, this.region.end])
+      .range([0, width])
 
     // need to build a new sortWeight since these can be dynamic
     const sortWeight = {} as Record<string, number>
@@ -211,7 +206,7 @@ export default class IsoformTrack {
           return 0
         })
 
-        featureChildren.forEach(function (featureChild) {
+        featureChildren.forEach(featureChild => {
           const featureType = featureChild.type
 
           if (alreadyRendered.includes(featureChild.id)) {
@@ -220,7 +215,7 @@ export default class IsoformTrack {
             alreadyRendered.push(featureChild.id)
           }
 
-          if (display_feats.includes(featureType)) {
+          if (displayFeats.includes(featureType)) {
             let current_row = checkSpace(
               used_space,
               x(featureChild.fmin),
@@ -236,8 +231,8 @@ export default class IsoformTrack {
                   `translate(0,${row_count * isoform_height + 10})`,
                 )
 
-              const transcript_start = Math.max(x(featureChild.fmin), 0)
-              const transcript_end = Math.min(x(featureChild.fmax), viewerWidth)
+              const transcriptStart = Math.max(x(featureChild.fmin), 0)
+              const transcriptEnd = Math.min(x(featureChild.fmax), this.width)
               isoform
                 .append('polygon')
                 .datum(() => ({
@@ -247,8 +242,8 @@ export default class IsoformTrack {
                 .attr('points', arrow_points)
                 .attr('transform', () =>
                   feature.strand > 0
-                    ? `translate(${transcript_end},0)`
-                    : `translate(${transcript_start},${arrow_height}) rotate(180)`,
+                    ? `translate(${transcriptEnd},0)`
+                    : `translate(${transcriptStart},${arrow_height}) rotate(180)`,
                 )
                 .on('click', () => {
                   renderTooltipDescription(
@@ -263,8 +258,8 @@ export default class IsoformTrack {
                 .attr('class', 'transcriptBackbone')
                 .attr('y', 10 + isoform_title_height)
                 .attr('height', transcript_backbone_height)
-                .attr('transform', `translate(${transcript_start},0)`)
-                .attr('width', transcript_end - transcript_start)
+                .attr('transform', `translate(${transcriptStart},0)`)
+                .attr('width', transcriptEnd - transcriptStart)
                 .datum({
                   fmin: featureChild.fmin,
                   fmax: featureChild.fmax,
@@ -280,14 +275,14 @@ export default class IsoformTrack {
               if (feature.name !== featureChild.name) {
                 text_string += ` (${feature.name})`
               }
-              let label_offset = Math.max(x(featureChild.fmin), 0)
-              const text_label = isoform
+              let labelOffset = Math.max(x(featureChild.fmin), 0)
+              const textLabel = isoform
                 .append('svg:text')
                 .attr('class', 'transcriptLabel')
                 .attr('fill', selected ? 'sandybrown' : 'gray')
                 .attr('opacity', selected ? 1 : 0.5)
                 .attr('height', isoform_title_height)
-                .attr('transform', `translate(${label_offset},0)`)
+                .attr('transform', `translate(${labelOffset},0)`)
                 .text(text_string)
                 .datum({
                   fmin: featureChild.fmin,
@@ -303,34 +298,34 @@ export default class IsoformTrack {
               let symbol_string_width = 100
               try {
                 // @ts-expect-error
-                symbol_string_width = text_label.node()?.getBBox().width ?? 0
+                symbol_string_width = textLabel.node()?.getBBox().width ?? 0
               } catch (e) {}
-              if (symbol_string_width + label_offset > viewerWidth) {
-                const diff = symbol_string_width + label_offset - viewerWidth
-                label_offset -= diff
-                text_label.attr('transform', `translate(${label_offset},0)`)
+              if (symbol_string_width + labelOffset > this.width) {
+                const diff = symbol_string_width + labelOffset - this.width
+                labelOffset -= diff
+                textLabel.attr('transform', `translate(${labelOffset},0)`)
               }
 
               // Now that the label has been created we can calculate the space that
               // this new element is taking up making sure to add in the width of
               // the box.
               // TODO: this is just an estimate of the length
-              let text_width = text_string.length * 2
+              let textWidth = text_string.length * 2
 
               // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
               try {
                 // @ts-expect-error
-                text_width = text_label.node()?.getBBox().width ?? 0
+                textWidth = textLabel.node()?.getBBox().width ?? 0
               } catch (e) {
-                // console.error('Not yet rendered',e)
+                console.error('Not yet rendered', e)
               }
               // First check to see if label goes past the end
-              if (Number(text_width + x(featureChild.fmin)) > width) {
+              if (Number(textWidth + x(featureChild.fmin)) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
-              const feat_end =
-                text_width > x(featureChild.fmax) - x(featureChild.fmin)
-                  ? x(featureChild.fmin) + text_width
+              const featEnd =
+                textWidth > x(featureChild.fmax) - x(featureChild.fmin)
+                  ? x(featureChild.fmin) + textWidth
                   : x(featureChild.fmax)
 
               // This is probably not the most efficient way to do this.
@@ -340,12 +335,10 @@ export default class IsoformTrack {
               // *** DANGER EDGE CASE ***/
               if (used_space[current_row]) {
                 const temp = used_space[current_row]
-                temp.push(`${x(featureChild.fmin)}:${feat_end}`)
+                temp.push(`${x(featureChild.fmin)}:${featEnd}`)
                 used_space[current_row] = temp
               } else {
-                used_space[current_row] = [
-                  `${x(featureChild.fmin)}:${feat_end}`,
-                ]
+                used_space[current_row] = [`${x(featureChild.fmin)}:${featEnd}`]
               }
 
               // Now check on bounds since this feature is displayed
@@ -386,22 +379,22 @@ export default class IsoformTrack {
                   },
                 )
 
-                featureChild.children.forEach(function (innerChild) {
+                featureChild.children.forEach(innerChild => {
                   const innerType = innerChild.type
                   // Skip feats out of bounds.
                   if (
-                    x(innerChild.fmin) > viewerWidth ||
+                    x(innerChild.fmin) > this.width ||
                     x(innerChild.fmax) < 0
                   ) {
                     return // skip feat
                   }
-                  const inner_start = Math.max(x(innerChild.fmin), 0)
-                  const inner_end = Math.min(x(innerChild.fmax), viewerWidth)
+                  const innerStart = Math.max(x(innerChild.fmin), 0)
+                  const innerEnd = Math.min(x(innerChild.fmax), this.width)
                   if (exon_feats.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'exon')
-                      .attr('x', inner_start)
+                      .attr('x', innerStart)
                       .attr(
                         'transform',
                         `translate(0,${
@@ -410,7 +403,7 @@ export default class IsoformTrack {
                       )
                       .attr('height', exon_height)
                       .attr('z-index', 10)
-                      .attr('width', inner_end - inner_start)
+                      .attr('width', innerEnd - innerStart)
                       .datum({
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
@@ -426,7 +419,7 @@ export default class IsoformTrack {
                     isoform
                       .append('rect')
                       .attr('class', 'CDS')
-                      .attr('x', inner_start)
+                      .attr('x', innerStart)
                       .attr(
                         'transform',
                         `translate(0,${
@@ -435,7 +428,7 @@ export default class IsoformTrack {
                       )
                       .attr('z-index', 20)
                       .attr('height', cds_height)
-                      .attr('width', inner_end - inner_start)
+                      .attr('width', innerEnd - innerStart)
                       .datum({
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
@@ -451,7 +444,7 @@ export default class IsoformTrack {
                     isoform
                       .append('rect')
                       .attr('class', 'UTR')
-                      .attr('x', inner_start)
+                      .attr('x', innerStart)
                       .attr(
                         'transform',
                         `translate(0,${
@@ -460,7 +453,7 @@ export default class IsoformTrack {
                       )
                       .attr('z-index', 20)
                       .attr('height', utr_height)
-                      .attr('width', inner_end - inner_start)
+                      .attr('width', innerEnd - innerStart)
                       .datum({
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
@@ -478,8 +471,12 @@ export default class IsoformTrack {
               row_count += 1
             }
             if (row_count === MAX_ROWS) {
-              // *** DANGER EDGE CASE ***/
-              const link = getJBrowseLink(source, chr, view_start, view_end)
+              const link = getJBrowseLink(
+                source,
+                chr,
+                this.region.start,
+                this.region.end,
+              )
               ++current_row
               track
                 .append('a')

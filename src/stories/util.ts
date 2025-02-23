@@ -1,6 +1,7 @@
 import { fetchApolloAPIFeatures } from '../ApolloAPIFetcher'
 import GenomeFeatureViewer from '../main'
 import { TrackType } from '../tracks/TrackTypeEnum'
+import { parseLocString } from '../util'
 
 const BASE_URL = 'https://www.alliancegenome.org/apollo'
 
@@ -33,16 +34,6 @@ interface Props {
   initialHighlight?: string[]
 }
 
-export function parseLocString(locString: string) {
-  const [chromosome, range] = locString.split(':')
-  const [start, end] = range.split('..')
-  return {
-    chromosome,
-    start: +start,
-    end: +end,
-  }
-}
-
 export async function createExample({
   locString,
   genome,
@@ -53,19 +44,15 @@ export async function createExample({
   isoformFilter,
   initialHighlight,
 }: Props) {
-  const { chromosome, start, end } = parseLocString(locString)
+  const region = parseLocString(locString)
   const trackData = await fetchApolloAPIFeatures({
-    chromosome,
-    start,
-    end,
+    ...region,
     genome,
     track: 'All Genes',
     baseUrl: `${BASE_URL}/track/`,
   })
   const variantData = await fetchApolloAPIFeatures({
-    chromosome,
-    start,
-    end,
+    ...region,
     genome,
     track: 'Variants',
     baseUrl: `${BASE_URL}/vcf/`,
@@ -73,18 +60,17 @@ export async function createExample({
 
   new GenomeFeatureViewer(
     {
-      ...parseLocString(locString),
+      region: parseLocString(locString),
       locale: 'global',
       showVariantLabel,
       variantFilter,
       initialHighlight,
+      genome,
       isoformFilter,
       binRatio: 0.01,
       tracks: [
-        // @ts-expect-error
         {
           id: '12',
-          genome,
           type,
           trackData,
           variantData,
@@ -108,27 +94,21 @@ export async function createCovidExample({
   divId: string
   type: TrackType
 }) {
-  const { chromosome, start, end } = parseLocString(locString)
+  const region = parseLocString(locString)
   const trackData = await fetchApolloAPIFeatures({
-    chromosome,
-    start,
-    end,
+    ...region,
     genome,
     track: 'Mature peptides',
     baseUrl: `${BASE_URL}/track/`,
   })
   new GenomeFeatureViewer(
     {
-      chromosome,
-      start,
-      end,
       locale: 'global',
-      trackData,
+      genome,
+      region,
       tracks: [
-        // @ts-expect-error
         {
           id: '12',
-          genome,
           type,
           trackData,
         },

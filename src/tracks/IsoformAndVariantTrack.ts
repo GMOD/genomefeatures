@@ -26,6 +26,7 @@ import {
 
 import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
+import type { Region } from '../types'
 import type { Selection } from 'd3'
 
 export default class IsoformAndVariantTrack {
@@ -40,6 +41,7 @@ export default class IsoformAndVariantTrack {
   private transcriptTypes: string[]
   private variantTypes: string[]
   private binRatio: number
+  private region: Region
   private showVariantLabel: boolean
 
   constructor({
@@ -55,6 +57,7 @@ export default class IsoformAndVariantTrack {
     initialHighlight,
     trackData,
     variantData,
+    region,
   }: {
     viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
     height: number
@@ -68,8 +71,9 @@ export default class IsoformAndVariantTrack {
     initialHighlight?: string[]
     trackData?: SimpleFeatureSerialized[]
     variantData?: VariantFeature[]
+    region: Region
   }) {
-    console.log({ trackData })
+    this.region = region
     this.trackData = trackData ?? []
     this.variantData = variantData ?? []
     this.viewer = viewer

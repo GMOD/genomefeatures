@@ -1,6 +1,7 @@
 import { fetchNCListData } from './NCListFetcher'
 import GenomeFeatureViewer from './main'
 import { TRACK_TYPE } from './tracks/TrackTypeEnum'
+import { parseLocString } from './util'
 
 import './GenomeFeatureViewer.css'
 
@@ -392,33 +393,22 @@ function createExample(
   isoformFilter?: string[],
   initialHighlight?: string[],
 ) {
-  const chromosome = range.split(':')[0]
-  const [start, end] = range.split(':')[1].split('..')
   const ratio = 0.01
   const gfc = new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome,
-      start: +start,
-      end: +end,
+      region: parseLocString(range),
       showVariantLabel: showLabel,
       transcriptTypes: getTranscriptTypes(),
       isoformFilter: isoformFilter ?? [],
       variantFilter: variantFilter ?? [],
       initialHighlight: initialHighlight ?? [],
       binRatio: ratio,
+      genome,
       tracks: [
-        // @ts-expect-error
         {
           id: '12',
-          genome,
           type,
-          isoform_url: [
-            `${BASE_URL}/track/`,
-            '/All%20Genes/',
-            '.json?ignoreCache=true',
-          ],
-          variant_url: [`${BASE_URL}/vcf/`, '/Variants/', '.json'],
         },
       ],
     },
@@ -495,24 +485,18 @@ function createIsoformExample(
   showLabel: boolean,
   variantFilter?: string[],
 ) {
-  const chromosome = range.split(':')[0]
-  const [start, end] = range.split(':')[1].split('..')
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome,
-      start: +start,
-      end: +end,
+      region: parseLocString(range),
       transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
       variantFilter: variantFilter ?? [],
+      genome,
       tracks: [
-        // @ts-expect-error
         {
           id: '12',
-          genome,
           type,
-          url: [`${BASE_URL}/track/`, '/All%20Genes/', '.json'],
         },
       ],
     },
@@ -572,29 +556,23 @@ async function createCoVExampleNCList(
   showLabel: boolean,
   variantFilter?: string[],
 ) {
-  const chromosome = range.split(':')[0]
-  const [start, end] = range.split(':')[1].split('..')
+  const region = parseLocString(range)
   const trackData = await fetchNCListData({
-    chromosome,
-    start,
-    end,
+    ...region,
     baseUrl: `https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/`,
     urlTemplate: 'All%20Genes/NC_045512.2/trackData.jsonz',
   })
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome,
-      start: +start,
-      end: +end,
+      region,
+      genome,
       transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
       variantFilter: variantFilter ?? [],
       tracks: [
-        // @ts-expect-error
         {
           id: '12',
-          genome,
           type,
           trackData,
         },
@@ -614,28 +592,18 @@ function createCoVExample(
   showLabel: boolean,
   variantFilter?: string[],
 ) {
-  const chromosome = range.split(':')[0]
-  const [start, end] = range.split(':')[1].split('..')
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome,
-      start: +start,
-      end: +end,
+      region: parseLocString(range),
+      genome,
       transcriptTypes: getTranscriptTypes(),
       showVariantLabel: showLabel,
       variantFilter: variantFilter ?? [],
       tracks: [
-        // @ts-expect-error
         {
           id: '12',
-          genome,
           type,
-          url: [
-            `${BASE_URL}/track/`,
-            '/Mature%20peptides/',
-            '.json?ignoreCache=true&flatten=false',
-          ],
         },
       ],
     },
@@ -649,67 +617,40 @@ function oldExamples() {
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome: 5,
-      start: 75574916,
-      end: 75656722,
+      genome: '',
+      region: { chromosome: '5', start: 75574916, end: 75656722 },
       tracks: [
-        // @ts-expect-error
         {
           id: '2',
-          genome: 'Mus musculus',
           type: TRACK_TYPE.VARIANT_GLOBAL,
         },
-        // @ts-expect-error
         {
           id: '1',
-          genome: 'Mus musculus',
           type: TRACK_TYPE.ISOFORM,
-          url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json'],
         },
       ],
     },
     '#viewer1',
     700,
+    // @ts-expect-error
     null,
   )
 
   new GenomeFeatureViewer(
     {
       locale: 'global',
-      chromosome: '2L',
-      start: 19400752,
-      end: 19426596,
-      transcriptTypes: [
-        'mRNA',
-        'ncRNA',
-        'piRNA',
-        'lincRNA',
-        'miRNA',
-        'pre_miRNA',
-        'snoRNA',
-        'lnc_RNA',
-        'tRNA',
-        'snRNA',
-        'rRNA',
-        'ARS',
-        'antisense_RNA',
-        'C_gene_segment',
-        'V_gene_segment',
-        'pseudogene_attribute',
-        'snoRNA_gene',
-      ],
+      region: { chromosome: '2L', start: 19400752, end: 19426596 },
+      genome: 'fly',
       tracks: [
-        // @ts-expect-error
         {
           id: '1',
-          genome: 'Drosophila melanogaster',
           type: TRACK_TYPE.ISOFORM,
-          url: [`${BASE_URL}/apollo/track/`, '/All%20Genes/', '.json?name=Pax'],
         },
       ],
     },
     '#viewer2',
     700,
+    // @ts-expect-error
     null,
   )
 
@@ -719,24 +660,19 @@ function oldExamples() {
   new GenomeFeatureViewer(
     {
       locale: 'local',
-      chromosome: 5,
-      start: 48515461,
-      end: 48515461,
-      centerVariant: true,
+      region: { chromosome: '5', start: 48515461, end: 48515461 },
+      genome: '',
+      //centerVariant: true,
       tracks: [
-        // @ts-expect-error
         {
           id: '1',
           label: 'Case Variants',
           type: TRACK_TYPE.VARIANT,
-          chromosome: '5',
         },
-        // @ts-expect-error
         {
           id: '2',
           label: 'ClinVar Cases',
           type: TRACK_TYPE.VARIANT,
-          chromosome: '5',
         },
       ],
     },

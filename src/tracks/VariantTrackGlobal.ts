@@ -3,23 +3,14 @@ import * as d3 from 'd3'
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
 import type { Selection } from 'd3'
+import { Region } from '../types'
 
 interface Track {
-  start: number
-  end: number
   range: [number, number]
 }
 
 interface Variant {
   position: number
-}
-
-interface VariantTrackGlobalProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
-  track: Track
-  height: number
-  width: number
 }
 
 export default class VariantTrackGlobal {
@@ -29,9 +20,24 @@ export default class VariantTrackGlobal {
   private width: number
   private height: number
   private track: Track
+  private region: Region
 
-  constructor({ viewer, track, height, width }: VariantTrackGlobalProps) {
+  constructor({
+    viewer,
+    track,
+    height,
+    width,
+    region,
+  }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
+    track: Track
+    height: number
+    width: number
+    region: Region
+  }) {
     this.variants = []
+    this.region = region
     this.viewer = viewer
     this.width = width
     this.height = height
@@ -43,7 +49,7 @@ export default class VariantTrackGlobal {
     const variants = this.variants
     const x = d3
       .scaleLinear()
-      .domain([this.track.start, this.track.end])
+      .domain([this.region.start, this.region.end])
       .range(this.track.range)
     const triangle = d3.symbol().type(d3.symbolTriangle).size(20)
 

@@ -4,41 +4,36 @@ import d3Tip from 'd3-tip'
 import { calculateNewTrackPosition } from '../RenderFunctions'
 
 import type { VariantFeature } from '../services/VariantService'
+import type { Region } from '../types'
 import type { Selection } from 'd3'
-
-interface VariantTrackProps {
-  viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
-  height: number
-  width: number
-  transcriptTypes: string[]
-  variantTypes: string[]
-  showVariantLabel?: boolean
-  variantFilter: string[]
-  binRatio: number
-  isoformFilter: string[]
-  initialHighlight?: string[]
-  track: Track
-}
-
-interface Track {
-  start: number
-  end: number
-  range: number[]
-}
 
 export default class VariantTrack {
   private variants: VariantFeature[]
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   private width: number
   private height: number
-  private track: Track
+  private region: Region
+  private range: [number, number]
 
-  constructor({ viewer, track, height, width }: VariantTrackProps) {
+  constructor({
+    region,
+    viewer,
+    height,
+    width,
+    range,
+  }: {
+    viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
+    height: number
+    width: number
+    region: Region
+    range: [number, number]
+  }) {
     this.variants = []
     this.viewer = viewer
     this.width = width
     this.height = height
-    this.track = track
+    this.region = region
+    this.range = range
   }
 
   DrawTrack() {
@@ -46,8 +41,8 @@ export default class VariantTrack {
     const variants = this.variants
     const x = d3
       .scaleLinear()
-      .domain([this.track.start, this.track.end + 1])
-      .range(this.track.range)
+      .domain([this.region.start, this.region.end + 1])
+      .range(this.range)
     const triangle = d3.symbol().type(d3.symbolTriangle).size(20)
 
     // Tooltip configuration
@@ -79,12 +74,12 @@ export default class VariantTrack {
     track
       .append('rect')
       .attr('height', trackHeight)
-      .attr('width', -this.track.range[0] + this.track.range[1])
+      .attr('width', -this.range[0] + this.range[1])
       .attr('fill-opacity', 0.1)
       .attr('fill', 'rgb(148, 140, 140)')
       .attr('stroke-width', 0)
       .attr('stroke-opacity', 0)
-      .attr('transform', `translate(${this.track.range[0]},0)`)
+      .attr('transform', `translate(${this.range[0]},0)`)
 
     // Draw our variants
     // TODO: Variant color based on type or user defined in config?

@@ -17,6 +17,7 @@ import {
 
 import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
+import type { Region } from '../types'
 
 export default class IsoformEmbeddedVariantTrack {
   private trackData: SimpleFeatureSerialized[]
