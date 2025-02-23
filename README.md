@@ -43,6 +43,9 @@ import {
   GenomeFeatureViewer,
 } from 'genomefeatures'
 
+// if your bundler let's you import CSS, you can do this, otherwise see CDN usage example
+import 'genomefeatures/style.css'
+
 const BASE_URL = 'https://www.alliancegenome.org/apollo'
 const locString = '2L:130639..135911'
 const genome = 'fly'
@@ -99,6 +102,9 @@ import {
   parseLocString,
   GenomeFeatureViewer,
 } from 'genomefeatures'
+
+// if your bundler let's you import CSS, you can do this, otherwise see CDN usage example
+import 'genomefeatures/style.css'
 
 const locString = '2L:130639..135911'
 const genome = 'fly'
