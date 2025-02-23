@@ -4,6 +4,7 @@ import Drawer from './Drawer'
 import { setHighlights } from './RenderFunctions'
 import { createLegendBox } from './services/LegenedService'
 
+import type { VariantFeature } from './services/VariantService'
 import type { SimpleFeatureSerialized } from './services/types'
 
 import './GenomeFeatureViewer.css'
@@ -20,7 +21,8 @@ interface Track {
   isoform_url: string[]
   variant_url: string[]
   url: string[]
-  features?: SimpleFeatureSerialized[]
+  variantData?: VariantFeature[]
+  trackData?: SimpleFeatureSerialized[]
 }
 
 interface ViewerConfig {
@@ -61,7 +63,6 @@ export default class GenomeFeatureViewer {
     width: number,
     height: number,
   ) {
-    this.tracks = []
     this.height = height
     this.width = width
     this.config = config
@@ -80,8 +81,7 @@ export default class GenomeFeatureViewer {
   }
 
   closeModal() {
-    const elements = document.getElementsByClassName('gfc-tooltip')
-    for (const tooltipDiv of elements) {
+    for (const tooltipDiv of document.getElementsByClassName('gfc-tooltip')) {
       ;(tooltipDiv as HTMLElement).style.visibility = 'hidden'
     }
   }
@@ -139,8 +139,7 @@ export default class GenomeFeatureViewer {
   }
 
   getTracks(defaultTrack?: boolean): Track | Track[] {
-    // Return all tracks if a default track
-    // is not requested
+    // Return all tracks if a default track is not requested
     return !defaultTrack ? this.tracks : this.tracks[0]
   }
 
