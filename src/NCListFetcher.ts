@@ -23,7 +23,7 @@ export async function fetchNCListData({
   region,
 }: {
   urlTemplate: string
-  baseUrl: string
+  baseUrl?: string
   region: Region
 }) {
   const store = new NCList({

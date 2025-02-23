@@ -1,4 +1,9 @@
-import { GenomeFeatureViewer, fetchApolloAPIData } from '../main'
+import {
+  GenomeFeatureViewer,
+  fetchApolloAPIData,
+  fetchNCListData,
+  fetchTabixVcfData,
+} from '../main'
 import { TrackType } from '../tracks/TrackTypeEnum'
 import { parseLocString } from '../util'
 
@@ -31,6 +36,47 @@ interface Props {
   variantFilter?: string[]
   isoformFilter?: string[]
   initialHighlight?: string[]
+}
+
+export async function createExampleStatic({
+  locString,
+  genome,
+  divId,
+  type,
+  showVariantLabel,
+  variantFilter,
+  isoformFilter,
+}: Props) {
+  const region = parseLocString(locString)
+  const trackData = await fetchNCListData({
+    region,
+    urlTemplate:
+      'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz',
+  })
+  //const variantData = await fetchTabixVcfData({
+  //  url: 'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz',
+  //  region,
+  //})
+
+  new GenomeFeatureViewer(
+    {
+      region,
+      showVariantLabel,
+      variantFilter,
+      genome,
+      isoformFilter,
+      tracks: [
+        {
+          type,
+          trackData,
+          //variantData,
+        },
+      ],
+    },
+    `#${divId}`,
+    900,
+    500,
+  )
 }
 
 export async function createExample({
@@ -110,6 +156,19 @@ export async function createCovidExample({
     900,
     500,
   )
+}
+
+export function createExampleAndSvgElementStatic(args: Props) {
+  // add to the page in a setTimeout so it runs after the domNode appears if
+  // you know your divid already exists in the dom, you can skip the timeout
+  setTimeout(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    createExampleStatic(args)
+  }, 1)
+
+  // on your page, this is a existing svg node with given id
+  // e.g. <svg id="mysvg"/>
+  return createElement(args.divId)
 }
 
 export function createExampleAndSvgElement(args: Props) {

@@ -313,4 +313,5 @@ export class GenomeFeatureViewer {
 
 export { fetchNCListData } from './NCListFetcher'
 export { fetchApolloAPIData } from './ApolloAPIFetcher'
+export { fetchTabixVcfData } from './GMODVcfFetcher'
 export { parseLocString } from './util'
