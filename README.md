@@ -41,9 +41,11 @@ import {
   GenomeFeatureViewer,
 } from 'genomefeatures'
 
+const BASE_URL = 'https://www.alliancegenome.org/apollo'
 const locString = '2L:130639..135911'
 const genome = 'fly'
 const region = parseLocString(locString)
+
 const trackData = await fetchApolloAPIFeatures({
   region,
   genome,
