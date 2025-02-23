@@ -452,7 +452,7 @@ export default class IsoformEmbeddedVariantTrack {
                   if (validInnerType) {
                     const variantBins = generateVariantDataBinsAndDataSets(
                       variantData,
-                      // NOTE: made up value
+                      // Colin NOTE: made up value
                       1,
                     )
                     // TODO: remove this once no longer needed
@@ -468,7 +468,6 @@ export default class IsoformEmbeddedVariantTrack {
                       ) {
                         let drawnVariant = true
                         const descriptions = getVariantDescriptions(variant)
-                        // const consequence = description.consequence ? description.consequence : "UNKNOWN";
                         const consequenceColor =
                           getColorsForConsequences(descriptions)[0]
                         const descriptionHtml =

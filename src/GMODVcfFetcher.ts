@@ -2,8 +2,10 @@ import { TabixIndexedFile } from '@gmod/tabix'
 import VCFParser from '@gmod/vcf'
 import { RemoteFile } from 'generic-filehandle2'
 
+import VCFFeature from './VcfFeature'
+
+import type { VariantFeature } from './services/VariantService'
 import type { Region } from './types'
-import type { Variant } from '@gmod/vcf'
 
 export async function fetchTabixVcfData({
   url,
@@ -25,11 +27,44 @@ export async function fetchTabixVcfData({
   const parser = new VCFParser({
     header: await store.getHeader(),
   })
-  const feats = [] as Variant[]
+  const feats = [] as VariantFeature[]
+  let i = 0
   await store.getLines(region.chromosome, region.start, region.end, {
     lineCallback: line => {
-      feats.push(parser.parseLine(line))
+      const variant = parser.parseLine(line)
+      const f = new VCFFeature({
+        variant,
+        parser,
+        id: `${i++}`,
+      })
+      feats.push({
+        id: f.get('ID'),
+        reference_allele: f.get('REF'),
+        // @ts-expect-error
+        alt_allele: f.get('ALT'),
+        name: f.get('name'),
+        seqId: f.get('refName'),
+        fmin: f.get('start'),
+        fmax: f.get('end'),
+        strand: 1,
+        source: '',
+        type: stripQuotes(f.get('INFO').soTerm[0]) ?? f.get('type'),
+        ...Object.fromEntries(
+          Object.entries(f.get('INFO') as Record<string, string[]>).map(
+            ([key, val]) => [
+              key,
+              {
+                values: val.map(v => stripQuotes(v)),
+              },
+            ],
+          ),
+        ),
+      })
     },
   })
   return feats
+}
+
+function stripQuotes(s?: string) {
+  return s?.replace(/['"]+/g, '')
 }

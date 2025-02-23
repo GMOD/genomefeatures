@@ -53,10 +53,10 @@ export async function createExampleStatic({
     urlTemplate:
       'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz',
   })
-  //const variantData = await fetchTabixVcfData({
-  //  url: 'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz',
-  //  region,
-  //})
+  const variantData = await fetchTabixVcfData({
+    url: 'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz',
+    region,
+  })
 
   new GenomeFeatureViewer(
     {
@@ -69,7 +69,7 @@ export async function createExampleStatic({
         {
           type,
           trackData,
-          //variantData,
+          variantData,
         },
       ],
     },

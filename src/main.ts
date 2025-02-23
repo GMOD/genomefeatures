@@ -13,9 +13,9 @@ import VariantTrackGlobal from './tracks/VariantTrackGlobal'
 
 import type { VariantFeature } from './services/VariantService'
 import type { SimpleFeatureSerialized } from './services/types'
+import type { Region } from './types'
 
 import './GenomeFeatureViewer.css'
-import type { Region } from './types'
 
 interface Track {
   type: string
