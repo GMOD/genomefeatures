@@ -1,5 +1,6 @@
 import { getColorForConsequence } from './ConsequenceService'
 import { SimpleFeatureSerialized } from './types'
+import { cleanDelimitedField } from '../utils/stringUtils'
 
 const SNV_HEIGHT = 10
 const SNV_WIDTH = 10
@@ -390,7 +391,7 @@ export function renderVariantDescription(description: VariantDescription) {
 }
 
 export function getVariantDescriptions(variant: VariantBin) {
-  const result = variant.variants.map(v => {
+  const result = (variant.variants ?? []).map(v => {
     const description = getVariantDescription(v)
     return {
       ...description,
@@ -402,17 +403,19 @@ export function getVariantDescriptions(variant: VariantBin) {
 }
 
 export function getVariantAlleles(variant: VariantBin) {
-  return variant.variants
+  // Add null safety check for variant.variants
+  return (variant.variants ?? [])
     .flatMap(val => {
       // Try to parse JSON if it's a stringified array
-      const rawValue = val.allele_ids?.values[0]
+      const rawValue = val.allele_ids?.values?.[0]
       if (!rawValue) return []
       
       // Check if it's a JSON stringified array
       if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
         try {
-          const parsed = JSON.parse(rawValue)
-          return parsed
+          const parsed: unknown = JSON.parse(rawValue)
+          // Normalize to string array
+          return (Array.isArray(parsed) ? parsed : [parsed]).map(String)
         } catch (e) {
           // Failed to parse as JSON, fall through to original logic
         }
@@ -438,50 +441,26 @@ export function getConsequence(variant: VariantBin) {
     variant.geneLevelConsequence.values.length > 0
   ) {
     // Also strip brackets from geneLevelConsequence values
-    const result = variant.geneLevelConsequence.values[0]
-      .replace(/\|/g, ' ')
-      .replace(/"/g, '')
-      .replace(/^\[/, '')  // Remove leading bracket
-      .replace(/\]$/, '')  // Remove trailing bracket
-      .trim()
-    return result
+    return cleanDelimitedField(variant.geneLevelConsequence.values[0])
   }
 
   // Fallback: check direct consequence field
   if (variant.consequence && typeof variant.consequence === 'string') {
     // Handle bracket-wrapped consequences like "[missense_variant]"
-    let cleanedConsequence = variant.consequence
-      .replace(/\|/g, ' ')
-      .replace(/"/g, '')
-      .replace(/^\[/, '')  // Remove leading bracket
-      .replace(/\]$/, '')  // Remove trailing bracket
-      .trim()
-    
-    return cleanedConsequence
+    return cleanDelimitedField(variant.consequence)
   }
 
   // Fallback: check if consequence is in an array
   if (Array.isArray(variant.consequence) && variant.consequence.length > 0) {
-    const result = variant.consequence[0]
-      .replace(/\|/g, ' ')
-      .replace(/"/g, '')
-      .replace(/^\[/, '')
-      .replace(/\]$/, '')
-      .trim()
-    return result
+    return cleanDelimitedField(variant.consequence[0])
   }
 
   // Fallback: check variants array for consequence
-  if (variant.variants && variant.variants.length > 0) {
-    for (const v of variant.variants) {
+  const variants = variant.variants ?? []
+  if (variants.length > 0) {
+    for (const v of variants) {
       if (v.consequence && typeof v.consequence === 'string') {
-        const result = v.consequence
-          .replace(/\|/g, ' ')
-          .replace(/"/g, '')
-          .replace(/^\[/, '')
-          .replace(/\]$/, '')
-          .trim()
-        return result
+        return cleanDelimitedField(v.consequence)
       }
     }
   }

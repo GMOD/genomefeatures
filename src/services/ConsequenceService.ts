@@ -1,3 +1,5 @@
+import { cleanDelimitedField } from '../utils/stringUtils'
+
 export const CONSEQUENCES_ENUM = {
   transcript_ablation: {
     impact: 'HIGH',
@@ -151,10 +153,7 @@ export function getColorForConsequence(consequence: string) {
   }
 
   // Strip brackets if present (extra safety measure)
-  const cleanedConsequence = consequence
-    .replace(/^\[/, '')
-    .replace(/\]$/, '')
-    .trim()
+  const cleanedConsequence = cleanDelimitedField(consequence)
 
   // Handle multiple consequences separated by | or space
   if (cleanedConsequence.split(' ').length > 1 || cleanedConsequence.split('|').length > 1) {

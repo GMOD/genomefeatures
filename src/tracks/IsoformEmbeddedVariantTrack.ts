@@ -8,7 +8,6 @@ import {
 } from '../RenderFunctions'
 import { renderTrackDescription } from '../services/TrackService'
 import {
-  generateVariantBins,
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,
   getVariantAlleles,
@@ -87,8 +86,6 @@ export default class IsoformEmbeddedVariantTrack {
       variantData,
       1, // Colin NOTE: made up value
     )
-    // TODO: remove this once no longer needed
-    generateVariantBins(variantData)
     
     // Pre-compute alleles for each variant to avoid redundant calls
     const variantAllelesMap = new Map<any, string[]>()
@@ -717,18 +714,21 @@ export default class IsoformEmbeddedVariantTrack {
       return variantData
     }
     
+    // Convert filter array to Set for O(1) lookups
+    const filterSet = new Set(variantFilter)
+    
     const filteredResults = variantData.filter((v, index) => {
       let returnVal = false
       try {
         // Check name match
-        if (variantFilter.includes(v.name)) {
+        if (filterSet.has(v.name)) {
           returnVal = true
         }
         
         // Check allele_symbols match
         if (v.allele_symbols?.values) {
           const cleanedSymbol = v.allele_symbols.values[0].replace(/"|\\[|\\]| /g, '')
-          if (variantFilter.includes(cleanedSymbol)) {
+          if (filterSet.has(cleanedSymbol)) {
             returnVal = true
           }
         }
@@ -736,7 +736,7 @@ export default class IsoformEmbeddedVariantTrack {
         // Check symbol match
         if (v.symbol?.values) {
           const cleanedSymbol = v.symbol.values[0].replace(/"|\\[|\\]| /g, '')
-          if (variantFilter.includes(cleanedSymbol)) {
+          if (filterSet.has(cleanedSymbol)) {
             returnVal = true
           }
         }
@@ -744,7 +744,7 @@ export default class IsoformEmbeddedVariantTrack {
         // Check symbol_text match
         if (v.symbol_text?.values) {
           const cleanedSymbolText = v.symbol_text.values[0].replace(/"|\\[|\\]| /g, '')
-          if (variantFilter.includes(cleanedSymbolText)) {
+          if (filterSet.has(cleanedSymbolText)) {
             returnVal = true
           }
         }
@@ -758,8 +758,8 @@ export default class IsoformEmbeddedVariantTrack {
           // Check if it's a JSON stringified array
           if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
             try {
-              const parsed = JSON.parse(rawValue)
-              ids = Array.isArray(parsed) ? parsed : [parsed]
+              const parsed: unknown = JSON.parse(rawValue)
+              ids = (Array.isArray(parsed) ? parsed : [parsed]).map(String)
             } catch (e) {
               // Fallback to original parsing
               ids = rawValue.replace(/"|\\[|\\]| /g, '').split(',')
@@ -769,12 +769,13 @@ export default class IsoformEmbeddedVariantTrack {
             ids = rawValue.replace(/"|\\[|\\]| /g, '').split(',')
           }
           
-          ids.forEach((id, idIndex) => {
-            const isMatch = variantFilter.includes(id)
-            if (isMatch) {
+          // Use Set.has() for O(1) lookup
+          for (const id of ids) {
+            if (filterSet.has(id)) {
               returnVal = true
+              break
             }
-          })
+          }
         }
       } catch (e) {
         // On error, include the variant
