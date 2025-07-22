@@ -482,10 +482,6 @@ export default class IsoformEmbeddedVariantTrack {
                         (fmax <= innerChild.fmax && fmin >= innerChild.fmin)
                       )
                       
-                      // Only log for our test allele MGI:6730304
-                      const hasTargetAllele = (variantAllelesMap.get(variant) || []).includes('MGI:6730304')
-                      
-                      
                       if (overlaps) {
                         let drawnVariant = true
                         const descriptions = getVariantDescriptions(variant)
@@ -499,9 +495,6 @@ export default class IsoformEmbeddedVariantTrack {
                           Math.ceil(x(fmax) - x(fmin)),
                           MIN_WIDTH,
                         )
-                        
-                        // Debug SVG creation for target allele
-                        const hasTargetAllele = (variantAllelesMap.get(variant) || []).includes('MGI:6730304')
                         
                         if (
                           type.toLowerCase() === 'deletion' ||
