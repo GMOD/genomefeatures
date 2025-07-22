@@ -101,6 +101,13 @@ export class GenomeFeatureViewer {
     // remove highlights first
     const svgTarget = d3.select(target)
     svgTarget.selectAll('.highlight').remove()
+    
+    // Check what variant elements exist
+    const variantElements = svgTarget
+      .selectAll<SVGGElement, { selected?: string; alleles?: string[] }>(
+        '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
+      )
+    
     svgTarget
       .selectAll<SVGGElement, { selected: string }>(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
@@ -183,7 +190,7 @@ export class GenomeFeatureViewer {
     const LABEL_OFFSET = 100
     let trackHeight = LABEL_OFFSET
 
-    const showVariantLabel = true
+    const showVariantLabel = this.config.showVariantLabel ?? true
     const { viewer, genome, height, tracks } = this
     tracks.map(track => {
       const { variantData, trackData } = track
