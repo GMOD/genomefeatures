@@ -18,7 +18,7 @@ interface ReferenceTrackProps {
 }
 
 export default class ReferenceTrack {
-  private refSeq: string
+  private refSeq = ''
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
   private width: number
@@ -26,7 +26,6 @@ export default class ReferenceTrack {
   private track: Track
 
   constructor({ viewer, track, height, width }: ReferenceTrackProps) {
-    this.refSeq = ''
     this.viewer = viewer
     this.width = width
     this.height = height

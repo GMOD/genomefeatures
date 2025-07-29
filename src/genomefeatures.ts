@@ -101,13 +101,13 @@ export class GenomeFeatureViewer {
     // remove highlights first
     const svgTarget = d3.select(target)
     svgTarget.selectAll('.highlight').remove()
-    
+
     // Check what variant elements exist
-    const variantElements = svgTarget
-      .selectAll<SVGGElement, { selected?: string; alleles?: string[] }>(
-        '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',
-      )
-    
+    const variantElements = svgTarget.selectAll<
+      SVGGElement,
+      { selected?: string; alleles?: string[] }
+    >('.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins')
+
     svgTarget
       .selectAll<SVGGElement, { selected: string }>(
         '.variant-deletion,.variant-SNV,.variant-insertion,.variant-delins',

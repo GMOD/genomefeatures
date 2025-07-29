@@ -1,14 +1,18 @@
-import { GenomeFeatureViewer, fetchNCListData, fetchTabixVcfData } from '../genomefeatures'
+import {
+  GenomeFeatureViewer,
+  fetchNCListData,
+  fetchTabixVcfData,
+} from '../genomefeatures'
 
 import type { Meta, StoryObj } from '@storybook/html'
 
 function createElement(id: string) {
   const container = document.createElement('div')
   container.style.marginTop = '20px'
-  
+
   const viewerDiv = document.createElement('div')
   viewerDiv.className = 'viewer-border'
-  
+
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
   svg.setAttributeNS(
     'http://www.w3.org/2000/xmlns/',
@@ -18,13 +22,13 @@ function createElement(id: string) {
   svg.id = id
   viewerDiv.append(svg)
   container.append(viewerDiv)
-  
+
   // Add loading indicator
   const loading = document.createElement('div')
   loading.innerHTML = 'Loading data from S3...'
   loading.style.padding = '10px'
   container.prepend(loading)
-  
+
   return { container, loading }
 }
 
@@ -50,7 +54,7 @@ async function createVariantViewer({
   s3VcfBucketUrl = 'https://s3.amazonaws.com/agrjbrowse/VCF',
 }: VariantViewerArgs) {
   const { container, loading } = createElement(`${organism}-${geneSymbol}-svg`)
-  
+
   try {
     // Fetch real data from S3
     const region = {
@@ -58,37 +62,38 @@ async function createVariantViewer({
       start,
       end,
     }
-    
+
     // Build URLs based on organism and configuration
     let ncListUrl: string
     let vcfUrl: string
     let assembly: string
-    
+
     if (organism === 'mouse') {
       ncListUrl = `${s3DockerBucketUrl}/${releaseVersion}/MGI/mouse/tracks/All_Genes/${chromosome}/trackData.jsonz`
       vcfUrl = `${s3VcfBucketUrl}/${releaseVersion}/mouse-latest.vcf.gz`
       assembly = 'mouse'
-    } else { // fly
+    } else {
+      // fly
       ncListUrl = `${s3DockerBucketUrl}/${releaseVersion}/FlyBase/fruitfly/tracks/All_Genes/${chromosome}/trackData.jsonz`
       vcfUrl = `${s3VcfBucketUrl}/${releaseVersion}/fly-latest.vcf.gz`
       assembly = 'fly'
     }
-    
+
     // Fetch NCList data for gene structure
     const trackData = await fetchNCListData({
       region,
       urlTemplate: ncListUrl,
     })
-    
+
     // Fetch VCF data for variants
     const variantData = await fetchTabixVcfData({
       url: vcfUrl,
       region,
     })
-    
+
     // Update loading message
     loading.innerHTML = `Loaded ${variantData.length} variants`
-    
+
     // Create the viewer with real data
     const trackConfig = {
       region,
@@ -106,39 +111,45 @@ async function createVariantViewer({
       visibleVariants: undefined,
       binRatio: 0.01,
     }
-    
+
     setTimeout(() => {
-      new GenomeFeatureViewer(trackConfig, `#${organism}-${geneSymbol}-svg`, 900, undefined)
-      
+      new GenomeFeatureViewer(
+        trackConfig,
+        `#${organism}-${geneSymbol}-svg`,
+        900,
+        undefined,
+      )
+
       // Add success message
       setTimeout(() => {
         loading.innerHTML = `✓ Loaded ${variantData.length} variants for ${geneSymbol} gene`
         loading.style.color = 'green'
       }, 500)
     }, 100)
-    
   } catch (error) {
     loading.innerHTML = `Error loading data: ${error.message}`
     loading.style.color = 'red'
     console.error('Failed to load data:', error)
   }
-  
+
   return container
 }
 
 export default {
   title: 'VCF Variant Glyphs Fix',
-  render: (args) => {
+  render: args => {
     // Create container synchronously
     const wrapper = document.createElement('div')
-    
+
     // Load data asynchronously
-    createVariantViewer(args).then(container => {
-      wrapper.appendChild(container)
-    }).catch(error => {
-      wrapper.innerHTML = `<div style="color: red; padding: 20px;">Error: ${error.message}</div>`
-    })
-    
+    createVariantViewer(args)
+      .then(container => {
+        wrapper.append(container)
+      })
+      .catch(error => {
+        wrapper.innerHTML = `<div style="color: red; padding: 20px;">Error: ${error.message}</div>`
+      })
+
     // Return wrapper immediately
     return wrapper
   },
@@ -261,4 +272,3 @@ The data is fetched from:
     },
   },
 }
-

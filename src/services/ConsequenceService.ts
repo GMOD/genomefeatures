@@ -156,14 +156,17 @@ export function getColorForConsequence(consequence: string) {
   const cleanedConsequence = cleanDelimitedField(consequence)
 
   // Handle multiple consequences separated by | or space
-  if (cleanedConsequence.split(' ').length > 1 || cleanedConsequence.split('|').length > 1) {
+  if (
+    cleanedConsequence.split(' ').length > 1 ||
+    cleanedConsequence.split('|').length > 1
+  ) {
     // For multiple consequences, take the first one
-    const firstConsequence = cleanedConsequence.includes('|') ? 
-      cleanedConsequence.split('|')[0].trim() : 
-      cleanedConsequence.split(' ')[0].trim()
+    const firstConsequence = cleanedConsequence.includes('|')
+      ? cleanedConsequence.split('|')[0].trim()
+      : cleanedConsequence.split(' ')[0].trim()
     return getColorForConsequence(firstConsequence)
   }
-  
+
   if (cleanedConsequence === 'UNKNOWN') {
     return 'gray'
   }
@@ -181,6 +184,6 @@ export function getColorForConsequence(consequence: string) {
     const color = CONSEQUENCES_ENUM.three_prime_UTR_variant.color
     return color
   }
-  
+
   return '#f0f'
 }

@@ -398,7 +398,7 @@ export function getVariantDescriptions(variant: VariantBin) {
       consequence: description.consequence || 'UNKNOWN',
     }
   })
-  
+
   return result
 }
 
@@ -408,8 +408,10 @@ export function getVariantAlleles(variant: VariantBin) {
     .flatMap(val => {
       // Try to parse JSON if it's a stringified array
       const rawValue = val.allele_ids?.values?.[0]
-      if (!rawValue) return []
-      
+      if (!rawValue) {
+        return []
+      }
+
       // Check if it's a JSON stringified array
       if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
         try {
@@ -420,7 +422,7 @@ export function getVariantAlleles(variant: VariantBin) {
           // Failed to parse as JSON, fall through to original logic
         }
       }
-      
+
       // Fallback to original logic
       const allele = rawValue.replace(/"/g, '')
       return allele?.split(',').map(val2 => val2.replace(/\[|\]| /g, ''))

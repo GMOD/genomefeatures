@@ -145,7 +145,7 @@ export function setHighlights(
           }
         })
       }
-      
+
       return returnVal
     })
     .datum((d: VariantData) => {
