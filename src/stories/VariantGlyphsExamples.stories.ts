@@ -29,7 +29,10 @@ function createElement(id: string) {
   loading.style.padding = '10px'
   container.prepend(loading)
 
-  return { container, loading }
+  return {
+    container,
+    loading,
+  }
 }
 
 interface VariantViewerArgs {
@@ -95,29 +98,27 @@ async function createVariantViewer({
     loading.innerHTML = `Loaded ${variantData.length} variants`
 
     // Create the viewer with real data
-    const trackConfig = {
-      region,
-      assembly,
-      tracks: [
-        {
-          type: 'ISOFORM_EMBEDDED_VARIANT',
-          trackData,
-          variantData,
-        },
-      ],
-      showVariantLabel: false,
-      variantFilter: [],
-      isoformFilter: [],
-      visibleVariants: undefined,
-      binRatio: 0.01,
-    }
 
     setTimeout(() => {
       new GenomeFeatureViewer(
-        trackConfig,
+        {
+          region,
+          genome: assembly,
+          tracks: [
+            {
+              type: 'ISOFORM_EMBEDDED_VARIANT',
+              trackData,
+              variantData,
+            },
+          ],
+          showVariantLabel: false,
+          variantFilter: [],
+          isoformFilter: [],
+          binRatio: 0.01,
+        },
         `#${organism}-${geneSymbol}-svg`,
         900,
-        undefined,
+        500,
       )
 
       // Add success message
@@ -127,7 +128,7 @@ async function createVariantViewer({
       }, 500)
     }, 100)
   } catch (error) {
-    loading.innerHTML = `Error loading data: ${error.message}`
+    loading.innerHTML = `Error loading data: ${error}`
     loading.style.color = 'red'
     console.error('Failed to load data:', error)
   }
@@ -146,8 +147,8 @@ export default {
       .then(container => {
         wrapper.append(container)
       })
-      .catch(error => {
-        wrapper.innerHTML = `<div style="color: red; padding: 20px;">Error: ${error.message}</div>`
+      .catch((error: unknown) => {
+        wrapper.innerHTML = `<div style="color: red; padding: 20px;">Error: ${error}</div>`
       })
 
     // Return wrapper immediately

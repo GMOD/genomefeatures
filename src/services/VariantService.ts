@@ -112,7 +112,7 @@ export interface VariantBin {
   symbol_text?: { values: string[] }
   consequence: string
   variantSet: VariantBin[]
-  variants: VariantBin[]
+  variants: VariantBin[] | undefined
   allele_of_genes?: { values: string[] }
   allele_of_gene_symbols?: { values: string[] }
   allele_of_gene_ids?: { values: string[] }
@@ -175,7 +175,7 @@ export function generateVariantBins(
         ]
       }
 
-      foundBin.variants.push(variant)
+      foundBin.variants?.push(variant)
       foundBin.fmin = Math.min(fmin, foundBin.fmin)
       foundBin.fmax = Math.max(fmax, foundBin.fmax)
       variantBins[foundVariantBinIndex] = foundBin
@@ -244,7 +244,9 @@ export function generateVariantDataBinsAndDataSets(
         foundBin.fmax = foundFmax
         foundBin.variantSet[foundMatchingVariantSetIndex].fmin = foundFmin
         foundBin.variantSet[foundMatchingVariantSetIndex].fmax = foundFmax
-        foundBin.variantSet[foundMatchingVariantSetIndex].variants.push(variant)
+        foundBin.variantSet[foundMatchingVariantSetIndex].variants?.push(
+          variant,
+        )
       } else {
         const foundMin = Math.min(foundBin.fmin, fmin)
         const foundMax = Math.max(foundBin.fmax, fmax)
@@ -261,7 +263,7 @@ export function generateVariantDataBinsAndDataSets(
         })
       }
 
-      foundBin.variants.push(variant)
+      foundBin.variants?.push(variant)
       foundBin.fmin = Math.min(fmin, foundBin.fmin)
       foundBin.fmax = Math.max(fmax, foundBin.fmax)
       variantBins[foundVariantBinIndex] = foundBin
@@ -407,6 +409,7 @@ export function getVariantAlleles(variant: VariantBin) {
   return (variant.variants ?? [])
     .flatMap(val => {
       // Try to parse JSON if it's a stringified array
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const rawValue = val.allele_ids?.values?.[0]
       if (!rawValue) {
         return []
@@ -424,8 +427,10 @@ export function getVariantAlleles(variant: VariantBin) {
       }
 
       // Fallback to original logic
-      const allele = rawValue.replace(/"/g, '')
-      return allele?.split(',').map(val2 => val2.replace(/\[|\]| /g, ''))
+      return rawValue
+        .replace(/"/g, '')
+        .split(',')
+        .map(val2 => val2.replace(/\[|\]| /g, ''))
     })
     .filter((f): f is string => !!f)
 }
@@ -501,7 +506,6 @@ export function getVariantDescription(variant: VariantBin) {
 export function getVariantSymbolDetail(
   variant: VariantBin,
 ): string | undefined {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant.variants) {
     return variant.variants.length !== 1
       ? `${variant.variants.length}`
@@ -541,7 +545,6 @@ export function getVariantSymbolDetail(
 }
 
 export function getVariantSymbol(variant: VariantBin): string {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant.variants) {
     return variant.variants.length !== 1
       ? `${variant.variants.length}`

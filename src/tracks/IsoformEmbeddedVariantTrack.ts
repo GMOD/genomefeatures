@@ -88,6 +88,7 @@ export default class IsoformEmbeddedVariantTrack {
     )
 
     // Pre-compute alleles for each variant to avoid redundant calls
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const variantAllelesMap = new Map<any, string[]>()
 
     variantBins.forEach(variant => {
@@ -498,7 +499,7 @@ export default class IsoformEmbeddedVariantTrack {
                           type.toLowerCase() === 'deletion' ||
                           type.toLowerCase() === 'mnv'
                         ) {
-                          const rectElement = isoform
+                          isoform
                             .append('rect')
                             .attr('class', 'variant-deletion')
                             .attr('x', x(fmin))
@@ -520,13 +521,13 @@ export default class IsoformEmbeddedVariantTrack {
                             .datum({
                               fmin: fmin,
                               fmax: fmax,
-                              alleles: variantAllelesMap.get(variant) || [],
+                              alleles: variantAllelesMap.get(variant) ?? [],
                             })
                         } else if (
                           type.toLowerCase() === 'snv' ||
                           type.toLowerCase() === 'point_mutation'
                         ) {
-                          const polygonElement = isoform
+                          isoform
                             .append('polygon')
                             .attr('class', 'variant-SNV')
                             .attr('points', snv_points(x(fmin)))
@@ -547,10 +548,10 @@ export default class IsoformEmbeddedVariantTrack {
                             .datum({
                               fmin: fmin,
                               fmax: fmax,
-                              alleles: variantAllelesMap.get(variant) || [],
+                              alleles: variantAllelesMap.get(variant) ?? [],
                             })
                         } else if (type.toLowerCase() === 'insertion') {
-                          const polygonElement = isoform
+                          isoform
                             .append('polygon')
                             .attr('class', 'variant-insertion')
                             .attr('points', insertion_points(x(fmin)))
@@ -571,14 +572,14 @@ export default class IsoformEmbeddedVariantTrack {
                             .datum({
                               fmin: fmin,
                               fmax: fmax,
-                              alleles: variantAllelesMap.get(variant) || [],
+                              alleles: variantAllelesMap.get(variant) ?? [],
                             })
                         } else if (
                           type.toLowerCase() === 'delins' ||
                           type.toLowerCase() === 'substitution' ||
                           type.toLowerCase() === 'indel'
                         ) {
-                          const polygonElement = isoform
+                          isoform
                             .append('polygon')
                             .attr('class', 'variant-delins')
                             .attr('points', delins_points(x(fmin)))
@@ -599,7 +600,7 @@ export default class IsoformEmbeddedVariantTrack {
                             .datum({
                               fmin: fmin,
                               fmax: fmax,
-                              alleles: variantAllelesMap.get(variant) || [],
+                              alleles: variantAllelesMap.get(variant) ?? [],
                             })
                         } else {
                           drawnVariant = false
@@ -676,15 +677,6 @@ export default class IsoformEmbeddedVariantTrack {
         )
     }
 
-    // Log variants that have alleles
-    const variantsWithAlleles = Array.from(variantAllelesMap.entries())
-      .filter(([_, alleles]) => alleles.length > 0)
-      .map(([variant, alleles]) => ({
-        variantName: variant.name,
-        alleles: alleles,
-        type: variant.type,
-      }))
-
     // Add setHighlights call at the end if initialHighlight is provided
     if (this.initialHighlight) {
       try {
@@ -708,7 +700,7 @@ export default class IsoformEmbeddedVariantTrack {
     // Convert filter array to Set for O(1) lookups
     const filterSet = new Set(variantFilter)
 
-    const filteredResults = variantData.filter((v, index) => {
+    const filteredResults = variantData.filter(v => {
       let returnVal = false
       try {
         // Check name match
@@ -747,6 +739,7 @@ export default class IsoformEmbeddedVariantTrack {
         }
 
         // Handle allele_ids with JSON parsing support
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         const rawValue = v.allele_ids?.values?.[0]
 
         if (rawValue) {

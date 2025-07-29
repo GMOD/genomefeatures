@@ -30,7 +30,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylisticTypeChecked,
   ...tseslint.configs.strictTypeChecked,
-  eslintPluginUnicorn.configs['flat/recommended'],
+  eslintPluginUnicorn.configs.recommended,
   importPlugin.flatConfigs.recommended,
   {
     rules: {
@@ -56,6 +56,7 @@ export default tseslint.config(
       'prefer-template': 'error',
       'one-var': ['error', 'never'],
 
+      'unicorn/no-array-reverse': 'off',
       'unicorn/prefer-global-this': 'off',
       'unicorn/prefer-structured-clone': 'off',
       'unicorn/no-new-array': 'off',
