@@ -4,12 +4,13 @@ import {
   calculateNewTrackPosition,
   checkSpace,
   findRange,
+  setHighlights,
 } from '../RenderFunctions'
 import { renderTrackDescription } from '../services/TrackService'
 import {
-  generateVariantBins,
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,
+  getVariantAlleles,
   getVariantDescriptions,
   getVariantSymbol,
   renderVariantDescriptions,
@@ -33,6 +34,7 @@ export default class IsoformEmbeddedVariantTrack {
   private transcriptTypes: string[]
   private variantTypes: string[]
   private showVariantLabel: boolean
+  private initialHighlight?: string[]
 
   constructor({
     viewer,
@@ -42,6 +44,7 @@ export default class IsoformEmbeddedVariantTrack {
     variantTypes,
     showVariantLabel,
     variantFilter,
+    initialHighlight,
     trackData,
     variantData,
   }: {
@@ -52,6 +55,7 @@ export default class IsoformEmbeddedVariantTrack {
     variantTypes: string[]
     showVariantLabel?: boolean
     variantFilter: string[]
+    initialHighlight?: string[]
     variantData?: VariantFeature[]
     trackData?: SimpleFeatureSerialized[]
   }) {
@@ -60,6 +64,7 @@ export default class IsoformEmbeddedVariantTrack {
     this.viewer = viewer
     this.width = width
     this.variantFilter = variantFilter
+    this.initialHighlight = initialHighlight
     this.height = height
     this.transcriptTypes = transcriptTypes
     this.variantTypes = variantTypes
@@ -70,10 +75,26 @@ export default class IsoformEmbeddedVariantTrack {
     const variantDataPre = this.variantData
     const trackData = this.trackData
     let isoformData = trackData
+    
     const variantData = this.filterVariantData(
       variantDataPre,
       this.variantFilter,
     )
+    
+    // Pre-compute variant bins once for all variants
+    const variantBins = generateVariantDataBinsAndDataSets(
+      variantData,
+      1, // Colin NOTE: made up value
+    )
+    
+    // Pre-compute alleles for each variant to avoid redundant calls
+    const variantAllelesMap = new Map<any, string[]>()
+    
+    variantBins.forEach(variant => {
+      const alleles = getVariantAlleles(variant)
+      variantAllelesMap.set(variant, alleles)
+    })
+    
     const viewer = this.viewer
     const width = this.width
     const showVariantLabel = this.showVariantLabel
@@ -98,7 +119,7 @@ export default class IsoformEmbeddedVariantTrack {
     const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
     const VARIANT_HEIGHT = 10 // this is the height of the isoform running all of the way through
     const VARIANT_OFFSET = 20 // this is the height of the isoform running all of the way through
-    const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way thro>
+    const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
     const ARROW_HEIGHT = 20
     const ARROW_WIDTH = 10
     const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
@@ -385,6 +406,7 @@ export default class IsoformEmbeddedVariantTrack {
                   const innerType = innerChild.type
 
                   let validInnerType = false
+                  
                   if (exon_feats.includes(innerType)) {
                     validInnerType = true
                     isoform
@@ -450,37 +472,35 @@ export default class IsoformEmbeddedVariantTrack {
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
                   }
                   if (validInnerType) {
-                    const variantBins = generateVariantDataBinsAndDataSets(
-                      variantData,
-                      // Colin NOTE: made up value
-                      1,
-                    )
-                    // TODO: remove this once no longer needed
-                    generateVariantBins(variantData)
-
-                    // 12 if all have 1
+                    
+                    // Use pre-computed variantBins from outside the loop
                     variantBins.forEach(variant => {
                       const { type, fmax, fmin } = variant
-                      if (
+                      const overlaps = (
                         (fmin < innerChild.fmin && fmax > innerChild.fmin) ||
                         (fmax > innerChild.fmax && fmin < innerChild.fmax) ||
                         (fmax <= innerChild.fmax && fmin >= innerChild.fmin)
-                      ) {
+                      )
+                      
+                      if (overlaps) {
                         let drawnVariant = true
                         const descriptions = getVariantDescriptions(variant)
+                        
                         const consequenceColor =
                           getColorsForConsequences(descriptions)[0]
+                          
                         const descriptionHtml =
                           renderVariantDescriptions(descriptions)
                         const width = Math.max(
                           Math.ceil(x(fmax) - x(fmin)),
                           MIN_WIDTH,
                         )
+                        
                         if (
                           type.toLowerCase() === 'deletion' ||
                           type.toLowerCase() === 'mnv'
                         ) {
-                          isoform
+                          const rectElement = isoform
                             .append('rect')
                             .attr('class', 'variant-deletion')
                             .attr('x', x(fmin))
@@ -499,12 +519,16 @@ export default class IsoformEmbeddedVariantTrack {
                                 closeToolTip,
                               )
                             })
-                            .datum({ fmin: fmin, fmax: fmax })
+                            .datum({ 
+                              fmin: fmin, 
+                              fmax: fmax,
+                              alleles: variantAllelesMap.get(variant) || []
+                            })
                         } else if (
                           type.toLowerCase() === 'snv' ||
                           type.toLowerCase() === 'point_mutation'
                         ) {
-                          isoform
+                          const polygonElement = isoform
                             .append('polygon')
                             .attr('class', 'variant-SNV')
                             .attr('points', snv_points(x(fmin)))
@@ -522,9 +546,13 @@ export default class IsoformEmbeddedVariantTrack {
                                 closeToolTip,
                               )
                             })
-                            .datum({ fmin: fmin, fmax: fmax })
+                            .datum({ 
+                              fmin: fmin, 
+                              fmax: fmax,
+                              alleles: variantAllelesMap.get(variant) || []
+                            })
                         } else if (type.toLowerCase() === 'insertion') {
-                          isoform
+                          const polygonElement = isoform
                             .append('polygon')
                             .attr('class', 'variant-insertion')
                             .attr('points', insertion_points(x(fmin)))
@@ -542,13 +570,17 @@ export default class IsoformEmbeddedVariantTrack {
                                 closeToolTip,
                               )
                             })
-                            .datum({ fmin: fmin, fmax: fmax })
+                            .datum({ 
+                              fmin: fmin, 
+                              fmax: fmax,
+                              alleles: variantAllelesMap.get(variant) || []
+                            })
                         } else if (
                           type.toLowerCase() === 'delins' ||
                           type.toLowerCase() === 'substitution' ||
                           type.toLowerCase() === 'indel'
                         ) {
-                          isoform
+                          const polygonElement = isoform
                             .append('polygon')
                             .attr('class', 'variant-delins')
                             .attr('points', delins_points(x(fmin)))
@@ -566,9 +598,12 @@ export default class IsoformEmbeddedVariantTrack {
                                 closeToolTip,
                               )
                             })
-                            .datum({ fmin: fmin, fmax: fmax })
+                            .datum({ 
+                              fmin: fmin, 
+                              fmax: fmax,
+                              alleles: variantAllelesMap.get(variant) || []
+                            })
                         } else {
-                          console.warn('type not found', type, variant)
                           drawnVariant = false
                         }
                         if (drawnVariant && showVariantLabel) {
@@ -642,6 +677,25 @@ export default class IsoformEmbeddedVariantTrack {
           'Overview of non-coding genome features unavailable at this time.',
         )
     }
+    
+    // Log variants that have alleles
+    const variantsWithAlleles = Array.from(variantAllelesMap.entries())
+      .filter(([_, alleles]) => alleles.length > 0)
+      .map(([variant, alleles]) => ({
+        variantName: variant.name,
+        alleles: alleles,
+        type: variant.type
+      }))
+    
+    // Add setHighlights call at the end if initialHighlight is provided
+    if (this.initialHighlight) {
+      try {
+        setHighlights(this.initialHighlight, this.viewer)
+      } catch (error) {
+        // Error calling setHighlights
+      }
+    }
+    
     // we return the appropriate height function
     return row_count * ISOFORM_HEIGHT + heightBuffer
   }
@@ -652,7 +706,79 @@ export default class IsoformEmbeddedVariantTrack {
     if (variantFilter.length === 0) {
       return variantData
     }
-    return variantData.filter(v => variantFilter.includes(v.name))
+    
+    // Convert filter array to Set for O(1) lookups
+    const filterSet = new Set(variantFilter)
+    
+    const filteredResults = variantData.filter((v, index) => {
+      let returnVal = false
+      try {
+        // Check name match
+        if (filterSet.has(v.name)) {
+          returnVal = true
+        }
+        
+        // Check allele_symbols match
+        if (v.allele_symbols?.values) {
+          const cleanedSymbol = v.allele_symbols.values[0].replace(/"|\\[|\\]| /g, '')
+          if (filterSet.has(cleanedSymbol)) {
+            returnVal = true
+          }
+        }
+        
+        // Check symbol match
+        if (v.symbol?.values) {
+          const cleanedSymbol = v.symbol.values[0].replace(/"|\\[|\\]| /g, '')
+          if (filterSet.has(cleanedSymbol)) {
+            returnVal = true
+          }
+        }
+        
+        // Check symbol_text match
+        if (v.symbol_text?.values) {
+          const cleanedSymbolText = v.symbol_text.values[0].replace(/"|\\[|\\]| /g, '')
+          if (filterSet.has(cleanedSymbolText)) {
+            returnVal = true
+          }
+        }
+        
+        // Handle allele_ids with JSON parsing support
+        const rawValue = v.allele_ids?.values?.[0]
+        
+        if (rawValue) {
+          let ids: string[] = []
+          
+          // Check if it's a JSON stringified array
+          if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
+            try {
+              const parsed: unknown = JSON.parse(rawValue)
+              ids = (Array.isArray(parsed) ? parsed : [parsed]).map(String)
+            } catch (e) {
+              // Fallback to original parsing
+              ids = rawValue.replace(/"|\\[|\\]| /g, '').split(',')
+            }
+          } else {
+            // Original parsing logic
+            ids = rawValue.replace(/"|\\[|\\]| /g, '').split(',')
+          }
+          
+          // Use Set.has() for O(1) lookup
+          for (const id of ids) {
+            if (filterSet.has(id)) {
+              returnVal = true
+              break
+            }
+          }
+        }
+      } catch (e) {
+        // On error, include the variant
+        returnVal = true
+      }
+      
+      return returnVal
+    })
+    
+    return filteredResults
   }
 
   private renderTooltipDescription(

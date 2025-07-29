@@ -1,3 +1,5 @@
+import { cleanDelimitedField } from '../utils/stringUtils'
+
 export const CONSEQUENCES_ENUM = {
   transcript_ablation: {
     impact: 'HIGH',
@@ -150,25 +152,35 @@ export function getColorForConsequence(consequence: string) {
     return 'black'
   }
 
-  if (consequence.split(' ').length > 1) {
-    return 'hotpink'
+  // Strip brackets if present (extra safety measure)
+  const cleanedConsequence = cleanDelimitedField(consequence)
+
+  // Handle multiple consequences separated by | or space
+  if (cleanedConsequence.split(' ').length > 1 || cleanedConsequence.split('|').length > 1) {
+    // For multiple consequences, take the first one
+    const firstConsequence = cleanedConsequence.includes('|') ? 
+      cleanedConsequence.split('|')[0].trim() : 
+      cleanedConsequence.split(' ')[0].trim()
+    return getColorForConsequence(firstConsequence)
   }
-  if (consequence === 'UNKNOWN') {
+  
+  if (cleanedConsequence === 'UNKNOWN') {
     return 'gray'
   }
 
   const consequenceLookup =
-    CONSEQUENCES_ENUM[consequence as keyof typeof CONSEQUENCES_ENUM]
+    CONSEQUENCES_ENUM[cleanedConsequence as keyof typeof CONSEQUENCES_ENUM]
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (consequenceLookup) {
     return consequenceLookup.color
-  } else if (consequence === '5_prime_UTR_variant') {
-    return CONSEQUENCES_ENUM.five_prime_UTR_variant.color
-  } else if (consequence === '3_prime_UTR_variant') {
-    return CONSEQUENCES_ENUM.three_prime_UTR_variant.color
-  } else {
-    console.warn('Consequence', consequence, 'not found')
+  } else if (cleanedConsequence === '5_prime_UTR_variant') {
+    const color = CONSEQUENCES_ENUM.five_prime_UTR_variant.color
+    return color
+  } else if (cleanedConsequence === '3_prime_UTR_variant') {
+    const color = CONSEQUENCES_ENUM.three_prime_UTR_variant.color
+    return color
   }
+  
   return '#f0f'
 }
