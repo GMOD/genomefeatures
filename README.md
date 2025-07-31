@@ -30,70 +30,13 @@ e.g.
 
 ## Loading data
 
-### Legacy access pattern - Apollo REST API
-
-The original implementation of this component required fetching data from an
-Apollo REST API endpoint. This is still supported, though it is a overkill for
-most usages
-
-```typescript
-import {
-  fetchApolloAPIData,
-  parseLocString,
-  GenomeFeatureViewer,
-} from 'genomefeatures'
-
-// if your bundler let's you import CSS, you can do this, otherwise see CDN usage example
-import 'genomefeatures/style.css'
-
-const BASE_URL = 'https://www.alliancegenome.org/apollo'
-const locString = '2L:130639..135911'
-const genome = 'fly'
-const region = parseLocString(locString)
-
-const trackData = await fetchApolloAPIFeatures({
-  region,
-  genome,
-  track: 'All Genes',
-  baseUrl: `${BASE_URL}/track/`,
-})
-
-const variantData = await fetchApolloAPIFeatures({
-  region,
-  genome,
-  track: 'Variants',
-  baseUrl: `${BASE_URL}/vcf/`,
-})
-
-const gfc = new GenomeFeatureViewer(
-  {
-    region,
-    genome,
-    tracks: [
-      {
-        type: 'ISOFORM_EMBEDDED_VARIANT',
-        trackData,
-        variantData,
-      },
-    ],
-  },
-  `#svgelement`,
-  900,
-  500,
-)
-```
-
-And then in your HTML
-
-```html
-<svg id="svgelement"></svg>
-```
-
 ### Static access pattern - Accessing JBrowse NCList files and VCF tabix files
 
-After the refactor, we can now fetch files from static files like JBrowse 1
-NCList and VCF tabix files. This means you do not need a complex apollo
-deployment to use this component: just some static files
+In the old days, this component required a WebApollo aka Apollo 2 server running
+to work (see [LEGACY.md](LEGACY.md)) but after the refactor, we can now fetch
+files from static files like JBrowse 1 NCList and VCF tabix files. This means
+you do not need a complex apollo deployment to use this component: just some
+static files
 
 ```typescript
 import {
@@ -148,6 +91,9 @@ And then in your HTML
 ```html
 <svg id="svgelement"></svg>
 ```
+
+This could likely also be wired up with @gmod/gff and @gmod/tabix to fetch from
+a GFF3 file backend, but NCList was what was available
 
 ## Developers
 
