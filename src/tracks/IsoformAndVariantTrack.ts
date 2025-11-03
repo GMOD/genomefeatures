@@ -7,20 +7,22 @@ import {
   setHighlights,
 } from '../RenderFunctions'
 import {
-  getJBrowseLink,
-  renderTrackDescription,
-} from '../services/TrackService'
+  FEATURE_TYPES,
+  adjustLabelPosition,
+  createSortWeightMap,
+  generateArrowPoints,
+  getLabelWidth,
+  sortIsoformData,
+} from './TrackConstants'
 import {
   createCloseTooltipFunction,
   createTooltipDiv,
   renderTooltipDescription,
 } from '../services/TooltipService'
 import {
-  FEATURE_TYPES,
-  createSortWeightMap,
-  generateArrowPoints,
-  sortIsoformData,
-} from './TrackConstants'
+  getJBrowseLink,
+  renderTrackDescription,
+} from '../services/TrackService'
 import {
   generateDelinsPoint,
   generateInsertionPoint,
@@ -269,15 +271,9 @@ export default class IsoformAndVariantTrack {
         })
         .datum({ fmin: fmin, variant: symbol_string + fmin })
 
-      const symbol_string_width = variant_label.node()?.getBBox().width ?? 0
-      if (symbol_string_width + label_offset > viewerWidth) {
-        const diff = symbol_string_width + label_offset - viewerWidth
-        label_offset -= diff
-        variant_label.attr(
-          'transform',
-          `translate(${label_offset},${label_height})`,
-        )
-      }
+      const symbolStringWidth = getLabelWidth(variant_label, 0)
+      label_offset = adjustLabelPosition(label_offset, symbolStringWidth, viewerWidth)
+      variant_label.attr('transform', `translate(${label_offset},${label_height})`)
     })
 
     // Need to adjust for the label track being created already... but is below this track.
@@ -473,12 +469,9 @@ export default class IsoformAndVariantTrack {
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
-        const symbol_string_width = variant_label.node()?.getBBox().width ?? 0
-        if (symbol_string_width + label_offset > viewerWidth) {
-          const diff = symbol_string_width + label_offset - viewerWidth
-          label_offset -= diff
-          variant_label.attr('transform', `translate(${label_offset},35)`)
-        }
+        const symbolStringWidth = getLabelWidth(variant_label, 0)
+        label_offset = adjustLabelPosition(label_offset, symbolStringWidth, viewerWidth)
+        variant_label.attr('transform', `translate(${label_offset},${label_height})`)
       }
     })
 

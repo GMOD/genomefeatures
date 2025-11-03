@@ -6,18 +6,18 @@ import {
   findRange,
   setHighlights,
 } from '../RenderFunctions'
-import { renderTrackDescription } from '../services/TrackService'
-import {
-  createCloseTooltipFunction,
-  createTooltipDiv,
-  renderTooltipDescription,
-} from '../services/TooltipService'
 import {
   FEATURE_TYPES,
   createSortWeightMap,
   generateArrowPoints,
   sortIsoformData,
 } from './TrackConstants'
+import {
+  createCloseTooltipFunction,
+  createTooltipDiv,
+  renderTooltipDescription,
+} from '../services/TooltipService'
+import { renderTrackDescription } from '../services/TrackService'
 import {
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,

@@ -76,3 +76,39 @@ export function sortIsoformData<T extends { selected?: boolean; name: string }>(
     return a.name.localeCompare(b.name)
   })
 }
+
+/**
+ * Gets the width of a label's bounding box, with fallback for environments where getBBox fails
+ * @param label - D3 selection of the label element
+ * @param fallbackWidth - Width to use if getBBox fails (default: 100)
+ * @returns Width of the label in pixels
+ */
+export function getLabelWidth(
+  label: { node: () => { getBBox: () => { width: number } } | null },
+  fallbackWidth = 100,
+): number {
+  try {
+    return label.node()?.getBBox().width ?? fallbackWidth
+  } catch (e) {
+    console.debug('Could not get bounding box for label, using fallback width')
+    return fallbackWidth
+  }
+}
+
+/**
+ * Adjusts label position if it would overflow the viewer width
+ * @param labelOffset - Current label offset position
+ * @param labelWidth - Width of the label
+ * @param viewerWidth - Width of the viewer container
+ * @returns Adjusted label offset that keeps label within bounds
+ */
+export function adjustLabelPosition(
+  labelOffset: number,
+  labelWidth: number,
+  viewerWidth: number,
+): number {
+  if (labelWidth + labelOffset > viewerWidth) {
+    return labelOffset - (labelWidth + labelOffset - viewerWidth)
+  }
+  return labelOffset
+}

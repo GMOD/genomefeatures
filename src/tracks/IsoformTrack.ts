@@ -2,21 +2,23 @@ import * as d3 from 'd3'
 
 import { calculateNewTrackPosition, checkSpace } from '../RenderFunctions'
 import {
-  getJBrowseLink,
-  renderTrackDescription,
-} from '../services/TrackService'
+  FEATURE_TYPES,
+  adjustLabelPosition,
+  createSortWeightMap,
+  generateArrowPoints,
+  getLabelWidth,
+  sortIsoformData,
+} from './TrackConstants'
 import {
   createCloseTooltipFunction,
   createTooltipDiv,
   renderTooltipDescription,
 } from '../services/TooltipService'
-import { generateSnvPoints } from '../services/VariantService'
 import {
-  FEATURE_TYPES,
-  createSortWeightMap,
-  generateArrowPoints,
-  sortIsoformData,
-} from './TrackConstants'
+  getJBrowseLink,
+  renderTrackDescription,
+} from '../services/TrackService'
+import { generateSnvPoints } from '../services/VariantService'
 
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Region } from '../types'
@@ -249,37 +251,16 @@ export default class IsoformTrack {
                   )
                 })
 
-              let symbol_string_width = 100
-              try {
-                // @ts-expect-error
-                symbol_string_width = textLabel.node()?.getBBox().width ?? 0
-              } catch (e) {
-                // Fallback to default width if getBBox() fails (e.g., in non-browser environments)
-                console.debug('Could not get bounding box for transcript label, using default width')
-              }
-              if (symbol_string_width + labelOffset > this.width) {
-                const diff = symbol_string_width + labelOffset - this.width
-                labelOffset -= diff
-                textLabel.attr('transform', `translate(${labelOffset},0)`)
-              }
+              // @ts-expect-error - textLabel has getBBox method
+              const symbolStringWidth = getLabelWidth(textLabel)
+              labelOffset = adjustLabelPosition(labelOffset, symbolStringWidth, this.width)
+              textLabel.attr('transform', `translate(${labelOffset},0)`)
 
               // Now that the label has been created we can calculate the space that
               // this new element is taking up making sure to add in the width of
               // the box.
-              // TODO: this is just an estimate of the length
-              let textWidth = text_string.length * 2
-
-              // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
-              try {
-                // @ts-expect-error
-                textWidth = textLabel.node()?.getBBox().width ?? 0
-              } catch (e) {
-                console.error('Not yet rendered', e)
-              }
-              // First check to see if label goes past the end
-              if (textWidth + x(featureChild.fmin) > width) {
-                // console.error(featureChild.name + " goes over the edge");
-              }
+              // @ts-expect-error - textLabel has getBBox method
+              const textWidth = getLabelWidth(textLabel, text_string.length * 2)
               const featEnd =
                 textWidth > x(featureChild.fmax) - x(featureChild.fmin)
                   ? x(featureChild.fmin) + textWidth

@@ -59,7 +59,7 @@ export default defineConfig(
       'no-console': [
         'warn',
         {
-          allow: ['error', 'warn'],
+          allow: ['error', 'warn', 'debug'],
         },
       ],
       'no-underscore-dangle': 'off',
