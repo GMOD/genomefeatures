@@ -95,13 +95,13 @@ export default class ReferenceTrack {
 
   DrawOverviewTrack(): void {
     const viewer = this.viewer
-    const view_start = this.track.start
-    const view_end = this.track.end
+    const viewStart = this.track.start
+    const viewEnd = this.track.end
     const width = this.width
 
     const x = d3
       .scaleLinear()
-      .domain([view_start, view_end])
+      .domain([viewStart, viewEnd])
       .range(this.track.range)
 
     const xAxis = d3.axisTop(x).ticks(8, 's').tickSize(8)

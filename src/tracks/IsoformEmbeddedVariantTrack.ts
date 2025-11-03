@@ -7,6 +7,7 @@ import {
   setHighlights,
 } from '../RenderFunctions'
 import { renderTrackDescription } from '../services/TrackService'
+import { renderTooltipDescription } from '../services/TooltipService'
 import {
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,
@@ -191,9 +192,6 @@ export default class IsoformEmbeddedVariantTrack {
     const used_space: string[][] = []
     let fmin_display = -1
     let fmax_display = -1
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const renderTooltipDescription = this.renderTooltipDescription
 
     // **************************************
     // FOR NOW LETS FOCUS ON ONE GENE ISOFORM
@@ -788,45 +786,5 @@ export default class IsoformEmbeddedVariantTrack {
     })
 
     return filteredResults
-  }
-
-  private renderTooltipDescription(
-    tooltipDiv: d3.Selection<
-      HTMLDivElement,
-      unknown,
-      HTMLElement | null,
-      undefined
-    >,
-    descriptionHtml: string,
-    closeFunction: () => void,
-    event: MouseEvent,
-  ): void {
-    tooltipDiv
-      .transition()
-      .duration(200)
-      .style('width', 'auto')
-      .style('height', 'auto')
-      .style('opacity', 1)
-      .style('visibility', 'visible')
-
-    tooltipDiv
-      .html(descriptionHtml)
-      .style('left', `${event.pageX + 10}px`)
-      .style('top', `${event.pageY + 10}px`)
-      .append('button')
-      .attr('type', 'button')
-      .text('Close')
-      .on('click', () => {
-        closeFunction()
-      })
-
-    tooltipDiv
-      .append('button')
-      .attr('type', 'button')
-      .html('&times;')
-      .attr('class', 'tooltipDivX')
-      .on('click', () => {
-        closeFunction()
-      })
   }
 }

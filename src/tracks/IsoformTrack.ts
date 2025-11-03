@@ -5,6 +5,7 @@ import {
   getJBrowseLink,
   renderTrackDescription,
 } from '../services/TrackService'
+import { renderTooltipDescription } from '../services/TooltipService'
 import { generateSnvPoints } from '../services/VariantService'
 
 import type { SimpleFeatureSerialized } from '../services/types'
@@ -52,42 +53,6 @@ export default class IsoformTrack {
     this.genome = genome
   }
 
-  private renderTooltipDescription(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, any>,
-    descriptionHtml: string,
-    closeFunction: () => void,
-    event: MouseEvent,
-  ) {
-    tooltipDiv
-      .transition()
-      .duration(200)
-      .style('width', 'auto')
-      .style('height', 'auto')
-      .style('opacity', 1)
-      .style('visibility', 'visible')
-
-    tooltipDiv
-      .html(descriptionHtml)
-      .style('left', `${event.pageX + 10}px`)
-      .style('top', `${event.pageY + 10}px`)
-      .append('button')
-      .attr('type', 'button')
-      .text('Close')
-      .on('click', () => {
-        closeFunction()
-      })
-
-    tooltipDiv
-      .append('button')
-      .attr('type', 'button')
-      .html('&times;')
-      .attr('class', 'tooltipDivX')
-      .on('click', () => {
-        closeFunction()
-      })
-  }
-
   DrawTrack() {
     let data = this.trackData
     const htpVariant = this.htpVariant
@@ -103,18 +68,15 @@ export default class IsoformTrack {
     const exon_feats = ['exon']
     const displayFeats = this.transcriptTypes
 
-    const exon_height = 10 // will be white / transparent
-    const cds_height = 10 // will be colored in
-    const isoform_height = 40 // height for each isoform
-    const isoform_title_height = 0 // height for each isoform
-    const utr_height = 10 // this is the height of the isoform running all of the way through
-    const transcript_backbone_height = 4 // this is the height of the isoform running all of the way through
-    const arrow_height = 20
-    const arrow_width = 10
-    const arrow_points = `0,0 0,${arrow_height} ${arrow_width},${arrow_width}`
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const renderTooltipDescription = this.renderTooltipDescription
+    const exonHeight = 10 // will be white / transparent
+    const cdsHeight = 10 // will be colored in
+    const isoformHeight = 40 // height for each isoform
+    const isoformTitleHeight = 0 // height for each isoform
+    const utrHeight = 10 // this is the height of the isoform running all of the way through
+    const transcriptBackboneHeight = 4 // this is the height of the isoform running all of the way through
+    const arrowHeight = 20
+    const arrowWidth = 10
+    const arrowPoints = `0,0 0,${arrowHeight} ${arrowWidth},${arrowWidth}`
 
     const x = d3
       .scaleLinear()
@@ -227,7 +189,7 @@ export default class IsoformTrack {
                 .attr('class', 'isoform')
                 .attr(
                   'transform',
-                  `translate(0,${row_count * isoform_height + 10})`,
+                  `translate(0,${row_count * isoformHeight + 10})`,
                 )
 
               const transcriptStart = Math.max(x(featureChild.fmin), 0)
@@ -238,7 +200,7 @@ export default class IsoformTrack {
                   strand: feature.strand,
                 }))
                 .attr('class', 'transArrow')
-                .attr('points', arrow_points)
+                .attr('points', arrowPoints)
                 .attr('transform', () =>
                   feature.strand > 0
                     ? `translate(${transcriptEnd},0)`
@@ -256,8 +218,8 @@ export default class IsoformTrack {
               isoform
                 .append('rect')
                 .attr('class', 'transcriptBackbone')
-                .attr('y', 10 + isoform_title_height)
-                .attr('height', transcript_backbone_height)
+                .attr('y', 10 + isoformTitleHeight)
+                .attr('height', transcriptBackboneHeight)
                 .attr('transform', `translate(${transcriptStart},0)`)
                 .attr('width', transcriptEnd - transcriptStart)
                 .datum({
@@ -282,7 +244,7 @@ export default class IsoformTrack {
                 .attr('class', 'transcriptLabel')
                 .attr('fill', selected ? 'sandybrown' : 'gray')
                 .attr('opacity', selected ? 1 : 0.5)
-                .attr('height', isoform_title_height)
+                .attr('height', isoformTitleHeight)
                 .attr('transform', `translate(${labelOffset},0)`)
                 .text(text_string)
                 .datum({
@@ -400,10 +362,10 @@ export default class IsoformTrack {
                       .attr(
                         'transform',
                         `translate(0,${
-                          exon_height - transcript_backbone_height
+                          exonHeight - transcriptBackboneHeight
                         })`,
                       )
-                      .attr('height', exon_height)
+                      .attr('height', exonHeight)
                       .attr('z-index', 10)
                       .attr('width', innerEnd - innerStart)
                       .datum({
@@ -426,11 +388,11 @@ export default class IsoformTrack {
                       .attr(
                         'transform',
                         `translate(0,${
-                          cds_height - transcript_backbone_height
+                          cdsHeight - transcriptBackboneHeight
                         })`,
                       )
                       .attr('z-index', 20)
-                      .attr('height', cds_height)
+                      .attr('height', cdsHeight)
                       .attr('width', innerEnd - innerStart)
                       .datum({
                         fmin: innerChild.fmin,
@@ -452,11 +414,11 @@ export default class IsoformTrack {
                       .attr(
                         'transform',
                         `translate(0,${
-                          utr_height - transcript_backbone_height
+                          utrHeight - transcriptBackboneHeight
                         })`,
                       )
                       .attr('z-index', 20)
-                      .attr('height', utr_height)
+                      .attr('height', utrHeight)
                       .attr('width', innerEnd - innerStart)
                       .datum({
                         fmin: innerChild.fmin,
@@ -491,11 +453,11 @@ export default class IsoformTrack {
                 .attr('x', 10)
                 .attr(
                   'transform',
-                  `translate(0,${row_count * isoform_height + 10})`,
+                  `translate(0,${row_count * isoformHeight + 10})`,
                 )
                 .attr('fill', 'red')
                 .attr('opacity', 1)
-                .attr('height', isoform_title_height)
+                .attr('height', isoformTitleHeight)
                 .html(link)
             }
           }
@@ -507,7 +469,7 @@ export default class IsoformTrack {
       track
         .append('text')
         .attr('x', 30)
-        .attr('y', isoform_title_height + 10)
+        .attr('y', isoformTitleHeight + 10)
         .attr('fill', 'orange')
         .attr('opacity', 0.6)
         .text(
@@ -515,6 +477,6 @@ export default class IsoformTrack {
         )
     }
     // we return the appropriate height function
-    return row_count * isoform_height
+    return row_count * isoformHeight
   }
 }
