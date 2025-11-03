@@ -57,6 +57,7 @@ export default class IsoformTrack {
     tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, any>,
     descriptionHtml: string,
     closeFunction: () => void,
+    event: MouseEvent,
   ) {
     tooltipDiv
       .transition()
@@ -68,10 +69,8 @@ export default class IsoformTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      // @ts-expect-error
-      .style('left', `${window.event!.pageX + 10}px`)
-      // @ts-expect-error
-      .style('top', `${window.event!.pageY + 10}px`)
+      .style('left', `${event.pageX + 10}px`)
+      .style('top', `${event.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')
@@ -245,11 +244,12 @@ export default class IsoformTrack {
                     ? `translate(${transcriptEnd},0)`
                     : `translate(${transcriptStart},${arrow_height}) rotate(180)`,
                 )
-                .on('click', () => {
+                .on('click', (event) => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
+                    event,
                   )
                 })
 
@@ -264,11 +264,12 @@ export default class IsoformTrack {
                   fmin: featureChild.fmin,
                   fmax: featureChild.fmax,
                 })
-                .on('click', () => {
+                .on('click', (event) => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
+                    event,
                   )
                 })
               let text_string = featureChild.name
@@ -287,11 +288,12 @@ export default class IsoformTrack {
                 .datum({
                   fmin: featureChild.fmin,
                 })
-                .on('click', () => {
+                .on('click', (event) => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
+                    event,
                   )
                 })
 
@@ -408,11 +410,12 @@ export default class IsoformTrack {
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
                       })
-                      .on('click', () => {
+                      .on('click', (event) => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
+                          event,
                         )
                       })
                   } else if (CDS_feats.includes(innerType)) {
@@ -433,11 +436,12 @@ export default class IsoformTrack {
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
                       })
-                      .on('click', () => {
+                      .on('click', (event) => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
+                          event,
                         )
                       })
                   } else if (UTR_feats.includes(innerType)) {
@@ -458,11 +462,12 @@ export default class IsoformTrack {
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
                       })
-                      .on('click', () => {
+                      .on('click', (event) => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
+                          event,
                         )
                       })
                   }

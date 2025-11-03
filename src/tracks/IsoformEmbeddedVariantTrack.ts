@@ -262,11 +262,12 @@ export default class IsoformEmbeddedVariantTrack {
                     `translate(${x(featureChild.fmin)},-${GENE_LABEL_HEIGHT})`,
                   )
                   .text(text_string)
-                  .on('click', () => {
+                  .on('click', (event) => {
                     renderTooltipDescription(
                       tooltipDiv,
                       renderTrackDescription(feature),
                       closeToolTip,
+                      event,
                     )
                   })
                   .datum({ fmin: featureChild.fmin })
@@ -286,11 +287,12 @@ export default class IsoformEmbeddedVariantTrack {
                     ? `translate(${x(d.fmax)},0)`
                     : `translate(${x(d.fmin)},${ARROW_HEIGHT}) rotate(180)`
                 })
-                .on('click', () => {
+                .on('click', (event) => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
+                    event,
                   )
                 })
 
@@ -301,11 +303,12 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('height', TRANSCRIPT_BACKBONE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
-                .on('click', () => {
+                .on('click', (event) => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
+                    event,
                   )
                 })
                 .datum({ fmin: featureChild.fmin, fmax: featureChild.fmax })
@@ -319,11 +322,12 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('height', ISOFORM_TITLE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .text(text_string)
-                .on('click', () => {
+                .on('click', (event) => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
                     closeToolTip,
+                    event,
                   )
                 })
                 .datum({ fmin: featureChild.fmin })
@@ -421,11 +425,12 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('height', EXON_HEIGHT)
                       .attr('z-index', 10)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', () => {
+                      .on('click', (event) => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
+                          event,
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
@@ -442,11 +447,12 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('z-index', 20)
                       .attr('height', CDS_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', () => {
+                      .on('click', (event) => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
+                          event,
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
@@ -463,11 +469,12 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('z-index', 20)
                       .attr('height', UTR_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', () => {
+                      .on('click', (event) => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
                           closeToolTip,
+                          event,
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
@@ -511,11 +518,12 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('fill', consequenceColor)
                             .attr('height', VARIANT_HEIGHT)
                             .attr('width', width)
-                            .on('click', () => {
+                            .on('click', (event) => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
+                                event,
                               )
                             })
                             .datum({
@@ -538,11 +546,12 @@ export default class IsoformEmbeddedVariantTrack {
                               `translate(0,${VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .attr('z-index', 30)
-                            .on('click', () => {
+                            .on('click', (event) => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
+                                event,
                               )
                             })
                             .datum({
@@ -562,11 +571,12 @@ export default class IsoformEmbeddedVariantTrack {
                               `translate(0,${VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .attr('z-index', 30)
-                            .on('click', () => {
+                            .on('click', (event) => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
+                                event,
                               )
                             })
                             .datum({
@@ -590,11 +600,12 @@ export default class IsoformEmbeddedVariantTrack {
                             )
                             .attr('fill', consequenceColor)
                             .attr('z-index', 30)
-                            .on('click', () => {
+                            .on('click', (event) => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
+                                event,
                               )
                             })
                             .datum({
@@ -622,11 +633,12 @@ export default class IsoformEmbeddedVariantTrack {
                               `translate(${x(fmin - (symbol_string_length / 2) * 100)},${VARIANT_OFFSET * 2.2 - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .html(symbol_string)
-                            .on('click', () => {
+                            .on('click', (event) => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
                                 closeToolTip,
+                                event,
                               )
                             })
                             .datum({ fmin: featureChild.fmin })
@@ -787,6 +799,7 @@ export default class IsoformEmbeddedVariantTrack {
     >,
     descriptionHtml: string,
     closeFunction: () => void,
+    event: MouseEvent,
   ): void {
     tooltipDiv
       .transition()
@@ -798,10 +811,8 @@ export default class IsoformEmbeddedVariantTrack {
 
     tooltipDiv
       .html(descriptionHtml)
-      // @ts-expect-error
-      .style('left', `${window.event!.pageX + 10}px`)
-      // @ts-expect-error
-      .style('top', `${window.event!.pageY + 10}px`)
+      .style('left', `${event.pageX + 10}px`)
+      .style('top', `${event.pageY + 10}px`)
       .append('button')
       .attr('type', 'button')
       .text('Close')
