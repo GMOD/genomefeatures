@@ -13,6 +13,19 @@ import type { SimpleFeatureSerialized } from '../services/types'
 import type { Region } from '../types'
 import type { Selection } from 'd3'
 
+const MAX_ROWS = 10
+const UTR_FEATS = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
+const CDS_FEATS = ['CDS']
+const EXON_FEATS = ['exon']
+const EXON_HEIGHT = 10 // will be white / transparent
+const CDS_HEIGHT = 10 // will be colored in
+const ISOFORM_HEIGHT = 40 // height for each isoform
+const ISOFORM_TITLE_HEIGHT = 0 // height for each isoform
+const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
+const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
+const ARROW_HEIGHT = 20
+const ARROW_WIDTH = 10
+const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
 export default class IsoformTrack extends BaseTrack {
   private trackData: SimpleFeatureSerialized[]
   private transcriptTypes: string[]
@@ -47,62 +60,10 @@ export default class IsoformTrack extends BaseTrack {
     this.genome = genome
   }
 
-  DrawTrack() {
-    let data = this.trackData
-    const htpVariant = this.htpVariant
-    const viewer = this.viewer
-    const width = this.width
-    const source = this.genome
-    const chr = data[0]?.seqId
-
-    const MAX_ROWS = 10
-
-    const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
-    const CDS_feats = ['CDS']
-    const exon_feats = ['exon']
-    const displayFeats = this.transcriptTypes
-
-    const exon_height = 10 // will be white / transparent
-    const cds_height = 10 // will be colored in
-    const isoform_height = 40 // height for each isoform
-    const isoform_title_height = 0 // height for each isoform
-    const utr_height = 10 // this is the height of the isoform running all of the way through
-    const transcript_backbone_height = 4 // this is the height of the isoform running all of the way through
-    const arrow_height = 20
-    const arrow_width = 10
-    const arrow_points = `0,0 0,${arrow_height} ${arrow_width},${arrow_width}`
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const renderTooltipDescription = this.renderTooltipDescription
-
-    const x = d3
-      .scaleLinear()
-      .domain([this.region.start, this.region.end])
-      .range([0, width])
-
-    // need to build a new sortWeight since these can be dynamic
-    const sortWeight = {} as Record<string, number>
-    for (let i = 0, len = UTR_feats.length; i < len; i++) {
-      sortWeight[UTR_feats[i]] = 200
-    }
-    for (let i = 0, len = CDS_feats.length; i < len; i++) {
-      sortWeight[CDS_feats[i]] = 1000
-    }
-    for (let i = 0, len = exon_feats.length; i < len; i++) {
-      sortWeight[exon_feats[i]] = 100
-    }
-
-    data = data.sort((a, b) => {
-      if (a.selected && !b.selected) {
-        return -1
-      }
-      if (!a.selected && b.selected) {
-        return 1
-      }
-      // @ts-expect-error
-      return a.name - b.name
-    })
-
+  private createTooltip(): {
+    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>
+    closeToolTip: () => void
+  } {
     const tooltipDiv = d3
       .select('body')
       .append('div')
@@ -117,13 +78,20 @@ export default class IsoformTrack extends BaseTrack {
         .style('opacity', 10)
         .style('visibility', 'hidden')
     }
+    return { tooltipDiv, closeToolTip }
+  }
 
-    if (htpVariant) {
-      const variantContainer = viewer
+  private drawHtpVariant() {
+    if (this.htpVariant) {
+      const variantContainer = this.viewer
         .append('g')
         .attr('class', 'variants track')
         .attr('transform', 'translate(0,22.5)')
-      const [, fmin] = htpVariant.split(':')
+      const [, fmin] = this.htpVariant.split(':')
+      const x = d3
+        .scaleLinear()
+        .domain([this.region.start, this.region.end])
+        .range([0, this.width])
       variantContainer
         .append('polygon')
         .attr('class', 'variant-SNV')
@@ -132,6 +100,52 @@ export default class IsoformTrack extends BaseTrack {
         .attr('x', x(+fmin))
         .attr('z-index', 30)
     }
+  }
+
+  private drawIsoforms() {
+    let data = this.trackData
+    const htpVariant = this.htpVariant
+    const viewer = this.viewer
+    const width = this.width
+    const source = this.genome
+    const chr = data[0]?.seqId
+
+    const displayFeats = this.transcriptTypes
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const renderTooltipDescription = this.renderTooltipDescription
+
+    const x = d3
+      .scaleLinear()
+      .domain([this.region.start, this.region.end])
+      .range([0, width])
+
+    // need to build a new sortWeight since these can be dynamic
+    const sortWeight = {} as Record<string, number>
+    for (let i = 0, len = UTR_FEATS.length; i < len; i++) {
+      sortWeight[UTR_FEATS[i]] = 200
+    }
+    for (let i = 0, len = CDS_FEATS.length; i < len; i++) {
+      sortWeight[CDS_FEATS[i]] = 1000
+    }
+    for (let i = 0, len = EXON_FEATS.length; i < len; i++) {
+      sortWeight[EXON_FEATS[i]] = 100
+    }
+
+    data = data.sort((a, b) => {
+      if (a.selected && !b.selected) {
+        return -1
+      }
+      if (!a.selected && b.selected) {
+        return 1
+      }
+      // @ts-expect-error
+      return a.name - b.name
+    })
+
+    const { tooltipDiv, closeToolTip } = this.createTooltip()
+
+    this.drawHtpVariant()
 
     // Calculate where this track should go and translate it
     const newTrackPosition = calculateNewTrackPosition(this.viewer)
@@ -186,7 +200,7 @@ export default class IsoformTrack extends BaseTrack {
                 .attr('class', 'isoform')
                 .attr(
                   'transform',
-                  `translate(0,${row_count * isoform_height + 10})`,
+                  `translate(0,${row_count * ISOFORM_HEIGHT + 10})`,
                 )
 
               const transcriptStart = Math.max(x(featureChild.fmin), 0)
@@ -197,11 +211,11 @@ export default class IsoformTrack extends BaseTrack {
                   strand: feature.strand,
                 }))
                 .attr('class', 'transArrow')
-                .attr('points', arrow_points)
+                .attr('points', ARROW_POINTS)
                 .attr('transform', () =>
                   feature.strand > 0
                     ? `translate(${transcriptEnd},0)`
-                    : `translate(${transcriptStart},${arrow_height}) rotate(180)`,
+                    : `translate(${transcriptStart},${ARROW_HEIGHT}) rotate(180)`,
                 )
                 .on('click', () => {
                   renderTooltipDescription(
@@ -214,8 +228,8 @@ export default class IsoformTrack extends BaseTrack {
               isoform
                 .append('rect')
                 .attr('class', 'transcriptBackbone')
-                .attr('y', 10 + isoform_title_height)
-                .attr('height', transcript_backbone_height)
+                .attr('y', 10 + ISOFORM_TITLE_HEIGHT)
+                .attr('height', TRANSCRIPT_BACKBONE_HEIGHT)
                 .attr('transform', `translate(${transcriptStart},0)`)
                 .attr('width', transcriptEnd - transcriptStart)
                 .datum({
@@ -239,7 +253,7 @@ export default class IsoformTrack extends BaseTrack {
                 .attr('class', 'transcriptLabel')
                 .attr('fill', selected ? 'sandybrown' : 'gray')
                 .attr('opacity', selected ? 1 : 0.5)
-                .attr('height', isoform_title_height)
+                .attr('height', ISOFORM_TITLE_HEIGHT)
                 .attr('transform', `translate(${labelOffset},0)`)
                 .text(text_string)
                 .datum({
@@ -348,7 +362,7 @@ export default class IsoformTrack extends BaseTrack {
                   }
                   const innerStart = Math.max(x(innerChild.fmin), 0)
                   const innerEnd = Math.min(x(innerChild.fmax), this.width)
-                  if (exon_feats.includes(innerType)) {
+                  if (EXON_FEATS.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'exon')
@@ -356,10 +370,10 @@ export default class IsoformTrack extends BaseTrack {
                       .attr(
                         'transform',
                         `translate(0,${
-                          exon_height - transcript_backbone_height
+                          EXON_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
                         })`,
                       )
-                      .attr('height', exon_height)
+                      .attr('height', EXON_HEIGHT)
                       .attr('z-index', 10)
                       .attr('width', innerEnd - innerStart)
                       .datum({
@@ -373,7 +387,7 @@ export default class IsoformTrack extends BaseTrack {
                           closeToolTip,
                         )
                       })
-                  } else if (CDS_feats.includes(innerType)) {
+                  } else if (CDS_FEATS.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'CDS')
@@ -381,11 +395,11 @@ export default class IsoformTrack extends BaseTrack {
                       .attr(
                         'transform',
                         `translate(0,${
-                          cds_height - transcript_backbone_height
+                          CDS_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
                         })`,
                       )
                       .attr('z-index', 20)
-                      .attr('height', cds_height)
+                      .attr('height', CDS_HEIGHT)
                       .attr('width', innerEnd - innerStart)
                       .datum({
                         fmin: innerChild.fmin,
@@ -398,7 +412,7 @@ export default class IsoformTrack extends BaseTrack {
                           closeToolTip,
                         )
                       })
-                  } else if (UTR_feats.includes(innerType)) {
+                  } else if (UTR_FEATS.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'UTR')
@@ -406,11 +420,11 @@ export default class IsoformTrack extends BaseTrack {
                       .attr(
                         'transform',
                         `translate(0,${
-                          utr_height - transcript_backbone_height
+                          UTR_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT
                         })`,
                       )
                       .attr('z-index', 20)
-                      .attr('height', utr_height)
+                      .attr('height', UTR_HEIGHT)
                       .attr('width', innerEnd - innerStart)
                       .datum({
                         fmin: innerChild.fmin,
@@ -444,11 +458,11 @@ export default class IsoformTrack extends BaseTrack {
                 .attr('x', 10)
                 .attr(
                   'transform',
-                  `translate(0,${row_count * isoform_height + 10})`,
+                  `translate(0,${row_count * ISOFORM_HEIGHT + 10})`,
                 )
                 .attr('fill', 'red')
                 .attr('opacity', 1)
-                .attr('height', isoform_title_height)
+                .attr('height', ISOFORM_TITLE_HEIGHT)
                 .html(link)
             }
           }
@@ -460,7 +474,7 @@ export default class IsoformTrack extends BaseTrack {
       track
         .append('text')
         .attr('x', 30)
-        .attr('y', isoform_title_height + 10)
+        .attr('y', ISOFORM_TITLE_HEIGHT + 10)
         .attr('fill', 'orange')
         .attr('opacity', 0.6)
         .text(
@@ -468,6 +482,10 @@ export default class IsoformTrack extends BaseTrack {
         )
     }
     // we return the appropriate height function
-    return row_count * isoform_height
+    return row_count * ISOFORM_HEIGHT
+  }
+
+  DrawTrack() {
+    return this.drawIsoforms()
   }
 }
