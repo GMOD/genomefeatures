@@ -283,8 +283,8 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('points', ARROW_POINTS)
                 .attr('transform', d => {
                   return feature.strand > 0
-                    ? `translate(${Number(x(d.fmax))},0)`
-                    : `translate(${Number(x(d.fmin))},${ARROW_HEIGHT}) rotate(180)`
+                    ? `translate(${x(d.fmax)},0)`
+                    : `translate(${x(d.fmin)},${ARROW_HEIGHT}) rotate(180)`
                 })
                 .on('click', () => {
                   renderTooltipDescription(
@@ -342,7 +342,7 @@ export default class IsoformEmbeddedVariantTrack {
                 // console.error('Not yet rendered',e)
               }
               // First check to see if label goes past the end
-              if (Number(text_width + x(featureChild.fmin)) > width) {
+              if (text_width + x(featureChild.fmin) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
               const feat_end =

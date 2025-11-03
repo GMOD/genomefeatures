@@ -320,7 +320,7 @@ export default class IsoformTrack {
                 console.error('Not yet rendered', e)
               }
               // First check to see if label goes past the end
-              if (Number(textWidth + x(featureChild.fmin)) > width) {
+              if (textWidth + x(featureChild.fmin) > width) {
                 // console.error(featureChild.name + " goes over the edge");
               }
               const featEnd =

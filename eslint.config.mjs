@@ -1,10 +1,13 @@
 import eslint from '@eslint/js'
+import { defineConfig } from 'eslint/config'
 import importPlugin from 'eslint-plugin-import'
 import tseslint from 'typescript-eslint'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 import globals from 'globals'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooksPlugin from 'eslint-plugin-react-hooks'
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: [
       '**/dist/**/*',
@@ -25,6 +28,12 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -32,8 +41,17 @@ export default tseslint.config(
   ...tseslint.configs.strictTypeChecked,
   eslintPluginUnicorn.configs.recommended,
   importPlugin.flatConfigs.recommended,
+  reactPlugin.configs.flat.recommended,
+
+  {
+    plugins: {
+      'react-hooks': reactHooksPlugin,
+    },
+    rules: reactHooksPlugin.configs.recommended.rules,
+  },
   {
     rules: {
+      '@typescript-eslint/unified-signatures': 'off',
       'no-restricted-globals': ['error', 'Buffer'],
       'no-empty': 'off',
       'no-console': [
@@ -56,6 +74,7 @@ export default tseslint.config(
       'prefer-template': 'error',
       'one-var': ['error', 'never'],
 
+      'unicorn/no-array-sort': 'off',
       'unicorn/no-array-reverse': 'off',
       'unicorn/prefer-global-this': 'off',
       'unicorn/prefer-structured-clone': 'off',
