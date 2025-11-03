@@ -12,7 +12,12 @@ import {
   createTooltipDiv,
   renderTooltipDescription,
 } from '../services/TooltipService'
-import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
+import {
+  FEATURE_TYPES,
+  createSortWeightMap,
+  generateArrowPoints,
+  sortIsoformData,
+} from './TrackConstants'
 import {
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,
@@ -173,16 +178,7 @@ export default class IsoformEmbeddedVariantTrack {
 
     const geneList: Record<string, string> = {}
 
-    isoformData = isoformData.sort((a, b) => {
-      if (a.selected && !b.selected) {
-        return -1
-      }
-      if (!a.selected && b.selected) {
-        return 1
-      }
-      // @ts-expect-error
-      return a.name - b.name
-    })
+    isoformData = sortIsoformData(isoformData)
 
     let heightBuffer = 0
 

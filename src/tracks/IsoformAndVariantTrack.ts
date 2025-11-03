@@ -15,7 +15,12 @@ import {
   createTooltipDiv,
   renderTooltipDescription,
 } from '../services/TooltipService'
-import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
+import {
+  FEATURE_TYPES,
+  createSortWeightMap,
+  generateArrowPoints,
+  sortIsoformData,
+} from './TrackConstants'
 import {
   generateDelinsPoint,
   generateInsertionPoint,
@@ -165,15 +170,7 @@ export default class IsoformAndVariantTrack {
 
     const geneList = {} as Record<string, string>
 
-    isoformData = isoformData.sort((a, b) => {
-      if (a.selected && !b.selected) {
-        return -1
-      }
-      if (!a.selected && b.selected) {
-        return 1
-      }
-      return a.name.localeCompare(b.name)
-    })
+    isoformData = sortIsoformData(isoformData)
 
     let heightBuffer = 0
 

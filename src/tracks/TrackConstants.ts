@@ -57,3 +57,22 @@ export function createSortWeightMap(
 export function generateArrowPoints(height: number, width: number): string {
   return `0,0 0,${height} ${width},${width}`
 }
+
+/**
+ * Sorts isoform data, prioritizing selected items and then by name
+ * @param data - Array of isoform data to sort
+ * @returns Sorted array with selected items first, then alphabetically by name
+ */
+export function sortIsoformData<T extends { selected?: boolean; name: string }>(
+  data: T[],
+): T[] {
+  return data.sort((a, b) => {
+    if (a.selected && !b.selected) {
+      return -1
+    }
+    if (!a.selected && b.selected) {
+      return 1
+    }
+    return a.name.localeCompare(b.name)
+  })
+}

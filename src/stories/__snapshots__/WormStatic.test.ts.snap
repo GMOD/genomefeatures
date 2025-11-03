@@ -5,7 +5,7 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
   class="viewer-border"
 >
   <svg
-    height="580"
+    height="640"
     id="mysvg"
     width="900"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -212,20 +212,20 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
             class="geneLabel"
             fill="black"
             height="0"
-            transform="translate(0.20136263469664192,-20)"
+            transform="translate(424.4892141600792,-20)"
           >
-            ife-3
+            21ur-15398
           </text>
           <polygon
             class="transArrow"
             points="0,0 0,20 10,10"
-            transform="translate(0.20136263469664192,20) rotate(180)"
+            transform="translate(424.8415987707983,0)"
           />
           <rect
             class="transcriptBackbone"
             height="4"
-            transform="translate(0.20136263469664192,0)"
-            width="20.589329397731635"
+            transform="translate(424.4892141600792,0)"
+            width="0.3523846107191275"
             y="10"
           />
           <text
@@ -233,105 +233,41 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
             fill="gray"
             height="0"
             opacity="0.5"
-            transform="translate(0.20136263469664192,0)"
+            transform="translate(424.4892141600792,0)"
           >
-            B0348.6a.1
+            B0348.7
           </text>
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="8.64181307239755"
-            x="0.20136263469664192"
+            width="0.3523846107191275"
+            x="424.4892141600792"
             z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.8091098396781415"
-            x="9.631846026322707"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.8861977639852014"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.705274649738189"
-            x="0.20136263469664192"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.06712087823221324"
-            x="20.723571154196065"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.8091098396781415"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
-            z-index="20"
           />
         </g>
         <g
           class="isoform"
-          transform="translate(0,70)"
+          transform="translate(0,90)"
         >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(710.4409356488688,-20)"
+          >
+            B0348.1
+          </text>
           <polygon
             class="transArrow"
             points="0,0 0,20 10,10"
-            transform="translate(0.06712087823221398,20) rotate(180)"
+            transform="translate(722.1535289003903,0)"
           />
           <rect
             class="transcriptBackbone"
             height="4"
-            transform="translate(0.06712087823221398,0)"
-            width="20.757131593312174"
+            transform="translate(710.4409356488688,0)"
+            width="11.712593251521412"
             y="10"
           />
           <text
@@ -339,200 +275,62 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
             fill="gray"
             height="0"
             opacity="0.5"
-            transform="translate(0.06712087823221398,0)"
+            transform="translate(710.4409356488688,0)"
           >
-            B0348.6b.1
+            B0348.1.1
           </text>
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="8.776054828861978"
-            x="0.06712087823221398"
+            width="0.5537472454158205"
+            x="710.4409356488688"
             z-index="10"
           />
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="3.960131815700624"
-            x="9.631846026322707"
+            width="0.8054505387865447"
+            x="712.0518367264419"
             z-index="10"
           />
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
+            width="3.070780179123858"
+            x="719.0827487212664"
             z-index="10"
           />
           <rect
-            class="exon"
+            class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="2.91975820310131"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.839516406202616"
-            x="0.06712087823221398"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.10068131734832164"
-            x="20.723571154196065"
+            width="0.5537472454158205"
+            x="710.4409356488688"
             z-index="20"
           />
           <rect
             class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
+            width="0.8054505387865447"
+            x="712.0518367264419"
             z-index="20"
           />
           <rect
             class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="3.960131815700624"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
+            width="3.070780179123858"
+            x="719.0827487212664"
             z-index="20"
           />
         </g>
         <g
           class="isoform"
-          transform="translate(0,110)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(0,20) rotate(180)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(0,0)"
-            width="20.8913733497766"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(0,0)"
-          >
-            B0348.6c.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="8.843175707094192"
-            x="0"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.9097911570264614"
-            x="9.631846026322707"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.986879081333523"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.90663728443483"
-            x="0"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.16780219558053489"
-            x="20.723571154196065"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.9097911570264614"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
-            z-index="20"
-          />
-        </g>
-        <g
-          class="isoform"
-          transform="translate(0,170)"
+          transform="translate(0,150)"
         >
           <text
             class="geneLabel"
@@ -582,7 +380,205 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,230)"
+          transform="translate(0,210)"
+        >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(649.8307826051796,-20)"
+          >
+            B0348.2
+          </text>
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(676.930837191436,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(649.8307826051796,0)"
+            width="27.10005458625642"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(649.8307826051796,0)"
+          >
+            B0348.2a.1
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="3.188241716030234"
+            x="649.8307826051796"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.8054505387865447"
+            x="654.6802660574571"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="3.758769181004027"
+            x="673.172068010432"
+            z-index="10"
+          />
+          <rect
+            class="UTR"
+            height="10"
+            transform="translate(0,6)"
+            width="2.634494470614527"
+            x="649.8307826051796"
+            z-index="20"
+          />
+          <rect
+            class="UTR"
+            height="10"
+            transform="translate(0,6)"
+            width="0.7383296605543137"
+            x="676.1925075308817"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.5537472454157069"
+            x="652.4652770757941"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.8054505387865447"
+            x="654.6802660574571"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="3.020439520449713"
+            x="673.172068010432"
+            z-index="20"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,250)"
+        >
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(673.5580130602673,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(654.8145078139215,0)"
+            width="18.743505246345762"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(654.8145078139215,0)"
+          >
+            B0348.2b.1
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.6712087823220827"
+            x="654.8145078139215"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.38594504983529987"
+            x="673.172068010432"
+            z-index="10"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.6712087823220827"
+            x="654.8145078139215"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.38594504983529987"
+            x="673.172068010432"
+            z-index="20"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,310)"
+        >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(548.293674059398,-20)"
+          >
+            B0348.8
+          </text>
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(550.0723773325516,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(548.293674059398,0)"
+            width="1.77870327315361"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(548.293674059398,0)"
+          >
+            B0348.8
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="1.77870327315361"
+            x="548.293674059398"
+            z-index="10"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,370)"
         >
           <text
             class="geneLabel"
@@ -632,7 +628,7 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,290)"
+          transform="translate(0,430)"
         >
           <text
             class="geneLabel"
@@ -1002,7 +998,7 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,330)"
+          transform="translate(0,470)"
         >
           <polygon
             class="transArrow"
@@ -1380,7 +1376,7 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,370)"
+          transform="translate(0,510)"
         >
           <polygon
             class="transArrow"
@@ -1580,762 +1576,6 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
             z-index="20"
           />
         </g>
-        <g
-          class="isoform"
-          transform="translate(0,410)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(622.6132664820168,0)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(242.02110668580553,0)"
-            width="380.59215979621126"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(242.02110668580553,0)"
-          >
-            B0348.4d.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="0.6040879040899654"
-            x="543.7965752178396"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="11.108505347431333"
-            x="611.5047611345855"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="8.675373511513612"
-            x="613.9378929705032"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="0.6040879040899654"
-            x="543.7965752178396"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.4331318359177203"
-            x="611.5047611345855"
-            z-index="20"
-          />
-        </g>
-        <g
-          class="isoform"
-          transform="translate(0,450)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(622.5461456037846,0)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(242.02110668580553,0)"
-            width="380.52503891797903"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(242.02110668580553,0)"
-          >
-            B0348.4e.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="11.041384469199102"
-            x="611.5047611345855"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="8.608252633281381"
-            x="613.9378929705032"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.4331318359177203"
-            x="611.5047611345855"
-            z-index="20"
-          />
-        </g>
         <a
           class="transcriptLabel"
           show="new"
@@ -2344,7 +1584,7 @@ exports[`WormStatic Stories > should render Worm1 story snapshot 1`] = `
             fill="red"
             height="0"
             opacity="1"
-            transform="translate(0,500)"
+            transform="translate(0,560)"
             x="10"
             y="10"
           >
@@ -2362,7 +1602,7 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
   class="viewer-border"
 >
   <svg
-    height="580"
+    height="640"
     id="mysvg"
     width="900"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -2569,20 +1809,20 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
             class="geneLabel"
             fill="black"
             height="0"
-            transform="translate(0.20136263469664192,-20)"
+            transform="translate(424.4892141600792,-20)"
           >
-            ife-3
+            21ur-15398
           </text>
           <polygon
             class="transArrow"
             points="0,0 0,20 10,10"
-            transform="translate(0.20136263469664192,20) rotate(180)"
+            transform="translate(424.8415987707983,0)"
           />
           <rect
             class="transcriptBackbone"
             height="4"
-            transform="translate(0.20136263469664192,0)"
-            width="20.589329397731635"
+            transform="translate(424.4892141600792,0)"
+            width="0.3523846107191275"
             y="10"
           />
           <text
@@ -2590,105 +1830,41 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
             fill="gray"
             height="0"
             opacity="0.5"
-            transform="translate(0.20136263469664192,0)"
+            transform="translate(424.4892141600792,0)"
           >
-            B0348.6a.1
+            B0348.7
           </text>
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="8.64181307239755"
-            x="0.20136263469664192"
+            width="0.3523846107191275"
+            x="424.4892141600792"
             z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.8091098396781415"
-            x="9.631846026322707"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.8861977639852014"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.705274649738189"
-            x="0.20136263469664192"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.06712087823221324"
-            x="20.723571154196065"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.8091098396781415"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
-            z-index="20"
           />
         </g>
         <g
           class="isoform"
-          transform="translate(0,70)"
+          transform="translate(0,90)"
         >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(710.4409356488688,-20)"
+          >
+            B0348.1
+          </text>
           <polygon
             class="transArrow"
             points="0,0 0,20 10,10"
-            transform="translate(0.06712087823221398,20) rotate(180)"
+            transform="translate(722.1535289003903,0)"
           />
           <rect
             class="transcriptBackbone"
             height="4"
-            transform="translate(0.06712087823221398,0)"
-            width="20.757131593312174"
+            transform="translate(710.4409356488688,0)"
+            width="11.712593251521412"
             y="10"
           />
           <text
@@ -2696,200 +1872,62 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
             fill="gray"
             height="0"
             opacity="0.5"
-            transform="translate(0.06712087823221398,0)"
+            transform="translate(710.4409356488688,0)"
           >
-            B0348.6b.1
+            B0348.1.1
           </text>
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="8.776054828861978"
-            x="0.06712087823221398"
+            width="0.5537472454158205"
+            x="710.4409356488688"
             z-index="10"
           />
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="3.960131815700624"
-            x="9.631846026322707"
+            width="0.8054505387865447"
+            x="712.0518367264419"
             z-index="10"
           />
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
+            width="3.070780179123858"
+            x="719.0827487212664"
             z-index="10"
           />
           <rect
-            class="exon"
+            class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="2.91975820310131"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.839516406202616"
-            x="0.06712087823221398"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.10068131734832164"
-            x="20.723571154196065"
+            width="0.5537472454158205"
+            x="710.4409356488688"
             z-index="20"
           />
           <rect
             class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
+            width="0.8054505387865447"
+            x="712.0518367264419"
             z-index="20"
           />
           <rect
             class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="3.960131815700624"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
+            width="3.070780179123858"
+            x="719.0827487212664"
             z-index="20"
           />
         </g>
         <g
           class="isoform"
-          transform="translate(0,110)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(0,20) rotate(180)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(0,0)"
-            width="20.8913733497766"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(0,0)"
-          >
-            B0348.6c.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="8.843175707094192"
-            x="0"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.9097911570264614"
-            x="9.631846026322707"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.986879081333523"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.90663728443483"
-            x="0"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.16780219558053489"
-            x="20.723571154196065"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.9097911570264614"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
-            z-index="20"
-          />
-        </g>
-        <g
-          class="isoform"
-          transform="translate(0,170)"
+          transform="translate(0,150)"
         >
           <text
             class="geneLabel"
@@ -2939,7 +1977,205 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,230)"
+          transform="translate(0,210)"
+        >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(649.8307826051796,-20)"
+          >
+            B0348.2
+          </text>
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(676.930837191436,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(649.8307826051796,0)"
+            width="27.10005458625642"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(649.8307826051796,0)"
+          >
+            B0348.2a.1
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="3.188241716030234"
+            x="649.8307826051796"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.8054505387865447"
+            x="654.6802660574571"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="3.758769181004027"
+            x="673.172068010432"
+            z-index="10"
+          />
+          <rect
+            class="UTR"
+            height="10"
+            transform="translate(0,6)"
+            width="2.634494470614527"
+            x="649.8307826051796"
+            z-index="20"
+          />
+          <rect
+            class="UTR"
+            height="10"
+            transform="translate(0,6)"
+            width="0.7383296605543137"
+            x="676.1925075308817"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.5537472454157069"
+            x="652.4652770757941"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.8054505387865447"
+            x="654.6802660574571"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="3.020439520449713"
+            x="673.172068010432"
+            z-index="20"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,250)"
+        >
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(673.5580130602673,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(654.8145078139215,0)"
+            width="18.743505246345762"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(654.8145078139215,0)"
+          >
+            B0348.2b.1
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.6712087823220827"
+            x="654.8145078139215"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.38594504983529987"
+            x="673.172068010432"
+            z-index="10"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.6712087823220827"
+            x="654.8145078139215"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.38594504983529987"
+            x="673.172068010432"
+            z-index="20"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,310)"
+        >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(548.293674059398,-20)"
+          >
+            B0348.8
+          </text>
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(550.0723773325516,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(548.293674059398,0)"
+            width="1.77870327315361"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(548.293674059398,0)"
+          >
+            B0348.8
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="1.77870327315361"
+            x="548.293674059398"
+            z-index="10"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,370)"
         >
           <text
             class="geneLabel"
@@ -2989,7 +2225,7 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,290)"
+          transform="translate(0,430)"
         >
           <text
             class="geneLabel"
@@ -3359,7 +2595,7 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,330)"
+          transform="translate(0,470)"
         >
           <polygon
             class="transArrow"
@@ -3737,7 +2973,7 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,370)"
+          transform="translate(0,510)"
         >
           <polygon
             class="transArrow"
@@ -3937,762 +3173,6 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
             z-index="20"
           />
         </g>
-        <g
-          class="isoform"
-          transform="translate(0,410)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(622.6132664820168,0)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(242.02110668580553,0)"
-            width="380.59215979621126"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(242.02110668580553,0)"
-          >
-            B0348.4d.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="0.6040879040899654"
-            x="543.7965752178396"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="11.108505347431333"
-            x="611.5047611345855"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="8.675373511513612"
-            x="613.9378929705032"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="0.6040879040899654"
-            x="543.7965752178396"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.4331318359177203"
-            x="611.5047611345855"
-            z-index="20"
-          />
-        </g>
-        <g
-          class="isoform"
-          transform="translate(0,450)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(622.5461456037846,0)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(242.02110668580553,0)"
-            width="380.52503891797903"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(242.02110668580553,0)"
-          >
-            B0348.4e.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="11.041384469199102"
-            x="611.5047611345855"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="8.608252633281381"
-            x="613.9378929705032"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.4331318359177203"
-            x="611.5047611345855"
-            z-index="20"
-          />
-        </g>
         <a
           class="transcriptLabel"
           show="new"
@@ -4701,7 +3181,7 @@ exports[`WormStatic Stories > should render Worm2 story snapshot 1`] = `
             fill="red"
             height="0"
             opacity="1"
-            transform="translate(0,500)"
+            transform="translate(0,560)"
             x="10"
             y="10"
           >
@@ -4719,7 +3199,7 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
   class="viewer-border"
 >
   <svg
-    height="580"
+    height="640"
     id="mysvg"
     width="900"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -4926,20 +3406,20 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
             class="geneLabel"
             fill="black"
             height="0"
-            transform="translate(0.20136263469664192,-20)"
+            transform="translate(424.4892141600792,-20)"
           >
-            ife-3
+            21ur-15398
           </text>
           <polygon
             class="transArrow"
             points="0,0 0,20 10,10"
-            transform="translate(0.20136263469664192,20) rotate(180)"
+            transform="translate(424.8415987707983,0)"
           />
           <rect
             class="transcriptBackbone"
             height="4"
-            transform="translate(0.20136263469664192,0)"
-            width="20.589329397731635"
+            transform="translate(424.4892141600792,0)"
+            width="0.3523846107191275"
             y="10"
           />
           <text
@@ -4947,105 +3427,41 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
             fill="gray"
             height="0"
             opacity="0.5"
-            transform="translate(0.20136263469664192,0)"
+            transform="translate(424.4892141600792,0)"
           >
-            B0348.6a.1
+            B0348.7
           </text>
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="8.64181307239755"
-            x="0.20136263469664192"
+            width="0.3523846107191275"
+            x="424.4892141600792"
             z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.8091098396781415"
-            x="9.631846026322707"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.8861977639852014"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.705274649738189"
-            x="0.20136263469664192"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.06712087823221324"
-            x="20.723571154196065"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.8091098396781415"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
-            z-index="20"
           />
         </g>
         <g
           class="isoform"
-          transform="translate(0,70)"
+          transform="translate(0,90)"
         >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(710.4409356488688,-20)"
+          >
+            B0348.1
+          </text>
           <polygon
             class="transArrow"
             points="0,0 0,20 10,10"
-            transform="translate(0.06712087823221398,20) rotate(180)"
+            transform="translate(722.1535289003903,0)"
           />
           <rect
             class="transcriptBackbone"
             height="4"
-            transform="translate(0.06712087823221398,0)"
-            width="20.757131593312174"
+            transform="translate(710.4409356488688,0)"
+            width="11.712593251521412"
             y="10"
           />
           <text
@@ -5053,200 +3469,62 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
             fill="gray"
             height="0"
             opacity="0.5"
-            transform="translate(0.06712087823221398,0)"
+            transform="translate(710.4409356488688,0)"
           >
-            B0348.6b.1
+            B0348.1.1
           </text>
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="8.776054828861978"
-            x="0.06712087823221398"
+            width="0.5537472454158205"
+            x="710.4409356488688"
             z-index="10"
           />
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="3.960131815700624"
-            x="9.631846026322707"
+            width="0.8054505387865447"
+            x="712.0518367264419"
             z-index="10"
           />
           <rect
             class="exon"
             height="10"
             transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
+            width="3.070780179123858"
+            x="719.0827487212664"
             z-index="10"
           />
           <rect
-            class="exon"
+            class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="2.91975820310131"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.839516406202616"
-            x="0.06712087823221398"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.10068131734832164"
-            x="20.723571154196065"
+            width="0.5537472454158205"
+            x="710.4409356488688"
             z-index="20"
           />
           <rect
             class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
+            width="0.8054505387865447"
+            x="712.0518367264419"
             z-index="20"
           />
           <rect
             class="CDS"
             height="10"
             transform="translate(0,6)"
-            width="3.960131815700624"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
+            width="3.070780179123858"
+            x="719.0827487212664"
             z-index="20"
           />
         </g>
         <g
           class="isoform"
-          transform="translate(0,110)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(0,20) rotate(180)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(0,0)"
-            width="20.8913733497766"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(0,0)"
-          >
-            B0348.6c.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="8.843175707094192"
-            x="0"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.9097911570264614"
-            x="9.631846026322707"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.986879081333523"
-            x="17.904494268443077"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="5.90663728443483"
-            x="0"
-            z-index="20"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="0.16780219558053489"
-            x="20.723571154196065"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.9365384226593614"
-            x="5.90663728443483"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.9097911570264614"
-            x="9.631846026322707"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.970098861775467"
-            x="14.246406404787416"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.819076885752988"
-            x="17.904494268443077"
-            z-index="20"
-          />
-        </g>
-        <g
-          class="isoform"
-          transform="translate(0,170)"
+          transform="translate(0,150)"
         >
           <text
             class="geneLabel"
@@ -5296,7 +3574,205 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,230)"
+          transform="translate(0,210)"
+        >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(649.8307826051796,-20)"
+          >
+            B0348.2
+          </text>
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(676.930837191436,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(649.8307826051796,0)"
+            width="27.10005458625642"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(649.8307826051796,0)"
+          >
+            B0348.2a.1
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="3.188241716030234"
+            x="649.8307826051796"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.8054505387865447"
+            x="654.6802660574571"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="3.758769181004027"
+            x="673.172068010432"
+            z-index="10"
+          />
+          <rect
+            class="UTR"
+            height="10"
+            transform="translate(0,6)"
+            width="2.634494470614527"
+            x="649.8307826051796"
+            z-index="20"
+          />
+          <rect
+            class="UTR"
+            height="10"
+            transform="translate(0,6)"
+            width="0.7383296605543137"
+            x="676.1925075308817"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.5537472454157069"
+            x="652.4652770757941"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.8054505387865447"
+            x="654.6802660574571"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="3.020439520449713"
+            x="673.172068010432"
+            z-index="20"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,250)"
+        >
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(673.5580130602673,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(654.8145078139215,0)"
+            width="18.743505246345762"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(654.8145078139215,0)"
+          >
+            B0348.2b.1
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.6712087823220827"
+            x="654.8145078139215"
+            z-index="10"
+          />
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="0.38594504983529987"
+            x="673.172068010432"
+            z-index="10"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.6712087823220827"
+            x="654.8145078139215"
+            z-index="20"
+          />
+          <rect
+            class="CDS"
+            height="10"
+            transform="translate(0,6)"
+            width="0.38594504983529987"
+            x="673.172068010432"
+            z-index="20"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,310)"
+        >
+          <text
+            class="geneLabel"
+            fill="black"
+            height="0"
+            transform="translate(548.293674059398,-20)"
+          >
+            B0348.8
+          </text>
+          <polygon
+            class="transArrow"
+            points="0,0 0,20 10,10"
+            transform="translate(550.0723773325516,0)"
+          />
+          <rect
+            class="transcriptBackbone"
+            height="4"
+            transform="translate(548.293674059398,0)"
+            width="1.77870327315361"
+            y="10"
+          />
+          <text
+            class="transcriptLabel"
+            fill="gray"
+            height="0"
+            opacity="0.5"
+            transform="translate(548.293674059398,0)"
+          >
+            B0348.8
+          </text>
+          <rect
+            class="exon"
+            height="10"
+            transform="translate(0,6)"
+            width="1.77870327315361"
+            x="548.293674059398"
+            z-index="10"
+          />
+        </g>
+        <g
+          class="isoform"
+          transform="translate(0,370)"
         >
           <text
             class="geneLabel"
@@ -5346,7 +3822,7 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,290)"
+          transform="translate(0,430)"
         >
           <text
             class="geneLabel"
@@ -5716,7 +4192,7 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,330)"
+          transform="translate(0,470)"
         >
           <polygon
             class="transArrow"
@@ -6094,7 +4570,7 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
         </g>
         <g
           class="isoform"
-          transform="translate(0,370)"
+          transform="translate(0,510)"
         >
           <polygon
             class="transArrow"
@@ -6294,762 +4770,6 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
             z-index="20"
           />
         </g>
-        <g
-          class="isoform"
-          transform="translate(0,410)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(622.6132664820168,0)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(242.02110668580553,0)"
-            width="380.59215979621126"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(242.02110668580553,0)"
-          >
-            B0348.4d.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="0.6040879040899654"
-            x="543.7965752178396"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="11.108505347431333"
-            x="611.5047611345855"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="8.675373511513612"
-            x="613.9378929705032"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="0.6040879040899654"
-            x="543.7965752178396"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.4331318359177203"
-            x="611.5047611345855"
-            z-index="20"
-          />
-        </g>
-        <g
-          class="isoform"
-          transform="translate(0,450)"
-        >
-          <polygon
-            class="transArrow"
-            points="0,0 0,20 10,10"
-            transform="translate(622.5461456037846,0)"
-          />
-          <rect
-            class="transcriptBackbone"
-            height="4"
-            transform="translate(242.02110668580553,0)"
-            width="380.52503891797903"
-            y="10"
-          />
-          <text
-            class="transcriptLabel"
-            fill="gray"
-            height="0"
-            opacity="0.5"
-            transform="translate(242.02110668580553,0)"
-          >
-            B0348.4e.1
-          </text>
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="10"
-          />
-          <rect
-            class="exon"
-            height="10"
-            transform="translate(0,6)"
-            width="11.041384469199102"
-            x="611.5047611345855"
-            z-index="10"
-          />
-          <rect
-            class="UTR"
-            height="10"
-            transform="translate(0,6)"
-            width="8.608252633281381"
-            x="613.9378929705032"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="242.02110668580553"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="6.074439480015371"
-            x="266.99007338818916"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.282109859895286"
-            x="278.13213917473666"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.40953844287651"
-            x="284.8945676566322"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340375514"
-            x="288.7707983745426"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="7.9202636314012125"
-            x="305.46711683480584"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.7687362270788185"
-            x="325.2174352546348"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.137901057356032"
-            x="329.060105533429"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="5.336109819461001"
-            x="365.7752259264501"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="3.0204395204495995"
-            x="381.7835553848331"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.644461516689205"
-            x="396.28166508299137"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.077593352606982"
-            x="415.4111153791723"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.3827911772435755"
-            x="477.07842225501895"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="12.383802033843494"
-            x="495.5870044275519"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.966944989183787"
-            x="509.0111800739947"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.214988981663055"
-            x="529.48304793482"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="4.530659280674286"
-            x="568.346036431272"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.9465054687342445"
-            x="589.74081636779"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.1310878838728513"
-            x="594.9594646503447"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="1.7451428340374378"
-            x="597.8792228534461"
-            z-index="20"
-          />
-          <rect
-            class="CDS"
-            height="10"
-            transform="translate(0,6)"
-            width="2.4331318359177203"
-            x="611.5047611345855"
-            z-index="20"
-          />
-        </g>
         <a
           class="transcriptLabel"
           show="new"
@@ -7058,7 +4778,7 @@ exports[`WormStatic Stories > should render Worm3 story snapshot 1`] = `
             fill="red"
             height="0"
             opacity="1"
-            transform="translate(0,500)"
+            transform="translate(0,560)"
             x="10"
             y="10"
           >

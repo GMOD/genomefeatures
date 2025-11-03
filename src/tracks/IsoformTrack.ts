@@ -11,7 +11,12 @@ import {
   renderTooltipDescription,
 } from '../services/TooltipService'
 import { generateSnvPoints } from '../services/VariantService'
-import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
+import {
+  FEATURE_TYPES,
+  createSortWeightMap,
+  generateArrowPoints,
+  sortIsoformData,
+} from './TrackConstants'
 
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Region } from '../types'
@@ -101,31 +106,10 @@ export default class IsoformTrack {
 
     const sortWeight = createSortWeightMap(UTR_feats, CDS_feats, exon_feats)
 
-    data = data.sort((a, b) => {
-      if (a.selected && !b.selected) {
-        return -1
-      }
-      if (!a.selected && b.selected) {
-        return 1
-      }
-      // @ts-expect-error
-      return a.name - b.name
-    })
+    data = sortIsoformData(data)
 
-    const tooltipDiv = d3
-      .select('body')
-      .append('div')
-      .attr('class', 'gfc-tooltip')
-      .style('visibility', 'visible')
-      .style('opacity', 0)
-
-    const closeToolTip = () => {
-      tooltipDiv
-        .transition()
-        .duration(100)
-        .style('opacity', 10)
-        .style('visibility', 'hidden')
-    }
+    const tooltipDiv = createTooltipDiv()
+    const closeToolTip = createCloseTooltipFunction(tooltipDiv)
 
     if (htpVariant) {
       const variantContainer = viewer
