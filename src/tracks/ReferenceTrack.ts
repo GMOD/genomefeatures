@@ -123,17 +123,7 @@ export default class ReferenceTrack {
       : new Array(end - start + 1).fill(0).map((_, idx) => start + idx)
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async getTrackData() {
-    try {
-      // this.refSeq = await apolloService.GetLocalSequence(
-      //  '',
-      //  track['chromosome'],
-      //  track['start'],
-      //  track['end'],
-      // )
-    } catch (err) {
-      console.error(err)
-    }
+    // TODO: Implement track data fetching
   }
 }

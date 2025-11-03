@@ -96,28 +96,9 @@ export default class VariantTrack {
       .attr('transform', d => `translate(${x(d.position)},10)`)
       .on('mouseenter', tooltip.show)
       .on('mouseout', tooltip.hide)
-
-    // Track Label Boxes currently 100px
-    const labelOffset = 25
-    const trackLabel = d3
-      .select('#viewer2')
-      .append('g')
-      .attr('transform', `translate(${labelOffset},${newTrackPosition})`)
-      .attr('class', 'track-label')
-    trackLabel
-      .append('line')
-      .attr('x1', 75)
-      .attr('y1', 0)
-      .attr('x2', 75)
-      .attr('y2', trackHeight)
-      .attr('stroke-width', 3)
-      .attr('stroke', '#609C9C')
-    // @ts-expect-error
-    trackLabel.append('text').text(this.track.label.toUpperCase()).attr('y', 12)
   }
 
-  /* Method to get reference label */
   async getTrackData() {
-    // stuff
+    // TODO: Implement track data fetching
   }
 }

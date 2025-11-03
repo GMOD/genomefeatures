@@ -83,6 +83,6 @@ export default class VariantTrackGlobal {
   }
 
   async getTrackData(): Promise<void> {
-    // this.variants = await new ApolloService().GetFakeGlobalVariants()
+    // TODO: Implement global variant data fetching
   }
 }
