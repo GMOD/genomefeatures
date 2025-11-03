@@ -33,5 +33,3 @@ storybook-static
 
 # Test data (large binary files)
 data/s3.amazonaws.com/
-# Keep the URL record file
-!data/fetch-urls.json
