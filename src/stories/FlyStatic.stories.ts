@@ -10,10 +10,11 @@ export default {
   render: args => createExampleStatic(args),
 } satisfies Meta
 
-const vcfTabixUrl =
-  'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz'
-const ncListUrlTemplate =
-  'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz'
+const baseUrl =
+  (globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ??
+  (typeof window !== 'undefined' ? window.location.origin : '')
+const vcfTabixUrl = `${baseUrl}/s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz`
+const ncListUrlTemplate = `${baseUrl}/s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz`
 
 export const Fly1: StoryObj<StaticArgs> = {
   args: {

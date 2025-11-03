@@ -9,10 +9,11 @@ export default {
   // @ts-expect-error
   render: args => createExampleStatic(args),
 } satisfies Meta
-const ncListUrlTemplate =
-  'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/MGI/mouse/tracks/All_Genes/{refseq}/trackData.jsonz'
-const vcfTabixUrl =
-  'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/mouse-latest.vcf.gz'
+const baseUrl =
+  (globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ??
+  (typeof window !== 'undefined' ? window.location.origin : '')
+const ncListUrlTemplate = `${baseUrl}/s3.amazonaws.com/agrjbrowse/docker/7.0.0/MGI/mouse/tracks/All_Genes/{refseq}/trackData.jsonz`
+const vcfTabixUrl = `${baseUrl}/s3.amazonaws.com/agrjbrowse/VCF/7.0.0/mouse-latest.vcf.gz`
 
 export const Mouse1: StoryObj<StaticArgs> = {
   args: {

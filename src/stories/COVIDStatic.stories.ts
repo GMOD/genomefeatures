@@ -10,8 +10,10 @@ export default {
   render: args => createExampleStatic(args),
 } satisfies Meta
 
-const ncListUrlTemplate =
-  'https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/All Genes/{refseq}/trackData.jsonz'
+const baseUrl =
+  (globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ??
+  (typeof window !== 'undefined' ? window.location.origin : '')
+const ncListUrlTemplate = `${baseUrl}/s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/All Genes/{refseq}/trackData.jsonz`
 
 export const Simple: StoryObj<StaticArgs> = {
   args: {
