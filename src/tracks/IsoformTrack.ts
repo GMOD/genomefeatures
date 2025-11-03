@@ -8,6 +8,7 @@ import {
 import { generateSnvPoints } from '../services/VariantService'
 
 import BaseTrack from './BaseTrack'
+import { drawIsoforms, DrawIsoformArgs } from './trackUtils'
 
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Region } from '../types'
@@ -60,10 +61,22 @@ export default class IsoformTrack extends BaseTrack {
     this.genome = genome
   }
 
-  private createTooltip(): {
-    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>
-    closeToolTip: () => void
-  } {
+
+
+  DrawTrack() {
+    const data = this.trackData
+    const viewer = this.viewer
+    const width = this.width
+    const source = this.genome
+    const chr = data[0]?.seqId
+
+    const displayFeats = this.transcriptTypes
+
+    const x = d3
+      .scaleLinear()
+      .domain([this.region.start, this.region.end])
+      .range([0, width])
+
     const tooltipDiv = d3
       .select('body')
       .append('div')
@@ -78,20 +91,13 @@ export default class IsoformTrack extends BaseTrack {
         .style('opacity', 10)
         .style('visibility', 'hidden')
     }
-    return { tooltipDiv, closeToolTip }
-  }
 
-  private drawHtpVariant() {
     if (this.htpVariant) {
       const variantContainer = this.viewer
         .append('g')
         .attr('class', 'variants track')
         .attr('transform', 'translate(0,22.5)')
       const [, fmin] = this.htpVariant.split(':')
-      const x = d3
-        .scaleLinear()
-        .domain([this.region.start, this.region.end])
-        .range([0, this.width])
       variantContainer
         .append('polygon')
         .attr('class', 'variant-SNV')
@@ -100,444 +106,29 @@ export default class IsoformTrack extends BaseTrack {
         .attr('x', x(+fmin))
         .attr('z-index', 30)
     }
-  }
 
-  private drawInnerChild(
-    isoform: Selection<SVGGElement, unknown, HTMLElement | null, undefined>,
-    innerChild: SimpleFeatureSerialized,
-    x: d3.ScaleLinear<number, number, never>,
-    width: number,
-    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>,
-    renderTooltipDescription: (
-      tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>,
-      descriptionHtml: string,
-      closeFunction: () => void,
-    ) => void,
-    closeToolTip: () => void,
-    featureChild: SimpleFeatureSerialized,
-  ) {
-    const innerType = innerChild.type
-    // Skip feats out of bounds.
-    if (x(innerChild.fmin) > width || x(innerChild.fmax) < 0) {
-      return // skip feat
-    }
-    const innerStart = Math.max(x(innerChild.fmin), 0)
-    const innerEnd = Math.min(x(innerChild.fmax), width)
-    if (EXON_FEATS.includes(innerType)) {
-      isoform
-        .append('rect')
-        .attr('class', 'exon')
-        .attr('x', innerStart)
-        .attr(
-          'transform',
-          `translate(0,${EXON_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT})`,
-        )
-        .attr('height', EXON_HEIGHT)
-        .attr('z-index', 10)
-        .attr('width', innerEnd - innerStart)
-        .datum({
-          fmin: innerChild.fmin,
-          fmax: innerChild.fmax,
-        })
-        .on('click', () => {
-          renderTooltipDescription(
-            tooltipDiv,
-            renderTrackDescription(featureChild),
-            closeToolTip,
-          )
-        })
-    } else if (CDS_FEATS.includes(innerType)) {
-      isoform
-        .append('rect')
-        .attr('class', 'CDS')
-        .attr('x', innerStart)
-        .attr(
-          'transform',
-          `translate(0,${CDS_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT})`,
-        )
-        .attr('z-index', 20)
-        .attr('height', CDS_HEIGHT)
-        .attr('width', innerEnd - innerStart)
-        .datum({
-          fmin: innerChild.fmin,
-          fmax: innerChild.fmax,
-        })
-        .on('click', () => {
-          renderTooltipDescription(
-            tooltipDiv,
-            renderTrackDescription(featureChild),
-            closeToolTip,
-          )
-        })
-    } else if (UTR_FEATS.includes(innerType)) {
-      isoform
-        .append('rect')
-        .attr('class', 'UTR')
-        .attr('x', innerStart)
-        .attr(
-          'transform',
-          `translate(0,${UTR_HEIGHT - TRANSCRIPT_BACKBONE_HEIGHT})`,
-        )
-        .attr('z-index', 20)
-        .attr('height', UTR_HEIGHT)
-        .attr('width', innerEnd - innerStart)
-        .datum({
-          fmin: innerChild.fmin,
-          fmax: innerChild.fmax,
-        })
-        .on('click', () => {
-          renderTooltipDescription(
-            tooltipDiv,
-            renderTrackDescription(featureChild),
-            closeToolTip,
-          )
-        })
-    }
-  }
-
-  private sortFeatureChildrenByWeight(children: SimpleFeatureSerialized[], sortWeight: Record<string, number>): SimpleFeatureSerialized[] {
-    return children.sort(function (a, b) {
-      const sortAValue = sortWeight[a.type]
-      const sortBValue = sortWeight[b.type]
-
-      if (
-        typeof sortAValue === 'number' &&
-        typeof sortBValue === 'number'
-      ) {
-        return sortAValue - sortBValue
-      }
-      if (
-        typeof sortAValue === 'number' &&
-        typeof sortBValue !== 'number'
-      ) {
-        return -1
-      }
-      if (
-        typeof sortAValue !== 'number' &&
-        typeof sortBValue === 'number'
-      ) {
-        return 1
-      }
-      // NOTE: type not found and weighted
-      return a.type.localeCompare(b.type)
-    })
-  }
-
-  private drawSingleIsoform(
-    feature: SimpleFeatureSerialized,
-    featureChild: SimpleFeatureSerialized,
-    track: Selection<SVGGElement, unknown, HTMLElement | null, undefined>,
-    x: d3.ScaleLinear<number, number, never>,
-    width: number,
-    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>,
-    renderTooltipDescription: (
-      tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>,
-      descriptionHtml: string,
-      closeFunction: () => void,
-    ) => void,
-    closeToolTip: () => void,
-    state: { row_count: number; fmin_display: number; fmax_display: number },
-    used_space: string[][],
-    sortWeight: Record<string, number>,
-  ) {
-    const selected = feature.selected
-
-    // An isoform container
-    const isoform = track
-      .append('g')
-      .attr('class', 'isoform')
-      .attr(
-        'transform',
-        `translate(0,${state.row_count * ISOFORM_HEIGHT + 10})`,
-      )
-
-    const transcriptStart = Math.max(x(featureChild.fmin), 0)
-    const transcriptEnd = Math.min(x(featureChild.fmax), width)
-    isoform
-      .append('polygon')
-      .datum(() => ({
-        strand: feature.strand,
-      }))
-      .attr('class', 'transArrow')
-      .attr('points', ARROW_POINTS)
-      .attr('transform', () =>
-        feature.strand > 0
-          ? `translate(${transcriptEnd},0)`
-          : `translate(${transcriptStart},${ARROW_HEIGHT}) rotate(180)`,
-      )
-      .on('click', () => {
-        renderTooltipDescription(
-          tooltipDiv,
-          renderTrackDescription(featureChild),
-          closeToolTip,
-        )
-      })
-
-    isoform
-      .append('rect')
-      .attr('class', 'transcriptBackbone')
-      .attr('y', 10 + ISOFORM_TITLE_HEIGHT)
-      .attr('height', TRANSCRIPT_BACKBONE_HEIGHT)
-      .attr('transform', `translate(${transcriptStart},0)`)
-      .attr('width', transcriptEnd - transcriptStart)
-      .datum({
-        fmin: featureChild.fmin,
-        fmax: featureChild.fmax,
-      })
-      .on('click', () => {
-        renderTooltipDescription(
-          tooltipDiv,
-          renderTrackDescription(featureChild),
-          closeToolTip,
-        )
-      })
-    let text_string = featureChild.name
-    if (feature.name !== featureChild.name) {
-      text_string += ` (${feature.name})`
-    }
-    let labelOffset = Math.max(x(featureChild.fmin), 0)
-    const textLabel = isoform
-      .append('svg:text')
-      .attr('class', 'transcriptLabel')
-      .attr('fill', selected ? 'sandybrown' : 'gray')
-      .attr('opacity', selected ? 1 : 0.5)
-      .attr('height', ISOFORM_TITLE_HEIGHT)
-      .attr('transform', `translate(${labelOffset},0)`)
-      .text(text_string)
-      .datum({
-        fmin: featureChild.fmin,
-      })
-      .on('click', () => {
-        renderTooltipDescription(
-          tooltipDiv,
-          renderTrackDescription(featureChild),
-          closeToolTip,
-        )
-      })
-
-    let symbol_string_width = 100
-    try {
-      // @ts-expect-error
-      symbol_string_width = textLabel.node()?.getBBox().width ?? 0
-    } catch (e) {}
-    if (symbol_string_width + labelOffset > width) {
-      const diff = symbol_string_width + labelOffset - width
-      labelOffset -= diff
-      textLabel.attr('transform', `translate(${labelOffset},0)`)
-    }
-
-    // Now that the label has been created we can calculate the space that
-    // this new element is taking up making sure to add in the width of
-    // the box.
-    // TODO: this is just an estimate of the length
-    let textWidth = text_string.length * 2
-
-    // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
-    try {
-      // @ts-expect-error
-      textWidth = textLabel.node()?.getBBox().width ?? 0
-    } catch (e) {
-      console.error('Not yet rendered', e)
-    }
-    // First check to see if label goes past the end
-    if (textWidth + x(featureChild.fmin) > width) {
-      // console.error(featureChild.name + " goes over the edge");
-    }
-    const featEnd =
-      textWidth > x(featureChild.fmax) - x(featureChild.fmin)
-        ? x(featureChild.fmin) + textWidth
-        : x(featureChild.fmax)
-
-    // This is probably not the most efficient way to do this.
-    // Making an 2d array... each row is the first array (no zer0)
-    // next level is each element taking up space.
-    // Also using colons as spacers seems very perl... maybe change that?
-    // *** DANGER EDGE CASE ***/
-    if (used_space[state.row_count]) {
-      const temp = used_space[state.row_count]
-      temp.push(`${x(featureChild.fmin)}:${featEnd}`)
-      used_space[state.row_count] = temp
-    } else {
-      used_space[state.row_count] = [`${x(featureChild.fmin)}:${featEnd}`]
-    }
-
-    // Now check on bounds since this feature is displayed
-    // The true end of display is converted to bp.
-    if (state.fmin_display < 0 || state.fmin_display > featureChild.fmin) {
-      state.fmin_display = featureChild.fmin
-    }
-    if (state.fmax_display < 0 || state.fmax_display < featureChild.fmax) {
-      state.fmax_display = featureChild.fmax
-    }
-    if (featureChild.children) {
-      // have to sort this so we draw the exons BEFORE the CDS
-      featureChild.children = this.sortFeatureChildrenByWeight(featureChild.children, sortWeight)
-
-      featureChild.children.forEach(innerChild => {
-        this.drawInnerChild(
-          isoform,
-          innerChild,
-          x,
-          width,
-          tooltipDiv,
-          renderTooltipDescription,
-          closeToolTip,
-          featureChild,
-        )
-      })
-    }
-  }
-
-  private drawIsoforms() {
-    let data = this.trackData
-    const htpVariant = this.htpVariant
-    const viewer = this.viewer
-    const width = this.width
-    const source = this.genome
-    const chr = data[0]?.seqId
-
-    const displayFeats = this.transcriptTypes
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const renderTooltipDescription = this.renderTooltipDescription
-
-    const x = d3
-      .scaleLinear()
-      .domain([this.region.start, this.region.end])
-      .range([0, width])
-
-    // need to build a new sortWeight since these can be dynamic
-    const sortWeight = {} as Record<string, number>
-    for (let i = 0, len = UTR_FEATS.length; i < len; i++) {
-      sortWeight[UTR_FEATS[i]] = 200
-    }
-    for (let i = 0, len = CDS_FEATS.length; i < len; i++) {
-      sortWeight[CDS_FEATS[i]] = 1000
-    }
-    for (let i = 0, len = EXON_FEATS.length; i < len; i++) {
-      sortWeight[EXON_FEATS[i]] = 100
-    }
-
-    data = data.sort((a, b) => {
-      if (a.selected && !b.selected) {
-        return -1
-      }
-      if (!a.selected && b.selected) {
-        return 1
-      }
-      // @ts-expect-error
-      return a.name - b.name
-    })
-
-    const { tooltipDiv, closeToolTip } = this.createTooltip()
-
-    this.drawHtpVariant()
-
-    // Calculate where this track should go and translate it
     const newTrackPosition = calculateNewTrackPosition(this.viewer)
     const track = viewer
       .append('g')
       .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
 
-    let row_count = 0
-    const used_space = [] as string[][]
-    const alreadyRendered = [] as string[] // hack fix for multiple transcript returns.
-    const state = { row_count: 0, fmin_display: -1, fmax_display: -1 }
+    const returnedHeight = drawIsoforms({
+      track,
+      isoformData: data,
+      x,
+      width,
+      isoformFilter: [], // IsoformTrack doesn't have an isoformFilter property
+      display_feats: displayFeats,
+      tooltipDiv,
+      renderTooltipDescription: this.renderTooltipDescription,
+      closeToolTip,
+      viewStart: this.region.start,
+      viewEnd: this.region.end,
+      source,
+      chr,
+    })
 
-    for (let i = 0; i < data.length && state.row_count < MAX_ROWS; i++) {
-      const feature = data[i]
-      let featureChildren = feature.children
-      if (featureChildren) {
-        const selected = feature.selected
-
-        // May want to remove this and add an external sort function
-        // outside of the render method to put certain features on top.
-        featureChildren = featureChildren.sort((a, b) => {
-          if (a.name < b.name) {
-            return -1
-          }
-          if (a.name > b.name) {
-            return 1
-          }
-          return 0
-        })
-
-        featureChildren.forEach(featureChild => {
-          const featureType = featureChild.type
-
-          if (alreadyRendered.includes(featureChild.id)) {
-            return
-          } else {
-            alreadyRendered.push(featureChild.id)
-          }
-
-          if (displayFeats.includes(featureType)) {
-            let current_row = checkSpace(
-              used_space,
-              x(featureChild.fmin),
-              x(featureChild.fmax),
-            )
-            if (state.row_count < MAX_ROWS) {
-              this.drawSingleIsoform(
-                feature,
-                featureChild,
-                track,
-                x,
-                width,
-                tooltipDiv,
-                renderTooltipDescription,
-                closeToolTip,
-                state,
-                used_space,
-                sortWeight,
-              )
-              state.row_count += 1
-            }
-            if (state.row_count === MAX_ROWS) {
-              const link = getJBrowseLink(
-                source,
-                chr,
-                this.region.start,
-                this.region.end,
-              )
-              ++current_row
-              track
-                .append('a')
-                .attr('class', 'transcriptLabel')
-                .attr('xlink:show', 'new')
-                .append('text')
-                .attr('x', 10)
-                .attr(
-                  'transform',
-                  `translate(0,${state.row_count * ISOFORM_HEIGHT + 10})`,
-                )
-                .attr('fill', 'red')
-                .attr('opacity', 1)
-                .attr('height', ISOFORM_TITLE_HEIGHT)
-                .html(link)
-            }
-          }
-        })
-      }
-    }
-
-    if (state.row_count === 0) {
-      track
-        .append('text')
-        .attr('x', 30)
-        .attr('y', ISOFORM_TITLE_HEIGHT + 10)
-        .attr('fill', 'orange')
-        .attr('opacity', 0.6)
-        .text(
-          'Overview of non-coding genome features unavailable at this time.',
-        )
-    }
-    // we return the appropriate height function
-    return state.row_count * ISOFORM_HEIGHT
-  }
-
-  DrawTrack() {
-    return this.drawIsoforms()
+    return returnedHeight
   }
 }

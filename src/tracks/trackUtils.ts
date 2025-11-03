@@ -3,7 +3,7 @@ import type { Selection } from 'd3'
 import { checkSpace } from '../RenderFunctions'
 import { getJBrowseLink, renderTrackDescription } from '../services/TrackService'
 import type { SimpleFeatureSerialized } from '../services/types'
-import type VariantFeature from '../VcfFeature'
+import type { VariantFeature } from '../services/VariantService'
 
 export interface DrawIsoformArgs {
   track: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
