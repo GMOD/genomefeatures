@@ -72,7 +72,6 @@ export function waitForStoryRender(
 
     const checkRender = () => {
       // Check if there's a loading indicator that has completed
-      const loadingDiv = element.querySelector('div')
       const svg = element.querySelector('svg')
 
       if (!svg) {

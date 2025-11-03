@@ -14,6 +14,7 @@ const PORT = 3005
 export function startTestServer(): Promise<void> {
   return new Promise((resolve, reject) => {
     if (server) {
+      // eslint-disable-next-line no-console
       console.log('Test server already running')
       resolve()
       return
@@ -30,6 +31,7 @@ export function startTestServer(): Promise<void> {
     })
 
     server = app.listen(PORT, () => {
+      // eslint-disable-next-line no-console
       console.log(`✅ Test server listening on http://localhost:${PORT}`)
       resolve()
     })
@@ -49,6 +51,7 @@ export function stopTestServer(): Promise<void> {
     }
 
     server.close(() => {
+      // eslint-disable-next-line no-console
       console.log('✅ Test server stopped')
       server = null
       resolve()

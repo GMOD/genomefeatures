@@ -11,7 +11,7 @@ export default {
 } satisfies Meta
 
 const baseUrl =
-  (globalThis as any).LOCAL_DATA_SERVER ||
+  (globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ??
   (typeof window !== 'undefined' ? window.location.origin : '')
 const vcfTabixUrl = `${baseUrl}/s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz`
 const ncListUrlTemplate = `${baseUrl}/s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz`

@@ -53,8 +53,8 @@ async function createVariantViewer({
   organism = 'mouse',
   geneSymbol = 'PTEN',
   releaseVersion = '8.2.0',
-  s3DockerBucketUrl = `${(globalThis as any).LOCAL_DATA_SERVER || window.location.origin}/s3.amazonaws.com/agrjbrowse/docker`,
-  s3VcfBucketUrl = `${(globalThis as any).LOCAL_DATA_SERVER || window.location.origin}/s3.amazonaws.com/agrjbrowse/VCF`,
+  s3DockerBucketUrl = `${(globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ?? window.location.origin}/s3.amazonaws.com/agrjbrowse/docker`,
+  s3VcfBucketUrl = `${(globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ?? window.location.origin}/s3.amazonaws.com/agrjbrowse/VCF`,
 }: VariantViewerArgs) {
   const { container, loading } = createElement(`${organism}-${geneSymbol}-svg`)
 

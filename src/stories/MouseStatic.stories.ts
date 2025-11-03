@@ -10,7 +10,7 @@ export default {
   render: args => createExampleStatic(args),
 } satisfies Meta
 const baseUrl =
-  (globalThis as any).LOCAL_DATA_SERVER ||
+  (globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ??
   (typeof window !== 'undefined' ? window.location.origin : '')
 const ncListUrlTemplate = `${baseUrl}/s3.amazonaws.com/agrjbrowse/docker/7.0.0/MGI/mouse/tracks/All_Genes/{refseq}/trackData.jsonz`
 const vcfTabixUrl = `${baseUrl}/s3.amazonaws.com/agrjbrowse/VCF/7.0.0/mouse-latest.vcf.gz`

@@ -11,7 +11,7 @@ export default {
 } satisfies Meta
 
 const baseUrl =
-  (globalThis as any).LOCAL_DATA_SERVER ||
+  (globalThis as { LOCAL_DATA_SERVER?: string }).LOCAL_DATA_SERVER ??
   (typeof window !== 'undefined' ? window.location.origin : '')
 const ncListUrlTemplate = `${baseUrl}/s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/All Genes/{refseq}/trackData.jsonz`
 

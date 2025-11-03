@@ -15,6 +15,8 @@ export default defineConfig(
       'eslint.config.mjs',
       'vite.config.ts',
       'vite-gh-pages.config.ts',
+      'vitest.config.ts',
+      'vitest.global-setup.ts',
       '.storybook/*',
       'out/*',
     ],
