@@ -5,7 +5,7 @@ import type { StaticArgs } from './util'
 import type { Meta, StoryObj } from '@storybook/html'
 
 export default {
-  title: 'Fly example (static files)',
+  title: 'Fly example',
   // @ts-expect-error
   render: args => createExampleStatic(args),
 } satisfies Meta

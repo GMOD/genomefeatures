@@ -5,7 +5,7 @@ import type { StaticArgs } from './util'
 import type { Meta, StoryObj } from '@storybook/html'
 
 export default {
-  title: 'Mouse example (static files)',
+  title: 'Mouse example',
   // @ts-expect-error
   render: args => createExampleStatic(args),
 } satisfies Meta
