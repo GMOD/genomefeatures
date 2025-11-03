@@ -7,6 +7,5 @@ const config: StorybookConfig = {
     name: '@storybook/html-vite',
     options: {},
   },
-  staticDirs: ['../data'],
 }
 export default config
