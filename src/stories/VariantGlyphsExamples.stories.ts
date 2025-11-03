@@ -53,8 +53,8 @@ async function createVariantViewer({
   organism = 'mouse',
   geneSymbol = 'PTEN',
   releaseVersion = '8.2.0',
-  s3DockerBucketUrl = 'https://s3.amazonaws.com/agrjbrowse/docker',
-  s3VcfBucketUrl = 'https://s3.amazonaws.com/agrjbrowse/VCF',
+  s3DockerBucketUrl = '/s3.amazonaws.com/agrjbrowse/docker',
+  s3VcfBucketUrl = '/s3.amazonaws.com/agrjbrowse/VCF',
 }: VariantViewerArgs) {
   const { container, loading } = createElement(`${organism}-${geneSymbol}-svg`)
 
@@ -220,8 +220,8 @@ export const MousePTEN: Story = {
     organism: 'mouse',
     geneSymbol: 'PTEN',
     releaseVersion: '8.2.0',
-    s3DockerBucketUrl: 'https://s3.amazonaws.com/agrjbrowse/docker',
-    s3VcfBucketUrl: 'https://s3.amazonaws.com/agrjbrowse/VCF',
+    s3DockerBucketUrl: '/s3.amazonaws.com/agrjbrowse/docker',
+    s3VcfBucketUrl: '/s3.amazonaws.com/agrjbrowse/VCF',
   },
   parameters: {
     docs: {
@@ -252,8 +252,8 @@ export const FlySox14: Story = {
     organism: 'fly',
     geneSymbol: 'Sox14',
     releaseVersion: '8.2.0',
-    s3DockerBucketUrl: 'https://s3.amazonaws.com/agrjbrowse/docker',
-    s3VcfBucketUrl: 'https://s3.amazonaws.com/agrjbrowse/VCF',
+    s3DockerBucketUrl: '/s3.amazonaws.com/agrjbrowse/docker',
+    s3VcfBucketUrl: '/s3.amazonaws.com/agrjbrowse/VCF',
   },
   parameters: {
     docs: {

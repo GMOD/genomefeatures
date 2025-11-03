@@ -11,9 +11,9 @@ export default {
 } satisfies Meta
 
 const vcfTabixUrl =
-  'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz'
+  '/s3.amazonaws.com/agrjbrowse/VCF/7.0.0/fly-latest.vcf.gz'
 const ncListUrlTemplate =
-  'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz'
+  '/s3.amazonaws.com/agrjbrowse/docker/7.0.0/FlyBase/fruitfly/tracks/All_Genes/{refseq}/trackData.jsonz'
 
 export const Fly1: StoryObj<StaticArgs> = {
   args: {

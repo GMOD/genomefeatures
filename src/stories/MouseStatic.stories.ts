@@ -10,9 +10,9 @@ export default {
   render: args => createExampleStatic(args),
 } satisfies Meta
 const ncListUrlTemplate =
-  'https://s3.amazonaws.com/agrjbrowse/docker/7.0.0/MGI/mouse/tracks/All_Genes/{refseq}/trackData.jsonz'
+  '/s3.amazonaws.com/agrjbrowse/docker/7.0.0/MGI/mouse/tracks/All_Genes/{refseq}/trackData.jsonz'
 const vcfTabixUrl =
-  'https://s3.amazonaws.com/agrjbrowse/VCF/7.0.0/mouse-latest.vcf.gz'
+  '/s3.amazonaws.com/agrjbrowse/VCF/7.0.0/mouse-latest.vcf.gz'
 
 export const Mouse1: StoryObj<StaticArgs> = {
   args: {

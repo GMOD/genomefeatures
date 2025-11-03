@@ -11,7 +11,7 @@ export default {
 } satisfies Meta
 
 const ncListUrlTemplate =
-  'https://s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/All Genes/{refseq}/trackData.jsonz'
+  '/s3.amazonaws.com/agrjbrowse/docker/3.2.0/SARS-CoV-2/tracks/All Genes/{refseq}/trackData.jsonz'
 
 export const Simple: StoryObj<StaticArgs> = {
   args: {

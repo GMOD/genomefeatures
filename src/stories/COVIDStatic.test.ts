@@ -11,6 +11,7 @@ describe('COVIDStatic Stories', () => {
 
   it('should render Simple story snapshot', async () => {
     const element = createExampleStatic(stories.Simple.args as StaticArgs)
+    document.body.appendChild(element)
     await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
   }, 6000)

@@ -15,6 +15,7 @@ describe('VariantGlyphsExamples Stories', () => {
     // Call the render function from the meta with story args
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const element = meta.render(story.args as any) as HTMLElement
+    document.body.appendChild(element)
 
     // Wait for the async rendering to complete
     await waitForStoryRender(element, { timeout: 5000 })
@@ -29,6 +30,7 @@ describe('VariantGlyphsExamples Stories', () => {
     // Call the render function from the meta with story args
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const element = meta.render(story.args as any) as HTMLElement
+    document.body.appendChild(element)
 
     // Wait for the async rendering to complete
     await waitForStoryRender(element, { timeout: 5000 })
