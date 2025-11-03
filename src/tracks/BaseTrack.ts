@@ -19,11 +19,11 @@ export default class BaseTrack {
     this.height = height
   }
 
-  renderTooltipDescription(
+  renderTooltipDescription = (
     tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>,
     descriptionHtml: string,
     closeFunction: () => void,
-  ): void {
+  ): void => {
     tooltipDiv
       .transition()
       .duration(200)

@@ -2,14 +2,11 @@ import * as d3 from 'd3'
 
 import {
   calculateNewTrackPosition,
-  checkSpace,
   findRange,
   setHighlights,
 } from '../RenderFunctions'
-import {
-  getJBrowseLink,
-  renderTrackDescription,
-} from '../services/TrackService'
+import BaseTrack from './BaseTrack'
+import { drawIsoforms } from './trackUtils'
 import {
   filterVariantData,
   generateDelinsPoint,
@@ -25,9 +22,6 @@ import {
   renderVariantDescriptions,
 } from '../services/VariantService'
 
-import { drawIsoforms } from './trackUtils'
-import BaseTrack from './BaseTrack'
-
 import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Selection } from 'd3'
@@ -39,17 +33,13 @@ export default class IsoformAndVariantTrack extends BaseTrack {
   private isoformFilter: string[]
   private initialHighlight?: string[]
   private transcriptTypes: string[]
-  private variantTypes: string[]
   private binRatio: number
-  private showVariantLabel: boolean
 
   constructor({
     viewer,
     height,
     width,
     transcriptTypes,
-    variantTypes,
-    showVariantLabel,
     variantFilter,
     binRatio,
     isoformFilter,
@@ -61,8 +51,6 @@ export default class IsoformAndVariantTrack extends BaseTrack {
     height: number
     width: number
     transcriptTypes: string[]
-    variantTypes: string[]
-    showVariantLabel?: boolean
     variantFilter: string[]
     binRatio: number
     isoformFilter: string[]
@@ -77,19 +65,14 @@ export default class IsoformAndVariantTrack extends BaseTrack {
     this.isoformFilter = isoformFilter
     this.initialHighlight = initialHighlight
     this.transcriptTypes = transcriptTypes
-    this.variantTypes = variantTypes
     this.binRatio = binRatio
-    this.showVariantLabel = showVariantLabel ?? true
   }
 
   DrawTrack() {
     const isoformFilter = this.isoformFilter
     let isoformData = this.trackData
     const initialHighlight = this.initialHighlight
-    const variantData = filterVariantData(
-      this.variantData,
-      this.variantFilter,
-    )
+    const variantData = filterVariantData(this.variantData, this.variantFilter)
     const viewer = this.viewer
     const width = this.width
     const binRatio = this.binRatio
@@ -97,7 +80,6 @@ export default class IsoformAndVariantTrack extends BaseTrack {
     const numVariantTracks = distinctVariants.length
     const source = this.trackData[0].source
     const chr = this.trackData[0].seqId
-    const MAX_ROWS = isoformFilter.length === 0 ? 9 : 30
 
     const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
     const CDS_feats = ['CDS']
@@ -109,18 +91,9 @@ export default class IsoformAndVariantTrack extends BaseTrack {
     const viewEnd = dataRange.fmax
 
     // constants
-    const EXON_HEIGHT = 10 // will be white / transparent
-    const CDS_HEIGHT = 10 // will be colored in
-    const ISOFORM_HEIGHT = 40 // height for each isoform
-    const GENE_LABEL_HEIGHT = 20
     const MIN_WIDTH = 2
     const ISOFORM_TITLE_HEIGHT = 0 // height for each isoform
-    const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
     const VARIANT_HEIGHT = 10 // this is the height of the isoform running all of the way through
-    const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
-    const ARROW_HEIGHT = 20
-    const ARROW_WIDTH = 10
-    const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
     const SNV_WIDTH = 10
     const VARIANT_TRACK_HEIGHT = 40 // Not sure if this needs to be dynamic or not
     const LABEL_PADDING = 22.5
@@ -145,8 +118,6 @@ export default class IsoformAndVariantTrack extends BaseTrack {
       sortWeight[exon_feats[i]] = 100
     }
 
-    const geneList = {} as Record<string, string>
-
     isoformData = isoformData.sort((a, b) => {
       if (a.selected && !b.selected) {
         return -1
@@ -156,8 +127,6 @@ export default class IsoformAndVariantTrack extends BaseTrack {
       }
       return a.name.localeCompare(b.name)
     })
-
-    let heightBuffer = 0
 
     const tooltipDiv = d3
       .select('body')
@@ -217,7 +186,11 @@ export default class IsoformAndVariantTrack extends BaseTrack {
         .attr('height', VARIANT_HEIGHT)
         .attr('width', width)
         .on('click', () => {
-          this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+          this.renderTooltipDescription(
+            tooltipDiv,
+            descriptionHtml,
+            closeToolTip,
+          )
         })
         .on('mouseover', d => {
           const theVariant = d.variant
@@ -268,7 +241,11 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
           .on('click', () => {
-            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
@@ -319,7 +296,11 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           )
           .attr('z-index', 30)
           .on('click', () => {
-            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .on('mouseover', function (d) {
             const theVariant = d.variant
@@ -367,7 +348,11 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           )
           .attr('z-index', 30)
           .on('click', () => {
-            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .on('mouseover', d => {
             const theVariant = d.variant
@@ -422,7 +407,11 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           .attr('fill', consequenceColor)
           .attr('z-index', 30)
           .on('click', () => {
-            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .on('mouseover', d => {
             const theVariant = d.variant
@@ -473,7 +462,11 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
           .on('click', () => {
-            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(
+              tooltipDiv,
+              descriptionHtml,
+              closeToolTip,
+            )
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
@@ -521,10 +514,6 @@ export default class IsoformAndVariantTrack extends BaseTrack {
     // we return the appropriate height function
     return returnedHeight + VARIANT_TRACK_HEIGHT
   }
-
-
-
-
 
   setInitialHighlight(
     selectedAlleles: string[],

@@ -1,16 +1,15 @@
 import * as d3 from 'd3'
 
-import { calculateNewTrackPosition, checkSpace, findRange, setHighlights } from '../RenderFunctions'
-import { renderTrackDescription } from '../services/TrackService'
+import {
+  calculateNewTrackPosition,
+  findRange,
+  setHighlights,
+} from '../RenderFunctions'
+import BaseTrack from './BaseTrack'
+import { drawIsoforms } from './trackUtils'
 import { filterVariantData } from '../services/VariantService'
 
-import BaseTrack from './BaseTrack'
-import { drawIsoforms, DrawIsoformArgs } from './trackUtils'
-
-
-
 import type { VariantFeature } from '../services/VariantService'
-
 import type { SimpleFeatureSerialized } from '../services/types'
 
 export default class IsoformEmbeddedVariantTrack extends BaseTrack {
@@ -18,7 +17,6 @@ export default class IsoformEmbeddedVariantTrack extends BaseTrack {
   private variantData: VariantFeature[]
   private variantFilter: string[]
   private transcriptTypes: string[]
-  private variantTypes: string[]
   private showVariantLabel: boolean
   private initialHighlight?: string[]
 
@@ -27,7 +25,6 @@ export default class IsoformEmbeddedVariantTrack extends BaseTrack {
     height,
     width,
     transcriptTypes,
-    variantTypes,
     showVariantLabel,
     variantFilter,
     initialHighlight,
@@ -51,7 +48,6 @@ export default class IsoformEmbeddedVariantTrack extends BaseTrack {
     this.variantFilter = variantFilter
     this.initialHighlight = initialHighlight
     this.transcriptTypes = transcriptTypes
-    this.variantTypes = variantTypes
     this.showVariantLabel = showVariantLabel ?? true
   }
 
@@ -60,10 +56,7 @@ export default class IsoformEmbeddedVariantTrack extends BaseTrack {
     const trackData = this.trackData
     const isoformData = trackData
 
-    const variantData = filterVariantData(
-      variantDataPre,
-      this.variantFilter,
-    )
+    const variantData = filterVariantData(variantDataPre, this.variantFilter)
 
     const viewer = this.viewer
     const width = this.width
@@ -126,7 +119,4 @@ export default class IsoformEmbeddedVariantTrack extends BaseTrack {
 
     return returnedHeight
   }
-
-
-
 }

@@ -1,32 +1,14 @@
 import * as d3 from 'd3'
 
-import { calculateNewTrackPosition, checkSpace } from '../RenderFunctions'
-import {
-  getJBrowseLink,
-  renderTrackDescription,
-} from '../services/TrackService'
-import { generateSnvPoints } from '../services/VariantService'
-
+import { calculateNewTrackPosition } from '../RenderFunctions'
 import BaseTrack from './BaseTrack'
-import { drawIsoforms, DrawIsoformArgs } from './trackUtils'
+import { drawIsoforms } from './trackUtils'
+import { generateSnvPoints } from '../services/VariantService'
 
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Region } from '../types'
 import type { Selection } from 'd3'
 
-const MAX_ROWS = 10
-const UTR_FEATS = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
-const CDS_FEATS = ['CDS']
-const EXON_FEATS = ['exon']
-const EXON_HEIGHT = 10 // will be white / transparent
-const CDS_HEIGHT = 10 // will be colored in
-const ISOFORM_HEIGHT = 40 // height for each isoform
-const ISOFORM_TITLE_HEIGHT = 0 // height for each isoform
-const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
-const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
-const ARROW_HEIGHT = 20
-const ARROW_WIDTH = 10
-const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
 export default class IsoformTrack extends BaseTrack {
   private trackData: SimpleFeatureSerialized[]
   private transcriptTypes: string[]
@@ -60,8 +42,6 @@ export default class IsoformTrack extends BaseTrack {
     this.region = region
     this.genome = genome
   }
-
-
 
   DrawTrack() {
     const data = this.trackData

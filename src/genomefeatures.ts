@@ -195,8 +195,6 @@ export class GenomeFeatureViewer {
           height,
           width,
           transcriptTypes,
-          variantTypes,
-          showVariantLabel,
           trackData,
           variantData,
           variantFilter,

@@ -1,14 +1,15 @@
-import type { Selection } from 'd3'
 
 import { checkSpace } from '../RenderFunctions'
 import { getJBrowseLink, renderTrackDescription } from '../services/TrackService'
-import type { SimpleFeatureSerialized } from '../services/types'
+
 import type { VariantFeature } from '../services/VariantService'
+import type { SimpleFeatureSerialized } from '../services/types'
+import type { Selection } from 'd3'
 
 export interface DrawIsoformArgs {
   track: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   isoformData: SimpleFeatureSerialized[]
-  x: d3.ScaleLinear<number, number, never>
+  x: d3.ScaleLinear<number, number>
   width: number
   isoformFilter: string[]
   display_feats: string[]
@@ -220,8 +221,7 @@ export function drawIsoforms({
             try {
               text_width = text_label.node()?.getBBox().width ?? 0
             } catch (e) {}
-            if (text_width + x(featureChild.fmin) > width) {
-            }
+            if (text_width + x(featureChild.fmin) > width) {}
             const feat_end =
               text_width > x(featureChild.fmax) - x(featureChild.fmin)
                 ? x(featureChild.fmin) + text_width
