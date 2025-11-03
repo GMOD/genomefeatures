@@ -1,13 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import * as stories from './MouseStatic.stories'
 import { createExampleStatic, StaticArgs } from './util'
-
-// Mock the fetch functions to avoid actual network calls during tests
-vi.mock('../genomefeatures', () => ({
-  fetchNCListData: vi.fn().mockResolvedValue({ features: [] }),
-  fetchTabixVcfData: vi.fn().mockResolvedValue([]),
-  GenomeFeatureViewer: vi.fn(),
-}))
+import { waitForSvgContent } from './test-helpers'
 
 describe('MouseStatic Stories', () => {
   beforeEach(() => {
@@ -15,43 +9,51 @@ describe('MouseStatic Stories', () => {
     document.body.innerHTML = ''
   })
 
-  it('should render Mouse1 story snapshot', () => {
+  it('should render Mouse1 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse1.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Mouse2 story snapshot', () => {
+  it('should render Mouse2 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse2.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Mouse3 story snapshot', () => {
+  it('should render Mouse3 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse3.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Mouse4 story snapshot', () => {
+  it('should render Mouse4 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse4.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Mouse5 story snapshot', () => {
+  it('should render Mouse5 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse5.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Mouse6 story snapshot', () => {
+  it('should render Mouse6 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse6.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Mouse7 story snapshot', () => {
+  it('should render Mouse7 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse7.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Mouse8 story snapshot', () => {
+  it('should render Mouse8 story snapshot', async () => {
     const element = createExampleStatic(stories.Mouse8.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 })

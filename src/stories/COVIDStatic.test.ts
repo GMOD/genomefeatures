@@ -1,13 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import * as stories from './COVIDStatic.stories'
 import { createExampleStatic, StaticArgs } from './util'
-
-// Mock the fetch functions to avoid actual network calls during tests
-vi.mock('../genomefeatures', () => ({
-  fetchNCListData: vi.fn().mockResolvedValue({ features: [] }),
-  fetchTabixVcfData: vi.fn().mockResolvedValue([]),
-  GenomeFeatureViewer: vi.fn(),
-}))
+import { waitForSvgContent } from './test-helpers'
 
 describe('COVIDStatic Stories', () => {
   beforeEach(() => {
@@ -15,8 +9,9 @@ describe('COVIDStatic Stories', () => {
     document.body.innerHTML = ''
   })
 
-  it('should render Simple story snapshot', () => {
+  it('should render Simple story snapshot', async () => {
     const element = createExampleStatic(stories.Simple.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 })

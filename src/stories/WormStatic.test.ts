@@ -1,13 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import * as stories from './WormStatic.stories'
 import { createExampleStatic, StaticArgs } from './util'
-
-// Mock the fetch functions to avoid actual network calls during tests
-vi.mock('../genomefeatures', () => ({
-  fetchNCListData: vi.fn().mockResolvedValue({ features: [] }),
-  fetchTabixVcfData: vi.fn().mockResolvedValue([]),
-  GenomeFeatureViewer: vi.fn(),
-}))
+import { waitForSvgContent } from './test-helpers'
 
 describe('WormStatic Stories', () => {
   beforeEach(() => {
@@ -15,23 +9,27 @@ describe('WormStatic Stories', () => {
     document.body.innerHTML = ''
   })
 
-  it('should render Worm1 story snapshot', () => {
+  it('should render Worm1 story snapshot', async () => {
     const element = createExampleStatic(stories.Worm1.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Worm2 story snapshot', () => {
+  it('should render Worm2 story snapshot', async () => {
     const element = createExampleStatic(stories.Worm2.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Worm3 story snapshot', () => {
+  it('should render Worm3 story snapshot', async () => {
     const element = createExampleStatic(stories.Worm3.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 
-  it('should render Worm4 story snapshot', () => {
+  it('should render Worm4 story snapshot', async () => {
     const element = createExampleStatic(stories.Worm4.args as StaticArgs)
+    await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
-  })
+  }, 6000)
 })
