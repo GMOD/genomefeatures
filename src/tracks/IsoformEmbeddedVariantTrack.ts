@@ -8,6 +8,7 @@ import {
 } from '../RenderFunctions'
 import { renderTrackDescription } from '../services/TrackService'
 import { renderTooltipDescription } from '../services/TooltipService'
+import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
 import {
   generateVariantDataBinsAndDataSets,
   getColorsForConsequences,
@@ -21,6 +22,23 @@ import type { VariantFeature } from '../services/VariantService'
 import type { SimpleFeatureSerialized } from '../services/types'
 
 export default class IsoformEmbeddedVariantTrack {
+  // Layout constants
+  private static readonly MAX_ROWS = 10
+  private static readonly EXON_HEIGHT = 10
+  private static readonly CDS_HEIGHT = 10
+  private static readonly ISOFORM_HEIGHT = 40
+  private static readonly GENE_LABEL_HEIGHT = 20
+  private static readonly MIN_WIDTH = 2
+  private static readonly ISOFORM_TITLE_HEIGHT = 0
+  private static readonly UTR_HEIGHT = 10
+  private static readonly VARIANT_HEIGHT = 10
+  private static readonly VARIANT_OFFSET = 20
+  private static readonly TRANSCRIPT_BACKBONE_HEIGHT = 4
+  private static readonly ARROW_HEIGHT = 20
+  private static readonly ARROW_WIDTH = 10
+  private static readonly SNV_HEIGHT = 10
+  private static readonly SNV_WIDTH = 10
+
   private trackData: SimpleFeatureSerialized[]
   private variantData: VariantFeature[]
   private viewer: d3.Selection<
@@ -101,32 +119,32 @@ export default class IsoformEmbeddedVariantTrack {
     const width = this.width
     const showVariantLabel = this.showVariantLabel
 
-    const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
-    const CDS_feats = ['CDS']
-    const exon_feats = ['exon']
+    const UTR_feats = FEATURE_TYPES.UTR
+    const CDS_feats = FEATURE_TYPES.CDS
+    const exon_feats = FEATURE_TYPES.EXON
     const display_feats = this.transcriptTypes
     const dataRange = findRange(isoformData, display_feats)
 
     const view_start = dataRange.fmin
     const view_end = dataRange.fmax
 
-    // constants
-    const MAX_ROWS = 10
-    const EXON_HEIGHT = 10 // will be white / transparent
-    const CDS_HEIGHT = 10 // will be colored in
-    const ISOFORM_HEIGHT = 40 // height for each isoform
-    const GENE_LABEL_HEIGHT = 20
-    const MIN_WIDTH = 2
-    const ISOFORM_TITLE_HEIGHT = 0 // height for each isoform
-    const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
-    const VARIANT_HEIGHT = 10 // this is the height of the isoform running all of the way through
-    const VARIANT_OFFSET = 20 // this is the height of the isoform running all of the way through
-    const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
-    const ARROW_HEIGHT = 20
-    const ARROW_WIDTH = 10
-    const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
-    const SNV_HEIGHT = 10
-    const SNV_WIDTH = 10
+    // Layout constants
+    const MAX_ROWS = IsoformEmbeddedVariantTrack.MAX_ROWS
+    const EXON_HEIGHT = IsoformEmbeddedVariantTrack.EXON_HEIGHT
+    const CDS_HEIGHT = IsoformEmbeddedVariantTrack.CDS_HEIGHT
+    const ISOFORM_HEIGHT = IsoformEmbeddedVariantTrack.ISOFORM_HEIGHT
+    const GENE_LABEL_HEIGHT = IsoformEmbeddedVariantTrack.GENE_LABEL_HEIGHT
+    const MIN_WIDTH = IsoformEmbeddedVariantTrack.MIN_WIDTH
+    const ISOFORM_TITLE_HEIGHT = IsoformEmbeddedVariantTrack.ISOFORM_TITLE_HEIGHT
+    const UTR_HEIGHT = IsoformEmbeddedVariantTrack.UTR_HEIGHT
+    const VARIANT_HEIGHT = IsoformEmbeddedVariantTrack.VARIANT_HEIGHT
+    const VARIANT_OFFSET = IsoformEmbeddedVariantTrack.VARIANT_OFFSET
+    const TRANSCRIPT_BACKBONE_HEIGHT = IsoformEmbeddedVariantTrack.TRANSCRIPT_BACKBONE_HEIGHT
+    const ARROW_HEIGHT = IsoformEmbeddedVariantTrack.ARROW_HEIGHT
+    const ARROW_WIDTH = IsoformEmbeddedVariantTrack.ARROW_WIDTH
+    const ARROW_POINTS = generateArrowPoints(ARROW_HEIGHT, ARROW_WIDTH)
+    const SNV_HEIGHT = IsoformEmbeddedVariantTrack.SNV_HEIGHT
+    const SNV_WIDTH = IsoformEmbeddedVariantTrack.SNV_WIDTH
     const insertion_points = (x: number) => {
       return `${x - SNV_WIDTH / 2},${SNV_HEIGHT} ${x},0 ${x + SNV_WIDTH / 2},${SNV_HEIGHT}`
     }
@@ -147,16 +165,7 @@ export default class IsoformEmbeddedVariantTrack {
       .attr('transform', `translate(0,${newTrackPosition})`)
       .attr('class', 'track')
 
-    const sortWeight: Record<string, number> = {}
-    for (const feat of UTR_feats) {
-      sortWeight[feat] = 200
-    }
-    for (const feat of CDS_feats) {
-      sortWeight[feat] = 1000
-    }
-    for (const feat of exon_feats) {
-      sortWeight[feat] = 100
-    }
+    const sortWeight = createSortWeightMap(UTR_feats, CDS_feats, exon_feats)
 
     const geneList: Record<string, string> = {}
 

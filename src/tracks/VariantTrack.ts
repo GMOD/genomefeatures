@@ -8,6 +8,9 @@ import type { Region } from '../types'
 import type { Selection } from 'd3'
 
 export default class VariantTrack {
+  // Layout constants
+  private static readonly TRACK_HEIGHT = 20
+
   private variants: VariantFeature[]
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   private width: number
@@ -63,7 +66,7 @@ export default class VariantTrack {
       .direction('s')
     viewer.call(tooltip)
 
-    const trackHeight = 20
+    const trackHeight = VariantTrack.TRACK_HEIGHT
     const newTrackPosition = calculateNewTrackPosition(this.viewer)
 
     // Create our track container with a simple background

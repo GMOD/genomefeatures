@@ -7,12 +7,24 @@ import {
 } from '../services/TrackService'
 import { renderTooltipDescription } from '../services/TooltipService'
 import { generateSnvPoints } from '../services/VariantService'
+import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
 
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Region } from '../types'
 import type { Selection } from 'd3'
 
 export default class IsoformTrack {
+  // Layout constants
+  private static readonly MAX_ROWS = 10
+  private static readonly EXON_HEIGHT = 10
+  private static readonly CDS_HEIGHT = 10
+  private static readonly ISOFORM_HEIGHT = 40
+  private static readonly ISOFORM_TITLE_HEIGHT = 0
+  private static readonly UTR_HEIGHT = 10
+  private static readonly TRANSCRIPT_BACKBONE_HEIGHT = 4
+  private static readonly ARROW_HEIGHT = 20
+  private static readonly ARROW_WIDTH = 10
+
   private trackData: SimpleFeatureSerialized[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
@@ -61,39 +73,29 @@ export default class IsoformTrack {
     const source = this.genome
     const chr = data[0]?.seqId
 
-    const MAX_ROWS = 10
+    const MAX_ROWS = IsoformTrack.MAX_ROWS
 
-    const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
-    const CDS_feats = ['CDS']
-    const exon_feats = ['exon']
+    const UTR_feats = FEATURE_TYPES.UTR
+    const CDS_feats = FEATURE_TYPES.CDS
+    const exon_feats = FEATURE_TYPES.EXON
     const displayFeats = this.transcriptTypes
 
-    const exonHeight = 10 // will be white / transparent
-    const cdsHeight = 10 // will be colored in
-    const isoformHeight = 40 // height for each isoform
-    const isoformTitleHeight = 0 // height for each isoform
-    const utrHeight = 10 // this is the height of the isoform running all of the way through
-    const transcriptBackboneHeight = 4 // this is the height of the isoform running all of the way through
-    const arrowHeight = 20
-    const arrowWidth = 10
-    const arrowPoints = `0,0 0,${arrowHeight} ${arrowWidth},${arrowWidth}`
+    const exonHeight = IsoformTrack.EXON_HEIGHT
+    const cdsHeight = IsoformTrack.CDS_HEIGHT
+    const isoformHeight = IsoformTrack.ISOFORM_HEIGHT
+    const isoformTitleHeight = IsoformTrack.ISOFORM_TITLE_HEIGHT
+    const utrHeight = IsoformTrack.UTR_HEIGHT
+    const transcriptBackboneHeight = IsoformTrack.TRANSCRIPT_BACKBONE_HEIGHT
+    const arrowHeight = IsoformTrack.ARROW_HEIGHT
+    const arrowWidth = IsoformTrack.ARROW_WIDTH
+    const arrowPoints = generateArrowPoints(arrowHeight, arrowWidth)
 
     const x = d3
       .scaleLinear()
       .domain([this.region.start, this.region.end])
       .range([0, width])
 
-    // need to build a new sortWeight since these can be dynamic
-    const sortWeight = {} as Record<string, number>
-    for (let i = 0, len = UTR_feats.length; i < len; i++) {
-      sortWeight[UTR_feats[i]] = 200
-    }
-    for (let i = 0, len = CDS_feats.length; i < len; i++) {
-      sortWeight[CDS_feats[i]] = 1000
-    }
-    for (let i = 0, len = exon_feats.length; i < len; i++) {
-      sortWeight[exon_feats[i]] = 100
-    }
+    const sortWeight = createSortWeightMap(UTR_feats, CDS_feats, exon_feats)
 
     data = data.sort((a, b) => {
       if (a.selected && !b.selected) {
@@ -263,7 +265,10 @@ export default class IsoformTrack {
               try {
                 // @ts-expect-error
                 symbol_string_width = textLabel.node()?.getBBox().width ?? 0
-              } catch (e) {}
+              } catch (e) {
+                // Fallback to default width if getBBox() fails (e.g., in non-browser environments)
+                console.debug('Could not get bounding box for transcript label, using default width')
+              }
               if (symbol_string_width + labelOffset > this.width) {
                 const diff = symbol_string_width + labelOffset - this.width
                 labelOffset -= diff

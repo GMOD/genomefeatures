@@ -11,6 +11,7 @@ import {
   renderTrackDescription,
 } from '../services/TrackService'
 import { renderTooltipDescription } from '../services/TooltipService'
+import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
 import {
   generateDelinsPoint,
   generateInsertionPoint,
@@ -30,6 +31,24 @@ import type { SimpleFeatureSerialized } from '../services/types'
 import type { Selection } from 'd3'
 
 export default class IsoformAndVariantTrack {
+  // Layout constants
+  private static readonly EXON_HEIGHT = 10
+  private static readonly CDS_HEIGHT = 10
+  private static readonly ISOFORM_HEIGHT = 40
+  private static readonly GENE_LABEL_HEIGHT = 20
+  private static readonly MIN_WIDTH = 2
+  private static readonly ISOFORM_TITLE_HEIGHT = 0
+  private static readonly UTR_HEIGHT = 10
+  private static readonly VARIANT_HEIGHT = 10
+  private static readonly TRANSCRIPT_BACKBONE_HEIGHT = 4
+  private static readonly ARROW_HEIGHT = 20
+  private static readonly ARROW_WIDTH = 10
+  private static readonly SNV_WIDTH = 10
+  private static readonly VARIANT_TRACK_HEIGHT = 40
+  private static readonly LABEL_PADDING = 22.5
+  private static readonly MAX_ROWS = 9
+  private static readonly MAX_ROWS_WITH_FILTER = 30
+
   private trackData: SimpleFeatureSerialized[]
   private variantData: VariantFeature[]
   private viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
@@ -99,33 +118,35 @@ export default class IsoformAndVariantTrack {
     const numVariantTracks = distinctVariants.length
     const source = this.trackData[0].source
     const chr = this.trackData[0].seqId
-    const MAX_ROWS = isoformFilter.length === 0 ? 9 : 30
+    const MAX_ROWS = isoformFilter.length === 0
+      ? IsoformAndVariantTrack.MAX_ROWS
+      : IsoformAndVariantTrack.MAX_ROWS_WITH_FILTER
 
-    const UTR_feats = ['UTR', 'five_prime_UTR', 'three_prime_UTR']
-    const CDS_feats = ['CDS']
-    const exon_feats = ['exon']
+    const UTR_feats = FEATURE_TYPES.UTR
+    const CDS_feats = FEATURE_TYPES.CDS
+    const exon_feats = FEATURE_TYPES.EXON
     const display_feats = this.transcriptTypes
     const dataRange = findRange(isoformData, display_feats)
 
     const viewStart = dataRange.fmin
     const viewEnd = dataRange.fmax
 
-    // constants
-    const EXON_HEIGHT = 10 // will be white / transparent
-    const CDS_HEIGHT = 10 // will be colored in
-    const ISOFORM_HEIGHT = 40 // height for each isoform
-    const GENE_LABEL_HEIGHT = 20
-    const MIN_WIDTH = 2
-    const ISOFORM_TITLE_HEIGHT = 0 // height for each isoform
-    const UTR_HEIGHT = 10 // this is the height of the isoform running all of the way through
-    const VARIANT_HEIGHT = 10 // this is the height of the isoform running all of the way through
-    const TRANSCRIPT_BACKBONE_HEIGHT = 4 // this is the height of the isoform running all of the way through
-    const ARROW_HEIGHT = 20
-    const ARROW_WIDTH = 10
-    const ARROW_POINTS = `0,0 0,${ARROW_HEIGHT} ${ARROW_WIDTH},${ARROW_WIDTH}`
-    const SNV_WIDTH = 10
-    const VARIANT_TRACK_HEIGHT = 40 // Not sure if this needs to be dynamic or not
-    const LABEL_PADDING = 22.5
+    // Layout constants
+    const EXON_HEIGHT = IsoformAndVariantTrack.EXON_HEIGHT
+    const CDS_HEIGHT = IsoformAndVariantTrack.CDS_HEIGHT
+    const ISOFORM_HEIGHT = IsoformAndVariantTrack.ISOFORM_HEIGHT
+    const GENE_LABEL_HEIGHT = IsoformAndVariantTrack.GENE_LABEL_HEIGHT
+    const MIN_WIDTH = IsoformAndVariantTrack.MIN_WIDTH
+    const ISOFORM_TITLE_HEIGHT = IsoformAndVariantTrack.ISOFORM_TITLE_HEIGHT
+    const UTR_HEIGHT = IsoformAndVariantTrack.UTR_HEIGHT
+    const VARIANT_HEIGHT = IsoformAndVariantTrack.VARIANT_HEIGHT
+    const TRANSCRIPT_BACKBONE_HEIGHT = IsoformAndVariantTrack.TRANSCRIPT_BACKBONE_HEIGHT
+    const ARROW_HEIGHT = IsoformAndVariantTrack.ARROW_HEIGHT
+    const ARROW_WIDTH = IsoformAndVariantTrack.ARROW_WIDTH
+    const ARROW_POINTS = generateArrowPoints(ARROW_HEIGHT, ARROW_WIDTH)
+    const SNV_WIDTH = IsoformAndVariantTrack.SNV_WIDTH
+    const VARIANT_TRACK_HEIGHT = IsoformAndVariantTrack.VARIANT_TRACK_HEIGHT
+    const LABEL_PADDING = IsoformAndVariantTrack.LABEL_PADDING
 
     const x = d3.scaleLinear().domain([viewStart, viewEnd]).range([0, width])
 
@@ -136,16 +157,7 @@ export default class IsoformAndVariantTrack {
       .attr('transform', 'translate(0,22.5)')
     const labelTrack = viewer.append('g').attr('class', 'label')
 
-    const sortWeight = {} as Record<string, number>
-    for (let i = 0, len = UTR_feats.length; i < len; i++) {
-      sortWeight[UTR_feats[i]] = 200
-    }
-    for (let i = 0, len = CDS_feats.length; i < len; i++) {
-      sortWeight[CDS_feats[i]] = 1000
-    }
-    for (let i = 0, len = exon_feats.length; i < len; i++) {
-      sortWeight[exon_feats[i]] = 100
-    }
+    const sortWeight = createSortWeightMap(UTR_feats, CDS_feats, exon_feats)
 
     const geneList = {} as Record<string, string>
 
