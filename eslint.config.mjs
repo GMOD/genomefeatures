@@ -53,7 +53,6 @@ export default defineConfig(
   },
   {
     rules: {
-      '@typescript-eslint/unified-signatures': 'off',
       'no-restricted-globals': ['error', 'Buffer'],
       'no-empty': 'off',
       'no-console': [
