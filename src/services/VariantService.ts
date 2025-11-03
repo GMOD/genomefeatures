@@ -584,3 +584,92 @@ export function getVariantTrackPositions(variantData: VariantFeature[]) {
   }
   return [...new Set(presentVariants)].sort()
 }
+
+export function filterVariantData(
+  variantData: VariantFeature[],
+  variantFilter: string[],
+): VariantFeature[] {
+  if (variantFilter.length === 0) {
+    return variantData
+  }
+
+  // Convert filter array to Set for O(1) lookups
+  const filterSet = new Set(variantFilter)
+
+  const filteredResults = variantData.filter(v => {
+    let returnVal = false
+    try {
+      // Check name match
+      if (filterSet.has(v.name)) {
+        returnVal = true
+      }
+
+      // Check allele_symbols match
+      if (v.allele_symbols?.values) {
+        const cleanedSymbol = v.allele_symbols.values[0].replace(
+          /"|\[|\]| /g,
+          '',
+        )
+        if (filterSet.has(cleanedSymbol)) {
+          returnVal = true
+        }
+      }
+
+      // Check symbol match
+      if (v.symbol?.values) {
+        const cleanedSymbol = v.symbol.values[0].replace(/"|\[|\]| /g, '')
+        if (filterSet.has(cleanedSymbol)) {
+          returnVal = true
+        }
+      }
+
+      // Check symbol_text match
+      if (v.symbol_text?.values) {
+        const cleanedSymbolText = v.symbol_text.values[0].replace(
+          /"|\[|\]| /g,
+          '',
+        )
+        if (filterSet.has(cleanedSymbolText)) {
+          returnVal = true
+        }
+      }
+
+      // Handle allele_ids with JSON parsing support
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const rawValue = v.allele_ids?.values?.[0]
+
+      if (rawValue) {
+        let ids: string[] = []
+
+        // Check if it's a JSON stringified array
+        if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
+          try {
+            const parsed: unknown = JSON.parse(rawValue)
+            ids = (Array.isArray(parsed) ? parsed : [parsed]).map(String)
+          } catch (e) {
+            // Fallback to original parsing
+            ids = rawValue.replace(/"|\[|\]| /g, '').split(',')
+          }
+        } else {
+          // Original parsing logic
+          ids = rawValue.replace(/"|\[|\]| /g, '').split(',')
+        }
+
+        // Use Set.has() for O(1) lookup
+        for (const id of ids) {
+          if (filterSet.has(id)) {
+            returnVal = true
+            break
+          }
+        }
+      }
+    } catch (e) {
+      // On error, include the variant
+      returnVal = true
+    }
+
+    return returnVal
+  })
+
+  return filteredResults
+}

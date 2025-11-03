@@ -7,16 +7,14 @@ import {
 } from '../services/TrackService'
 import { generateSnvPoints } from '../services/VariantService'
 
+import BaseTrack from './BaseTrack'
+
 import type { SimpleFeatureSerialized } from '../services/types'
 import type { Region } from '../types'
 import type { Selection } from 'd3'
 
-export default class IsoformTrack {
+export default class IsoformTrack extends BaseTrack {
   private trackData: SimpleFeatureSerialized[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
-  private width: number
-  private height: number
   private transcriptTypes: string[]
   private htpVariant?: string
   private region: Region
@@ -32,8 +30,7 @@ export default class IsoformTrack {
     region,
     genome,
   }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    viewer: Selection<SVGGElement, unknown, HTMLElement | null, any>
+    viewer: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
     height: number
     width: number
     transcriptTypes: string[]
@@ -42,51 +39,12 @@ export default class IsoformTrack {
     region: Region
     genome: string
   }) {
+    super({ viewer, width, height })
     this.trackData = trackData ?? []
-    this.viewer = viewer
-    this.width = width
-    this.height = height
     this.transcriptTypes = transcriptTypes
     this.htpVariant = htpVariant
     this.region = region
     this.genome = genome
-  }
-
-  private renderTooltipDescription(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, any>,
-    descriptionHtml: string,
-    closeFunction: () => void,
-  ) {
-    tooltipDiv
-      .transition()
-      .duration(200)
-      .style('width', 'auto')
-      .style('height', 'auto')
-      .style('opacity', 1)
-      .style('visibility', 'visible')
-
-    tooltipDiv
-      .html(descriptionHtml)
-      // @ts-expect-error
-      .style('left', `${window.event!.pageX + 10}px`)
-      // @ts-expect-error
-      .style('top', `${window.event!.pageY + 10}px`)
-      .append('button')
-      .attr('type', 'button')
-      .text('Close')
-      .on('click', () => {
-        closeFunction()
-      })
-
-    tooltipDiv
-      .append('button')
-      .attr('type', 'button')
-      .html('&times;')
-      .attr('class', 'tooltipDivX')
-      .on('click', () => {
-        closeFunction()
-      })
   }
 
   DrawTrack() {
