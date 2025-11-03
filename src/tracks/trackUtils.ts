@@ -3,9 +3,10 @@ import type { Selection } from 'd3'
 import { checkSpace } from '../RenderFunctions'
 import { getJBrowseLink, renderTrackDescription } from '../services/TrackService'
 import type { SimpleFeatureSerialized } from '../services/types'
+import type VariantFeature from '../VcfFeature'
 
 export interface DrawIsoformArgs {
-  track: Selection<SVGGElement, unknown, HTMLElement, undefined>
+  track: Selection<SVGGElement, unknown, HTMLElement | null, undefined>
   isoformData: SimpleFeatureSerialized[]
   x: d3.ScaleLinear<number, number, never>
   width: number

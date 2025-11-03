@@ -138,7 +138,7 @@ async function createVariantViewer({
 
 export default {
   title: 'VCF Variant Glyphs Fix',
-  render: args => {
+  render: (args: VariantViewerArgs) => {
     // Create container synchronously
     const wrapper = document.createElement('div')
 

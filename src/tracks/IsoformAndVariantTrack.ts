@@ -217,7 +217,7 @@ export default class IsoformAndVariantTrack extends BaseTrack {
         .attr('height', VARIANT_HEIGHT)
         .attr('width', width)
         .on('click', () => {
-          renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+          this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
         })
         .on('mouseover', d => {
           const theVariant = d.variant
@@ -268,7 +268,7 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 
@@ -319,7 +319,7 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           )
           .attr('z-index', 30)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           })
           .on('mouseover', function (d) {
             const theVariant = d.variant
@@ -367,7 +367,7 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           )
           .attr('z-index', 30)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           })
           .on('mouseover', d => {
             const theVariant = d.variant
@@ -422,7 +422,7 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           .attr('fill', consequenceColor)
           .attr('z-index', 30)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           })
           .on('mouseover', d => {
             const theVariant = d.variant
@@ -473,7 +473,7 @@ export default class IsoformAndVariantTrack extends BaseTrack {
           // if html, it cuts off the <sup> tag
           .text(symbol_string)
           .on('click', () => {
-            renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
+            this.renderTooltipDescription(tooltipDiv, descriptionHtml, closeToolTip)
           })
           .datum({ fmin: fmin, variant: symbol_string + fmin })
 

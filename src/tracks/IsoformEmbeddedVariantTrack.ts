@@ -684,7 +684,7 @@ export default class IsoformEmbeddedVariantTrack extends BaseTrack {
   }
 
 
-  private renderTooltipDescription(
+  public renderTooltipDescription(
     tooltipDiv: d3.Selection<
       HTMLDivElement,
       unknown,
