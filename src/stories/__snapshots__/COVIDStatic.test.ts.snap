@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`COVIDStatic Stories > should render Simple story snapshot 1`] = `
+<div
+  class="viewer-border"
+>
+  <svg
+    id="mysvg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+  />
+</div>
+`;
