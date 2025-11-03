@@ -5,7 +5,11 @@ import {
   getJBrowseLink,
   renderTrackDescription,
 } from '../services/TrackService'
-import { renderTooltipDescription } from '../services/TooltipService'
+import {
+  createCloseTooltipFunction,
+  createTooltipDiv,
+  renderTooltipDescription,
+} from '../services/TooltipService'
 import { generateSnvPoints } from '../services/VariantService'
 import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
 

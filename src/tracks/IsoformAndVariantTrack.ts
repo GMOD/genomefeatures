@@ -10,7 +10,11 @@ import {
   getJBrowseLink,
   renderTrackDescription,
 } from '../services/TrackService'
-import { renderTooltipDescription } from '../services/TooltipService'
+import {
+  createCloseTooltipFunction,
+  createTooltipDiv,
+  renderTooltipDescription,
+} from '../services/TooltipService'
 import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
 import {
   generateDelinsPoint,
@@ -173,20 +177,9 @@ export default class IsoformAndVariantTrack {
 
     let heightBuffer = 0
 
-    const tooltipDiv = d3
-      .select('body')
-      .append('div')
-      .attr('class', 'gfc-tooltip')
-      .style('visibility', 'visible')
-      .style('opacity', 0)
+    const tooltipDiv = createTooltipDiv()
+    const closeToolTip = createCloseTooltipFunction(tooltipDiv)
 
-    const closeToolTip = () => {
-      tooltipDiv
-        .transition()
-        .duration(100)
-        .style('opacity', 10)
-        .style('visibility', 'hidden')
-    }
     // Separate isoform and variant render
     const variantBins = generateVariantDataBinsAndDataSets(
       variantData,

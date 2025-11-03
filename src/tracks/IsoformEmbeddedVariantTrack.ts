@@ -7,7 +7,11 @@ import {
   setHighlights,
 } from '../RenderFunctions'
 import { renderTrackDescription } from '../services/TrackService'
-import { renderTooltipDescription } from '../services/TooltipService'
+import {
+  createCloseTooltipFunction,
+  createTooltipDiv,
+  renderTooltipDescription,
+} from '../services/TooltipService'
 import { FEATURE_TYPES, createSortWeightMap, generateArrowPoints } from './TrackConstants'
 import {
   generateVariantDataBinsAndDataSets,
@@ -182,20 +186,8 @@ export default class IsoformEmbeddedVariantTrack {
 
     let heightBuffer = 0
 
-    const tooltipDiv = d3
-      .select('body')
-      .append('div')
-      .attr('class', 'gfc-tooltip')
-      .style('visibility', 'visible')
-      .style('opacity', 0)
-
-    const closeToolTip = () => {
-      tooltipDiv
-        .transition()
-        .duration(100)
-        .style('opacity', 10)
-        .style('visibility', 'hidden')
-    }
+    const tooltipDiv = createTooltipDiv()
+    const closeToolTip = createCloseTooltipFunction(tooltipDiv)
 
     let row_count = 0
     const used_space: string[][] = []
