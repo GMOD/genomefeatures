@@ -13,9 +13,7 @@
 
 ## Demo
 
-Demo https://gmod.org/genomefeatures/
-
-Storybook https://gmod.org/genomefeatures/storybook
+Storybook demos https://gmod.org/genomefeatures/
 
 # Instructions
 
