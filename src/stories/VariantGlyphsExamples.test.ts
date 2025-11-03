@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
+
 import * as stories from './VariantGlyphsExamples.stories'
 import { waitForStoryRender } from './test-helpers'
 
@@ -15,7 +16,7 @@ describe('VariantGlyphsExamples Stories', () => {
     // Call the render function from the meta with story args
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const element = meta.render(story.args as any) as HTMLElement
-    document.body.appendChild(element)
+    document.body.append(element)
 
     // Wait for the async rendering to complete
     await waitForStoryRender(element, { timeout: 5000 })
@@ -30,7 +31,7 @@ describe('VariantGlyphsExamples Stories', () => {
     // Call the render function from the meta with story args
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const element = meta.render(story.args as any) as HTMLElement
-    document.body.appendChild(element)
+    document.body.append(element)
 
     // Wait for the async rendering to complete
     await waitForStoryRender(element, { timeout: 5000 })

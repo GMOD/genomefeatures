@@ -10,11 +10,7 @@ export function waitForSvgContent(
     checkInterval?: number
   } = {},
 ): Promise<void> {
-  const {
-    timeout = 5000,
-    minChildren = 1,
-    checkInterval = 50,
-  } = options
+  const { timeout = 5000, minChildren = 1, checkInterval = 50 } = options
 
   return new Promise((resolve, reject) => {
     const startTime = Date.now()
@@ -36,12 +32,18 @@ export function waitForSvgContent(
 
       if (childCount >= minChildren) {
         // Give a small buffer for any final rendering
-        setTimeout(() => resolve(), 50)
+        setTimeout(() => {
+          resolve()
+        }, 50)
         return
       }
 
       if (Date.now() - startTime > timeout) {
-        reject(new Error(`Timeout: SVG only has ${childCount} children, expected at least ${minChildren}`))
+        reject(
+          new Error(
+            `Timeout: SVG only has ${childCount} children, expected at least ${minChildren}`,
+          ),
+        )
         return
       }
 
@@ -63,10 +65,7 @@ export function waitForStoryRender(
     checkInterval?: number
   } = {},
 ): Promise<void> {
-  const {
-    timeout = 5000,
-    checkInterval = 50,
-  } = options
+  const { timeout = 5000, checkInterval = 50 } = options
 
   return new Promise((resolve, reject) => {
     const startTime = Date.now()
@@ -90,7 +89,9 @@ export function waitForStoryRender(
 
       if (hasContent) {
         // Give a small buffer for any final rendering
-        setTimeout(() => resolve(), 50)
+        setTimeout(() => {
+          resolve()
+        }, 50)
         return
       }
 

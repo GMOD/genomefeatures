@@ -5,6 +5,7 @@
 
 import express from 'express'
 import serveStatic from 'serve-static'
+
 import type { Server } from 'http'
 
 let server: Server | null = null
@@ -33,7 +34,7 @@ export function startTestServer(): Promise<void> {
       resolve()
     })
 
-    server.on('error', (error) => {
+    server.on('error', error => {
       console.error('Failed to start test server:', error)
       reject(error)
     })
@@ -41,7 +42,7 @@ export function startTestServer(): Promise<void> {
 }
 
 export function stopTestServer(): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (!server) {
       resolve()
       return

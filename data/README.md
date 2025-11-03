@@ -20,7 +20,8 @@ After recording URLs, download the data files:
 yarn download-test-data
 ```
 
-This will download all recorded files to `data/s3.amazonaws.com/...` maintaining the URL structure.
+This will download all recorded files to `data/s3.amazonaws.com/...` maintaining
+the URL structure.
 
 ## Using Local Data
 
@@ -35,6 +36,7 @@ This avoids network requests and makes tests faster and more reliable.
 ## Workflow
 
 1. **First time setup:**
+
    ```bash
    yarn test:record          # Run tests and record URLs
    yarn download-test-data   # Download the files

@@ -31,5 +31,3 @@ storybook-static
 # Serena cache
 .serena/
 
-# Test data (large binary files)
-data/s3.amazonaws.com/

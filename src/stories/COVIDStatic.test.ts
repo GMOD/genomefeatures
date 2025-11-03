@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
+
 import * as stories from './COVIDStatic.stories'
-import { createExampleStatic, StaticArgs } from './util'
 import { waitForSvgContent } from './test-helpers'
+import { StaticArgs, createExampleStatic } from './util'
 
 describe('COVIDStatic Stories', () => {
   beforeEach(() => {
@@ -11,7 +12,7 @@ describe('COVIDStatic Stories', () => {
 
   it('should render Simple story snapshot', async () => {
     const element = createExampleStatic(stories.Simple.args as StaticArgs)
-    document.body.appendChild(element)
+    document.body.append(element)
     await waitForSvgContent(element, { timeout: 5000 })
     expect(element).toMatchSnapshot()
   }, 6000)
