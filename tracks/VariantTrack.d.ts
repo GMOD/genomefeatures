@@ -1,6 +1,7 @@
 import { Region } from '../types';
 import { Selection } from 'd3';
 export default class VariantTrack {
+    private static readonly TRACK_HEIGHT;
     private variants;
     private viewer;
     private width;

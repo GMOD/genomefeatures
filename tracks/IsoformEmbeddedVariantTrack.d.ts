@@ -2,6 +2,21 @@ import { VariantFeature } from '../services/VariantService';
 import { SimpleFeatureSerialized } from '../services/types';
 import * as d3 from 'd3';
 export default class IsoformEmbeddedVariantTrack {
+    private static readonly MAX_ROWS;
+    private static readonly EXON_HEIGHT;
+    private static readonly CDS_HEIGHT;
+    private static readonly ISOFORM_HEIGHT;
+    private static readonly GENE_LABEL_HEIGHT;
+    private static readonly MIN_WIDTH;
+    private static readonly ISOFORM_TITLE_HEIGHT;
+    private static readonly UTR_HEIGHT;
+    private static readonly VARIANT_HEIGHT;
+    private static readonly VARIANT_OFFSET;
+    private static readonly TRANSCRIPT_BACKBONE_HEIGHT;
+    private static readonly ARROW_HEIGHT;
+    private static readonly ARROW_WIDTH;
+    private static readonly SNV_HEIGHT;
+    private static readonly SNV_WIDTH;
     private trackData;
     private variantData;
     private viewer;
@@ -26,5 +41,4 @@ export default class IsoformEmbeddedVariantTrack {
     });
     DrawTrack(): number;
     private filterVariantData;
-    private renderTooltipDescription;
 }

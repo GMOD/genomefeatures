@@ -4,6 +4,7 @@ interface Track {
     range: [number, number];
 }
 export default class VariantTrackGlobal {
+    private static readonly TRACK_HEIGHT;
     private variants;
     private viewer;
     private width;

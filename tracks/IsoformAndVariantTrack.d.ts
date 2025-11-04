@@ -2,6 +2,22 @@ import { VariantFeature } from '../services/VariantService';
 import { SimpleFeatureSerialized } from '../services/types';
 import { Selection } from 'd3';
 export default class IsoformAndVariantTrack {
+    private static readonly EXON_HEIGHT;
+    private static readonly CDS_HEIGHT;
+    private static readonly ISOFORM_HEIGHT;
+    private static readonly GENE_LABEL_HEIGHT;
+    private static readonly MIN_WIDTH;
+    private static readonly ISOFORM_TITLE_HEIGHT;
+    private static readonly UTR_HEIGHT;
+    private static readonly VARIANT_HEIGHT;
+    private static readonly TRANSCRIPT_BACKBONE_HEIGHT;
+    private static readonly ARROW_HEIGHT;
+    private static readonly ARROW_WIDTH;
+    private static readonly SNV_WIDTH;
+    private static readonly VARIANT_TRACK_HEIGHT;
+    private static readonly LABEL_PADDING;
+    private static readonly MAX_ROWS;
+    private static readonly MAX_ROWS_WITH_FILTER;
     private trackData;
     private variantData;
     private viewer;
@@ -30,6 +46,5 @@ export default class IsoformAndVariantTrack {
     });
     DrawTrack(): number;
     filterVariantData(variantData: VariantFeature[], variantFilter: string[]): VariantFeature[];
-    renderTooltipDescription(tooltipDiv: Selection<HTMLDivElement, unknown, HTMLElement, undefined>, descriptionHtml: string, closeFunction: () => void): void;
     setInitialHighlight(selectedAlleles: string[], svgTarget: Selection<SVGGElement, unknown, null, undefined>): void;
 }
