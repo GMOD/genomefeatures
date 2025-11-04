@@ -7,7 +7,10 @@ import {
   setHighlights,
 } from '../RenderFunctions'
 import {
+  CDS_TYPES,
+  EXON_TYPES,
   FEATURE_TYPES,
+  UTR_TYPES,
   createSortWeightMap,
   generateArrowPoints,
   sortIsoformData,
@@ -144,11 +147,13 @@ export default class IsoformEmbeddedVariantTrack {
     const ISOFORM_HEIGHT = IsoformEmbeddedVariantTrack.ISOFORM_HEIGHT
     const GENE_LABEL_HEIGHT = IsoformEmbeddedVariantTrack.GENE_LABEL_HEIGHT
     const MIN_WIDTH = IsoformEmbeddedVariantTrack.MIN_WIDTH
-    const ISOFORM_TITLE_HEIGHT = IsoformEmbeddedVariantTrack.ISOFORM_TITLE_HEIGHT
+    const ISOFORM_TITLE_HEIGHT =
+      IsoformEmbeddedVariantTrack.ISOFORM_TITLE_HEIGHT
     const UTR_HEIGHT = IsoformEmbeddedVariantTrack.UTR_HEIGHT
     const VARIANT_HEIGHT = IsoformEmbeddedVariantTrack.VARIANT_HEIGHT
     const VARIANT_OFFSET = IsoformEmbeddedVariantTrack.VARIANT_OFFSET
-    const TRANSCRIPT_BACKBONE_HEIGHT = IsoformEmbeddedVariantTrack.TRANSCRIPT_BACKBONE_HEIGHT
+    const TRANSCRIPT_BACKBONE_HEIGHT =
+      IsoformEmbeddedVariantTrack.TRANSCRIPT_BACKBONE_HEIGHT
     const ARROW_HEIGHT = IsoformEmbeddedVariantTrack.ARROW_HEIGHT
     const ARROW_WIDTH = IsoformEmbeddedVariantTrack.ARROW_WIDTH
     const ARROW_POINTS = generateArrowPoints(ARROW_HEIGHT, ARROW_WIDTH)
@@ -257,7 +262,7 @@ export default class IsoformEmbeddedVariantTrack {
                     `translate(${x(featureChild.fmin)},-${GENE_LABEL_HEIGHT})`,
                   )
                   .text(text_string)
-                  .on('click', (event) => {
+                  .on('click', event => {
                     renderTooltipDescription(
                       tooltipDiv,
                       renderTrackDescription(feature),
@@ -282,7 +287,7 @@ export default class IsoformEmbeddedVariantTrack {
                     ? `translate(${x(d.fmax)},0)`
                     : `translate(${x(d.fmin)},${ARROW_HEIGHT}) rotate(180)`
                 })
-                .on('click', (event) => {
+                .on('click', event => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -298,7 +303,7 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('height', TRANSCRIPT_BACKBONE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
-                .on('click', (event) => {
+                .on('click', event => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -317,7 +322,7 @@ export default class IsoformEmbeddedVariantTrack {
                 .attr('height', ISOFORM_TITLE_HEIGHT)
                 .attr('transform', `translate(${x(featureChild.fmin)},0)`)
                 .text(text_string)
-                .on('click', (event) => {
+                .on('click', event => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -407,7 +412,7 @@ export default class IsoformEmbeddedVariantTrack {
 
                   let validInnerType = false
 
-                  if (exon_feats.includes(innerType)) {
+                  if (EXON_TYPES.includes(innerType)) {
                     validInnerType = true
                     isoform
                       .append('rect')
@@ -420,7 +425,7 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('height', EXON_HEIGHT)
                       .attr('z-index', 10)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', (event) => {
+                      .on('click', event => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
@@ -429,7 +434,7 @@ export default class IsoformEmbeddedVariantTrack {
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                  } else if (CDS_feats.includes(innerType)) {
+                  } else if (CDS_TYPES.includes(innerType)) {
                     validInnerType = true
                     isoform
                       .append('rect')
@@ -442,7 +447,7 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('z-index', 20)
                       .attr('height', CDS_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', (event) => {
+                      .on('click', event => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
@@ -451,7 +456,7 @@ export default class IsoformEmbeddedVariantTrack {
                         )
                       })
                       .datum({ fmin: innerChild.fmin, fmax: innerChild.fmax })
-                  } else if (UTR_feats.includes(innerType)) {
+                  } else if (UTR_TYPES.includes(innerType)) {
                     validInnerType = true
                     isoform
                       .append('rect')
@@ -464,7 +469,7 @@ export default class IsoformEmbeddedVariantTrack {
                       .attr('z-index', 20)
                       .attr('height', UTR_HEIGHT)
                       .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
-                      .on('click', (event) => {
+                      .on('click', event => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
@@ -513,7 +518,7 @@ export default class IsoformEmbeddedVariantTrack {
                             .attr('fill', consequenceColor)
                             .attr('height', VARIANT_HEIGHT)
                             .attr('width', width)
-                            .on('click', (event) => {
+                            .on('click', event => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
@@ -541,7 +546,7 @@ export default class IsoformEmbeddedVariantTrack {
                               `translate(0,${VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .attr('z-index', 30)
-                            .on('click', (event) => {
+                            .on('click', event => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
@@ -566,7 +571,7 @@ export default class IsoformEmbeddedVariantTrack {
                               `translate(0,${VARIANT_OFFSET - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .attr('z-index', 30)
-                            .on('click', (event) => {
+                            .on('click', event => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
@@ -595,7 +600,7 @@ export default class IsoformEmbeddedVariantTrack {
                             )
                             .attr('fill', consequenceColor)
                             .attr('z-index', 30)
-                            .on('click', (event) => {
+                            .on('click', event => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,
@@ -628,7 +633,7 @@ export default class IsoformEmbeddedVariantTrack {
                               `translate(${x(fmin - (symbol_string_length / 2) * 100)},${VARIANT_OFFSET * 2.2 - TRANSCRIPT_BACKBONE_HEIGHT})`,
                             )
                             .html(symbol_string)
-                            .on('click', (event) => {
+                            .on('click', event => {
                               renderTooltipDescription(
                                 tooltipDiv,
                                 descriptionHtml,

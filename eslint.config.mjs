@@ -18,6 +18,7 @@ export default defineConfig(
       'vitest.config.ts',
       'vitest.global-setup.ts',
       '.storybook/*',
+      'storybook-static/*',
       'out/*',
     ],
   },

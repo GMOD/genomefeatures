@@ -2,7 +2,10 @@ import * as d3 from 'd3'
 
 import { calculateNewTrackPosition, checkSpace } from '../RenderFunctions'
 import {
+  CDS_TYPES,
+  EXON_TYPES,
   FEATURE_TYPES,
+  UTR_TYPES,
   adjustLabelPosition,
   createSortWeightMap,
   generateArrowPoints,
@@ -196,9 +199,9 @@ export default class IsoformTrack {
                 .attr('transform', () =>
                   feature.strand > 0
                     ? `translate(${transcriptEnd},0)`
-                    : `translate(${transcriptStart},${arrow_height}) rotate(180)`,
+                    : `translate(${transcriptStart},${arrowHeight}) rotate(180)`,
                 )
-                .on('click', (event) => {
+                .on('click', event => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -218,7 +221,7 @@ export default class IsoformTrack {
                   fmin: featureChild.fmin,
                   fmax: featureChild.fmax,
                 })
-                .on('click', (event) => {
+                .on('click', event => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -242,7 +245,7 @@ export default class IsoformTrack {
                 .datum({
                   fmin: featureChild.fmin,
                 })
-                .on('click', (event) => {
+                .on('click', event => {
                   renderTooltipDescription(
                     tooltipDiv,
                     renderTrackDescription(featureChild),
@@ -253,7 +256,11 @@ export default class IsoformTrack {
 
               // @ts-expect-error - textLabel has getBBox method
               const symbolStringWidth = getLabelWidth(textLabel)
-              labelOffset = adjustLabelPosition(labelOffset, symbolStringWidth, this.width)
+              labelOffset = adjustLabelPosition(
+                labelOffset,
+                symbolStringWidth,
+                this.width,
+              )
               textLabel.attr('transform', `translate(${labelOffset},0)`)
 
               // Now that the label has been created we can calculate the space that
@@ -328,16 +335,14 @@ export default class IsoformTrack {
                   }
                   const innerStart = Math.max(x(innerChild.fmin), 0)
                   const innerEnd = Math.min(x(innerChild.fmax), this.width)
-                  if (exon_feats.includes(innerType)) {
+                  if (EXON_TYPES.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'exon')
                       .attr('x', innerStart)
                       .attr(
                         'transform',
-                        `translate(0,${
-                          exonHeight - transcriptBackboneHeight
-                        })`,
+                        `translate(0,${exonHeight - transcriptBackboneHeight})`,
                       )
                       .attr('height', exonHeight)
                       .attr('z-index', 10)
@@ -346,7 +351,7 @@ export default class IsoformTrack {
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
                       })
-                      .on('click', (event) => {
+                      .on('click', event => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
@@ -354,16 +359,14 @@ export default class IsoformTrack {
                           event,
                         )
                       })
-                  } else if (CDS_feats.includes(innerType)) {
+                  } else if (CDS_TYPES.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'CDS')
                       .attr('x', innerStart)
                       .attr(
                         'transform',
-                        `translate(0,${
-                          cdsHeight - transcriptBackboneHeight
-                        })`,
+                        `translate(0,${cdsHeight - transcriptBackboneHeight})`,
                       )
                       .attr('z-index', 20)
                       .attr('height', cdsHeight)
@@ -372,7 +375,7 @@ export default class IsoformTrack {
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
                       })
-                      .on('click', (event) => {
+                      .on('click', event => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),
@@ -380,16 +383,14 @@ export default class IsoformTrack {
                           event,
                         )
                       })
-                  } else if (UTR_feats.includes(innerType)) {
+                  } else if (UTR_TYPES.includes(innerType)) {
                     isoform
                       .append('rect')
                       .attr('class', 'UTR')
                       .attr('x', innerStart)
                       .attr(
                         'transform',
-                        `translate(0,${
-                          utrHeight - transcriptBackboneHeight
-                        })`,
+                        `translate(0,${utrHeight - transcriptBackboneHeight})`,
                       )
                       .attr('z-index', 20)
                       .attr('height', utrHeight)
@@ -398,7 +399,7 @@ export default class IsoformTrack {
                         fmin: innerChild.fmin,
                         fmax: innerChild.fmax,
                       })
-                      .on('click', (event) => {
+                      .on('click', event => {
                         renderTooltipDescription(
                           tooltipDiv,
                           renderTrackDescription(featureChild),

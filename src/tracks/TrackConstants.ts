@@ -5,6 +5,11 @@ export const FEATURE_TYPES = {
   EXON: ['exon'],
 } as const
 
+// Mutable versions for runtime checks
+export const UTR_TYPES: string[] = [...FEATURE_TYPES.UTR]
+export const CDS_TYPES: string[] = [...FEATURE_TYPES.CDS]
+export const EXON_TYPES: string[] = [...FEATURE_TYPES.EXON]
+
 // Sort weights for feature rendering priority
 export const FEATURE_SORT_WEIGHTS: Record<string, number> = {
   // Exons render first (lowest z-index)
@@ -27,9 +32,9 @@ export const FEATURE_SORT_WEIGHTS: Record<string, number> = {
  * @returns Record mapping feature types to sort weights
  */
 export function createSortWeightMap(
-  utrFeats: string[],
-  cdsFeats: string[],
-  exonFeats: string[],
+  utrFeats: readonly string[],
+  cdsFeats: readonly string[],
+  exonFeats: readonly string[],
 ): Record<string, number> {
   const sortWeight: Record<string, number> = {}
 
@@ -63,9 +68,9 @@ export function generateArrowPoints(height: number, width: number): string {
  * @param data - Array of isoform data to sort
  * @returns Sorted array with selected items first, then alphabetically by name
  */
-export function sortIsoformData<T extends { selected?: boolean; name: string }>(
-  data: T[],
-): T[] {
+export function sortIsoformData<
+  T extends { selected?: boolean | string; name: string },
+>(data: T[]): T[] {
   return data.sort((a, b) => {
     if (a.selected && !b.selected) {
       return -1
