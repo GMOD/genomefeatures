@@ -105,7 +105,7 @@ export interface ApolloArgs {
 export function createExampleApollo({
   locString,
   genome,
-  divId = 'mysvg',
+  divId,
   type,
   trackName = 'All Genes',
   showVariantLabel,

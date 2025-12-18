@@ -107,12 +107,12 @@ export interface VariantBin {
   reference_allele: string
   alternative_alleles?: { values: string[] }
   impact?: { values: string[] }
-  description: string
+  description?: string
   symbol?: { values: string[] }
   symbol_text?: { values: string[] }
-  consequence: string
+  consequence?: string
   variantSet: VariantBin[]
-  variants: VariantBin[] | undefined
+  variants?: VariantBin[] | undefined
   allele_of_genes?: { values: string[] }
   allele_of_gene_symbols?: { values: string[] }
   allele_of_gene_ids?: { values: string[] }
