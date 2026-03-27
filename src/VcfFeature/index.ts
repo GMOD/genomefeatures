@@ -27,8 +27,8 @@ function getEnd(variant: Variant) {
   const isSymbolic = ALT?.some(f => f.includes('<'))
   if (isSymbolic) {
     const info = variant.INFO
-    if (info.END && !isTRA) {
-      return +info.END[0]!
+    if (Array.isArray(info.END) && !isTRA) {
+      return +(info.END[0] as string)
     }
   }
   return start + REF.length
@@ -71,10 +71,9 @@ export default class VCFFeature {
   }
 
   toJSON() {
-    const { SAMPLES, GENOTYPES, ...rest } = this.variant
     return {
       uniqueId: this._id,
-      ...rest,
+      ...this.variant.toJSON(),
       ...this.data,
       samples: this.variant.SAMPLES(),
     }
